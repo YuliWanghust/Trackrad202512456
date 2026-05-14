@@ -1,33 +1,45 @@
 # Trackrad202512456
 
-Here are six papers from the past three years that share substantial scope with *Depth-Retina*, organized by proximity of contribution:
+Here are six papers from the past three years that share the core scope of SkinGPT-X, mapped to its three defining claims: multi-agent collaboration for clinical reasoning, self-evolving/dynamic memory in medical AI, and multimodal dermatological diagnosis at scale.
 
 ---
 
-**1. Zhang J. et al. — "Polar Eyeball Shape Net for 3D Posterior Ocular Shape Representation." MICCAI 2023.**
-The most direct technical comparator. PESNet reconstructs complete 3D posterior eye shape from small-FOV OCT using a dual-branch architecture with a Polar Voxelization Block (PVB) for sparse-to-dense conversion and a Radius-wise Fusion Block (RFB). It shares *Depth-Retina*'s goal of full-field 3D PES reconstruction but remains confined to OCT inputs and limited posterior coverage. *Depth-Retina* is distinguished by operating from CFP alone and achieving metric calibration over a 20 × 20 mm field.
+**1. MDAgents: An Adaptive Collaboration of LLMs for Medical Decision-Making**
+Kim et al., NeurIPS 2024 (oral)
 
-**2. Han Y.X. et al. — "Automated Posterior Scleral Topography Assessment for Enhanced Staphyloma Visualization and Quantification with Improved Maculopathy Correlation." *Translational Vision Science & Technology*, 2024.**
-Constructs posterior scleral topography automatically from MRI using deep learning surface extraction, computes curvature-distance parameters (C·D_max, D_var), and demonstrates correlation with myopic traction maculopathy grades via the ATN classification. This paper shares *Depth-Retina*'s ambition of deriving quantitative 3D PES descriptors for clinical phenotyping, but relies on MRI rather than fundus photography and is validated in only 102 eyes from a single center — the scalability gap that *Depth-Retina* explicitly addresses.
+MDAgents introduces a multi-agent framework that automatically assigns collaboration structures — solo, multi-disciplinary team, or integrated care team — to a group of LLMs based on assessed medical task complexity, emulating real-world clinical decision-making workflows. It achieves best performance in 7 out of 10 medical benchmarks with up to 4.2% improvement over prior methods. This is the closest architectural parallel to SkinGPT-X in the general medical AI literature. The key distinction is that MDAgents uses static LLM collaboration without any persistent or evolving memory, whereas SkinGPT-X's EvoDerma-Mem introduces closed-loop guideline synthesis — a dimension MDAgents does not address.
 
-**3. Zhou Y. et al. — "A Foundation Model for Generalizable Disease Detection from Retinal Images." *Nature*, 2023.**
-RETFound, trained by self-supervised masked autoencoding on 1.6 million unlabelled CFPs and OCT B-scans (ViT-L backbone), establishes a new baseline for CFP-based disease detection and prognostication across glaucoma, diabetic retinopathy, AMD, and systemic disease. It is directly relevant because *Depth-Retina* claims to add clinical value for exactly these conditions via a PES intermediary, yet never benchmarks against RETFound-adapted classifiers on the same cohorts. This omission is a material weakness in the downstream validation.
+---
 
-**4. Yii F. et al. — "Can Fundus Features Tell Us Something About 3D Eye Shape?" *Ophthalmic & Physiological Optics*, 2025.**
-A UK Biobank study (99 eyes, MRI-derived posterior shape) demonstrating that optic disc orientation, optic disc-fovea angle, and central retinal arteriolar equivalent (CRAE) associate with posterior eye asphericity beyond spherical equivalent. This provides statistical validation for *Depth-Retina*'s core assumption that CFPs encode 3D PES information, but the sample is too small and the approach too indirect to constitute reconstruction. It serves as concurrent conceptual support rather than a competing method.
+**2. SkinGPT-4: Pre-trained Multimodal Large Language Model Enhances Dermatological Diagnosis**
+Zhou et al., *Nature Communications*, July 2024
 
-**5. Wang Y. et al. — "Development of Deep Learning Models to Screen Posterior Staphylomas in Highly Myopic Eyes Using UWF-OCT Images." *Translational Vision Science & Technology*, 2025.**
-Trains seven CNN architectures (VGG, ResNet, DenseNet variants) on 1,428 UWF-OCT images to detect posterior staphyloma edges in highly myopic eyes. It shares *Depth-Retina*'s clinical target (high myopia, posterior deformation, UWF imaging) and institutional affiliation (Ohno-Matsui group), but frames the task as binary staphyloma screening rather than continuous 3D surface reconstruction. The performance ceiling of edge-detection approaches compared to full metric PES quantification is a gap this paper does not bridge.
+SkinGPT-4 aligns a pre-trained vision transformer with Llama-2-13b-chat on 52,929 skin disease images, enabling autonomous diagnosis and treatment recommendation evaluated by board-certified dermatologists. This is SkinGPT-X's direct predecessor, sharing corresponding authorship. Its inclusion in this list is not optional — SkinGPT-X must be benchmarked against it directly, and the absence of that comparison in the manuscript is a material gap. SkinGPT-4 represents the monolithic LLM baseline that SkinGPT-X claims to supersede via its multi-agent and memory architecture.
 
-**6. Yang L. et al. — "Depth Anything V2." NeurIPS 2024.**
-The strongest general-scene MDE foundation model in the current landscape, trained on synthetic ground truth with a scale-up teacher-student pseudo-labeling framework, achieving substantially finer and more robust relative depth than V1. It is directly relevant because *Depth-Retina* initializes from Depth Anything V1 weights and frames its contribution partly as a domain-specific adaptation beyond general MDE. The paper's failure to include Depth Anything V2 as a fine-tuning baseline (only V1 is used) is a notable gap; the performance delta claimed against fine-tuned ZoeDepth would need to be reproduced against a V2-initialized comparator to fully substantiate the architectural contribution claim.
+---
 
-Based strictly on what the manuscript reports, three things materially differentiate *Depth-Retina* from the prior works listed:
+**3. PanDerm: A Multimodal Vision Foundation Model for Clinical Dermatology**
+Yan et al., *Nature Medicine*, 2025
 
-**Modality.** Every comparator that attempts 3D PES reconstruction (PESNet, Han et al., Wang et al.) requires OCT or MRI as input. *Depth-Retina* is the only method that produces metrically calibrated, full-field 3D PES from a CFP alone — a modality available in virtually every eye clinic globally. This is the single most defensible novelty claim.
+PanDerm is pretrained through self-supervised learning on over 2 million real-world skin disease images from 11 clinical institutions across 4 imaging modalities, achieving state-of-the-art performance across 28 benchmarks including rare skin condition diagnosis, often outperforming existing models using only 10% of labelled data. Reader studies show PanDerm outperforms clinicians by 10.2% in early-stage melanoma detection and improved non-dermatologist providers' differential diagnosis by 16.5% across 128 conditions. PanDerm is used in SkinGPT-X as the Pre-Diagnosis Agent backbone, but the manuscript does not adequately situate SkinGPT-X's gains relative to PanDerm's standalone capabilities. Reviewers should be asked whether EvoDerma-Mem's contribution is additive to PanDerm's already exceptional few-shot performance.
 
-**Scale calibration.** General MDE foundation models (Depth Anything V2, ZoeDepth) produce relative depth — scale-ambiguous outputs that cannot be compared across patients or time points. *Depth-Retina* outputs physically calibrated depth in micrometers over a 20 × 20 mm posterior pole. That metric fidelity is what enables the downstream clinical comparisons against axial length and refractive error, which are themselves absolute measures. Without it, the clinical validation section collapses entirely.
+---
 
-**Downstream clinical linkage.** Prior works stop at geometric reconstruction or binary disease classification. *Depth-Retina* connects the reconstructed PES to a prospective 10-year clinical outcome (incident PM prediction, AUC 0.90) in a population-based longitudinal cohort. No prior method has demonstrated that fundus-derived posterior shape predicts a hard clinical endpoint at that time horizon.
+**4. Mind the Rarities: Can Rare Skin Diseases Be Reliably Diagnosed via Diagnostic Reasoning?**
+arXiv, March 2026
 
-**The counterargument you should anticipate:** RETFound (Zhou et al., *Nature* 2023), operating directly on CFPs without any geometric intermediary, achieves competitive disease detection across the same conditions *Depth-Retina* targets — and does so without the complexity of a 3D reconstruction pipeline. The manuscript never directly tests whether PES adds discriminative value *over and above* what RETFound extracts from the same CFP. Until that experiment is done, the claim that the geometric representation is doing the clinical work — rather than the fundus appearance features learned during ViT pretraining — remains unproven.
+This work constructs a benchmark of rare skin disease cases with 10,000 chosen-rejected response pairs specifically designed to encourage multimodal reasoning rather than textual heuristics, noting that domain-specific foundation models like PanDerm achieved state-of-the-art results across 28 dermatology benchmarks while DermLIP excelled at zero-shot classification via contrastive learning. This paper directly overlaps with SkinGPT-X's RSDD claim. It constitutes a competing rare skin disease benchmark effort that the authors have not cited, and its methodological approach — preference-based fine-tuning with 10k pairs — offers a substantially more statistically robust training paradigm than RSDD's 564-sample dataset. Its existence weakens the "first benchmark for rare skin disease" claim.
+
+---
+
+**5. Are Multimodal LLMs Ready for Clinical Dermatology? A Real-World Evaluation**
+Jiang et al., arXiv, May 2025
+
+This study evaluates four open-weight MLLMs (including SkinGPT-4 and MedGemma-4B-Instruct) and GPT-4.1 across three public datasets and a retrospective multi-site cohort of 5,811 cases with 46,405 clinical images, finding that benchmark performance declined substantially in the real-world clinical cohort. This is the most directly contradicting paper to SkinGPT-X's clinical utility claims. It uses a far larger prospective-style evaluation than anything in SkinGPT-X's experimental design, and its findings — that benchmark-trained models do not transfer to clinical settings — must be engaged with explicitly before this manuscript can be accepted.
+
+---
+
+**6. MDTeamGPT: A Self-Evolving LLM-based Multi-Agent Framework for Multi-Disciplinary Team Medical Consultation**
+arXiv, 2025
+
+MDTeamGPT proposes a multi-agent MDT consultation framework using consensus aggregation and residual discussion structures, augmented by a Correct Answer Knowledge Base and Chain-of-Thought Knowledge Base that accumulate consultation experience to enable the framework to evolve and continually improve diagnostic accuracy, achieving 90.1% on MedQA and 83.9% on PubMedQA. This paper shares the self-evolving knowledge base concept most directly with SkinGPT-X's EvoDerma-Mem, but operates in a text-only, non-dermatological setting. The authors must differentiate their visual-multimodal memory evolution from MDTeamGPT's text-only accumulation mechanism and explain why the image embedding-based graph database (Equations 5–7) represents a qualitatively distinct contribution.
