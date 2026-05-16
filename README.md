@@ -234,3 +234,34 @@ The parent study (Omar et al., Nat. Med. 2025) is the primary comparator and is 
 *Emergency medicine / clinical decision support:* Jesse Pines (George Washington), Lynne Richardson (Mount Sinai).
 
 *Pre-registration / LLM evaluation methodology:* Percy Liang (Stanford HELM), Arvind Narayanan (Princeton).
+
+037297
+Good. I now have sufficient, verified papers across all three relevant dimensions of this manuscript — AF-EV diagnostics, SERS-EV-AI, and the clinical domain. Let me compose the literature review.
+
+Here are 6 papers directly relevant to this manuscript, spanning the three pillars it sits on: AF-EV-based fetal diagnostics, SERS-EV-AI liquid biopsy, and the closest methodological precursor from the same group.
+
+---
+
+**1. Shin H, et al. "Single test-based diagnosis of multiple cancer types using Exosome-SERS-AI for early stage cancers." *Nature Communications* 14, 1644 (2023).**
+
+The most direct methodological predecessor. From the same EXoPERT-affiliated group, this paper demonstrated that label-free SERS profiling of plasma exosomes analyzed by a CNN-based AI system could classify cancer presence and tissue-of-origin across six cancer types, achieving AUC 0.97 on 520 test samples. The chip architecture (Au nanoparticle array, 100 spectra per spot, spectrum-level averaging to a final score) and the CNN backbone described in the manuscript under review are functionally identical to this 2023 paper. It establishes proof of concept for the Exosome-SERS-AI platform but also raises the question of what is genuinely novel in the present work beyond disease-domain extension.
+
+**2. Liu HS, et al. "Lung cancer diagnosis through extracellular vesicle analysis using label-free surface-enhanced Raman spectroscopy coupled with machine learning." *Theranostics* 15, 7545–7566 (2025).**
+
+An independent group applied label-free SERS to plasma-derived EVs from lung cancer patients and healthy controls, using both SVM and CNN classifiers. Test accuracy reached 91.5–95.4% on clinical samples, with the CNN achieving a cross-validation loss of 8.3%. This paper is important context for the Kim et al. manuscript because it demonstrates that the SERS-EV-CNN paradigm can generalize beyond the originating laboratory, though it also highlights a recurring concern: SERS substrate variability and small clinical cohorts remain unresolved barriers across the field.
+
+**3. Huang X, et al. "SERS spectroscopy with machine learning to analyze human plasma derived sEVs for coronary artery disease diagnosis and prognosis." *Bioengineering & Translational Medicine* 8, e10420 (2023).**
+
+Applied SERS to plasma sEVs from four CAD severity stages (healthy, stable plaque, NSTEMI, STEMI) and benchmarked five ML classifiers. SVM achieved 86.4% for early detection and 92.3% overall — considerably below the AUCs reported by Kim et al. This study is instructive because it was conducted on a larger cohort, used a clinically meaningful multi-class outcome, and still acknowledged insufficient mechanistic insight as a key limitation. It grounds the performance claims of the present manuscript in comparative context and underlines that high AUCs on small, single-center datasets are not unusual in this field and do not guarantee generalizability.
+
+**4. Matsuo S, et al. "Amniotic fluid-derived small extracellular vesicles for predicting postnatal severe outcome of congenital diaphragmatic hernia." *Journal of Extracellular Biology* 3, e160 (2024).**
+
+The closest published comparator in the AF-EV diagnostic space. Matsuo et al. used miRNA profiling of AF-derived small EVs to predict severe neonatal outcomes in CDH, identifying four miRNAs (hsa-miR-127-3p, hsa-miR-363-3p, hsa-miR-493-5p, hsa-miR-615-3p) with AUC >0.80, and hsa-miR-127-3p alone achieving AUC 0.93. This is a direct precedent for using AF-sEVs as prenatal diagnostic proxies for neonatal respiratory compromise — a precedent the Kim et al. manuscript does not cite or engage with. The contrast is also methodologically informative: Matsuo et al. use molecularly targeted miRNA readouts, whereas Kim et al. use untargeted SERS fingerprinting. The relative merits of interpretability versus comprehensiveness are a direct scientific question the authors must address.
+
+**5. del Real Mata C, et al. "Evaluation of machine learning and deep learning models for the classification of a single extracellular vesicles spectral library." *Sensors & Diagnostics* (RSC, advance article, 2025).**
+
+This McGill-led paper systematically benchmarks ML and DL classifiers on SERS spectral libraries of single EVs from brain tumor (glioblastoma, medulloblastoma) cerebrospinal fluid biopsies. Critically, it finds that EV sample heterogeneity — whereby clinical liquid biopsy samples contain EVs from non-cancerous cells — produces subtle inter-group spectral differences that challenge CNN performance, particularly on small samples. The paper's core finding — that classifier selection and training set size are decisive for reliable SERS-EV classification — bears directly on the Step 2 model in Kim et al., which was trained on 26 fetuses. The performance degradation observed at limited n in the del Real Mata study provides an independent empirical basis for the concern raised in this editorial report.
+
+**6. Kim S, et al. "Needle-Free Prediction of Fetal Lung Maturity Using Vaginal Fluid Extracellular Vesicles." *JAMA Pediatrics* (2026, ref. 8 in manuscript).**
+
+This paper, listed as a reference by the authors themselves and apparently from overlapping authorship, reports EV-based prediction of fetal lung maturity from vaginal fluid rather than amniotic fluid — making it a non-invasive alternative platform for the same clinical problem. Its existence raises an important editorial integrity question: is the present manuscript sufficiently differentiated from this concurrent work? The specific contributions unique to twin pregnancies, intraoperative amniotic fluid, and the two-step hierarchical framework must be explicitly delineated relative to this paper. The editorial office should confirm there is no substantial methodological or data overlap before external review proceeds.
