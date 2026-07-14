@@ -1,520 +1,465 @@
 # Trackrad202512456
 
-027608
-## Editorial Integrity Alert — for Handling Editor
+054690
+## Editorial Integrity Alert — For Handling Editor
 
-Three issues independent verification surfaced, none raised by the three reviewers:
+*(unchanged)*
 
-**Undisclosed prior preprint.** The manuscript is publicly available on bioRxiv (doi: 10.64898/2026.01.04.697552, posted 4 Jan 2026), under the identical title and author list. Nothing in the submission or the response letter discloses this. The preprint is the pre-revision version — it lacks the MFAHGN/GraphormerDTI baselines, the Orphanet rare-disease benchmark, and the significance testing added in response to review — so the two versions are not identical, but this needs disclosure and reconciliation, not silent omission.
-
-**Uncorrected internal data error.** The Results and the bioRxiv preprint both state PrimeKG comprises "129,375 nodes... connected by over four million edges." The Methods section of *this same revised manuscript* states PrimeKG contains "over 129 million nodes... more than 8 million edges." This 1000x discrepancy was present in the original preprint and survived an entire revision cycle uncorrected.
-
-**Reference regression.** The response letter's own reference list cites TxGNN (Huang et al.) as an unpublished medRxiv preprint ("ahead of print, August 7"). TxGNN has been peer-reviewed and published in *Nature Medicine* 30, 3601–3613 (2024) since September 2024 — well before this resubmission. The original bioRxiv version of this manuscript cited it correctly; the revision reverted to the wrong citation.
-
-None of these is individually disqualifying, but together they indicate the authors' revision pass was not carefully proofread against its own numbers, which bears on how much confidence to place in the numerical claims addressed below.
-
-## Did the revision address the reviewers?
-
-**Reviewer #1** — Partially. Baselines (TxGNN, MFAHGN, GraphormerDTI), leakage-aware splits, Ray Tune hyperparameter search, and additional metrics were genuinely added — that's real work, not deflection. The novelty rebuttal, however, only contrasts NetMedGPT against message-passing GNNs; it never engages the more proximal precedent — random-walk-to-embedding methods (node2vec, DREAMwalk) that already use KG random walks for drug repurposing, differing from NetMedGPT mainly in swapping skip-gram for a transformer MLM objective. That comparison is the one a sophisticated reviewer would actually want, and it's absent. The specific trivial-subnetwork failure case reviewer #1 flagged (osteogenesis imperfecta–bosentan) was never re-run and shown fixed — only disclaimed and the interface expanded.
-
-**Reviewer #2** — Mostly yes, with one loose thread. The softmax-dilution response (background/top-100/ground-truth analysis, Cohen's d) is rigorous. But the new rare-disease benchmark (Orphanet, n=811) reports AUPRC of 0.98–0.99 for indication/contraindication/off-label — *higher* than the general zero-shot split (0.95/0.84) it was meant to stress-test further. Rare, sparsely-annotated diseases outperforming well-annotated ones on a harder zero-shot task is not a validated finding, it's an unflagged anomaly, and it directly undercuts the paper's headline translational claim.
-
-**Reviewer #3** — Yes on the mechanical asks (terminology purge, statistical tests, MLP-head clarification). The pathway-flow-bias and degree-centrality concerns got argued rather than tested — acceptable as a design-philosophy defense, but reviewers should not accept "we didn't test it because we didn't want to" without at least a partial ablation.
-
----
-
-## Editorial Report
-
-**1. Overall Assessment**
-
-NetMedGPT reframes biomedical knowledge-graph reasoning as masked-sequence modeling: random walks over PrimeKG become "pseudo-sentences," and a BERT-style encoder learns to recover masked nodes/edges, yielding one model serving five drug-discovery tasks without task-specific retraining. The revision substantially strengthened the empirical case — TxGNN, MFAHGN, and GraphormerDTI as baselines, zero-shot/disease-area/rare-disease/external (Every Cure, ClinicalTrials.gov) validation, and paired significance testing. The unresolved problem is that the rare-disease benchmark — the paper's central translational pitch — outperforms the general zero-shot setting, an unexplained and biologically implausible result the authors did not flag. Combined with an uncorrected 1000x node-count error and a reference-list regression, confidence in the revision's diligence is limited.
-
-**2. Strengths**
-
-The generalist framing is genuine: one encoder, trained once, serves indication, contraindication, off-label, ADR, and DTI prediction via prompt reformatting, evaluated against task-specific GNN and transformer baselines (RGCN, HAN, HGT, TxGNN, MFAHGN, GraphormerDTI) rather than strawmen.
-
-External validation against Every Cure's expert-curated indications and ClinicalTrials.gov drug-disease pairs is a meaningfully higher bar than internal PrimeKG holdouts, and the model separates KG-supported from clinical-trial-only from random associations as intended.
-
-The KG-noise curation (removing drug-drug edges, filtering promiscuous glucocorticoid-like drugs, PubMedBERT-based ADR/indication disambiguation) reflects real domain engineering, not just modeling.
-
-**3. Weaknesses**
-
-The rare-disease AUPRC (0.98–0.99) exceeding the general zero-shot AUPRC (0.95/0.84) is unaddressed and suspicious — sparser data should degrade, not improve, zero-shot performance; this needs an explicit leakage audit of the Orphanet split before the result can be trusted.
-
-Novelty is argued only against GNN message-passing, never against the closer random-walk/sequence-embedding lineage (DREAMwalk, node2vec-based repurposing models), leaving the field-positioning claim incomplete.
-
-Interpretability remains weak in practice: reviewer #1's specific trivial two-node subnetwork example was never re-demonstrated as fixed, only reframed as "hypothesis generation" and covered by a broader disclaimer.
-
-Statistical tests are one-sided paired t-tests chosen post hoc for a directional hypothesis the authors already believed — not disqualifying, but a more conservative two-sided test with the same effect sizes should be reported.
-
-**4. Editorial Decision**
-
-**Send for Review**, conditional on reviewers explicitly adjudicating: (a) whether the Orphanet rare-disease result reflects a genuine capability or a leakage artifact in test construction; (b) whether the novelty claim survives direct comparison to DREAMwalk/node2vec-style random-walk embedding methods, not just GNNs; (c) authors must correct the 129-million-node error and the TxGNN citation before external review proceeds. This is not a structural rejection — the evaluation breadth is real — but the unexplained anomaly is a live correctness question, not a style preference.
-
-**5. Suggested Reviewer Expertise**
-
-Transformer-based masked sequence modeling applied to graph-structured/relational data; random-walk and skip-gram knowledge-graph embedding methods for drug repurposing (node2vec/DREAMwalk lineage); zero-shot and leakage-aware evaluation design for biomedical link prediction; heterogeneous GNN baselines (RGCN/HAN/HGT) for fair-comparison auditing; clinical pharmacology with rare-disease and off-label repurposing experience to assess the Orphanet benchmark's clinical plausibility.
-
-**6. State-of-the-Art Literature Review (Past 3 Years)**
-
-TxGNN (Huang et al., *Nat. Med.* 2024) established the zero-shot drug-repurposing benchmark this paper directly extends, using metric learning rather than sequence modeling. DREAMwalk (Bang et al., *Nat. Commun.* 2023) is the closest structural precedent — semantic-guided random walks over drug/disease ontologies feeding a skip-gram embedding — and is conspicuously not engaged as a novelty comparator despite being more analogous to NetMedGPT's pipeline than any GNN baseline. MFAHGN (Fang et al., *Neurocomputing* 2026) and GraphormerDTI (Gao et al., *Comput. Biol. Med.* 2024) are current task-specific state-of-the-art for ADR and DTI prediction respectively, both correctly cited and fairly retrained here. The field's open problem — generalizing zero-shot repurposing to genuinely undertreated rare diseases without inflating performance via test-set artifacts — is exactly where this manuscript's most interesting claim currently fails scrutiny.
-
-**7. Suggested Reviewers' Names**
-
-Sequence/transformer-KG modeling: Kexin Huang (TxGNN); Payal Chandak (PrimeKG). Random-walk embedding methods: Dabin Bang (DREAMwalk). Graph-transformer DTI baselines: Daokun Zhang (GraphormerDTI). Clinical/translational rare-disease repurposing: an Every-Cure-independent clinical pharmacologist or rare-disease genomics specialist should be sourced by the handling editor, since no unaffiliated junior clinical name surfaced independently of this manuscript's own collaborators.
-
-052292
-# Editorial Report
-**Manuscript:** Predicting the timing of first sustained cognitive worsening in Alzheimer's disease using real-world clinical data and machine learning
-**Authors:** Venkatesh, Zhang, et al. (Xia and Hou, co-senior)
+Two issues require resolution before this manuscript can proceed to review. First, the abstract and Results text both state 94.25% accuracy for Brain-DLNet on the private cohort, but Figure 8's comparison table reports 95.50% for the same condition — an unresolved internal inconsistency in the flagship clinical result. Second, Figure 3b contains a visible embedded question-and-answer exchange ("Q: Where is federated learning? A: Federated learning represents an established benchmark…") that reads as an unedited artifact of AI-assisted figure generation. Authors should be asked directly about figure provenance and the source of the accuracy discrepancy.
 
 ---
 
 ## 1. Overall Assessment
 
-The manuscript applies LATTE, a semi-supervised deep neural phenotyping algorithm previously published for heart failure, diabetes, and multiple sclerosis (Wen et al., *Patterns*, 2024), to a new outcome: time-to-first sustained cognitive worsening in 27,614 AD patients from UPMC EHR data, using MCID-based CDR/MMSE/MoCA thresholds. Small gold-standard cohorts (n=632–752) train each model; predictions scale to imputation cohorts exceeding 26,000 patients. The scalability claim rests on extrapolating from a healthier, younger training subpopulation to a sicker deployment cohort, corrected only by prevalence recalibration, with no external validation.
+The manuscript proposes DLNet, decomposing a centralized neural network into institution-owned layer modules that collaboratively reconstruct end-to-end learning without any participant holding the full model or raw data, demonstrated via a three-institution Swin Transformer brain tumor classifier (Brain-DLNet). The core mechanism — sequential layer partitioning with intermediate-representation exchange — is mathematically equivalent to split learning and cyclical weight transfer, both established since 2018. The paper's most serious problems are evidentiary: an internal accuracy discrepancy on its flagship clinical result, no formal privacy guarantee despite privacy being the central motivation, and a membership-inference evaluation that omits federated learning, the most relevant competitor, an omission the authors acknowledge rather than address.
 
 ## 2. Strengths
 
-The outcome definition is clinically disciplined: MCID-based, severity-stratified thresholds sustained over two consecutive visits within three years, modeled on CLARITY AD and TRAILBLAZER-ALZ 2 endpoints, reduce misclassification of test-retest noise as true decline.
-
-Evaluation is thorough: four longitudinal metrics, cross-validated thresholds, and sensitivity analyses by severity and data source, honestly disclosing that EHR-derived scores show higher AUC but worse calibration than ADRC-derived scores.
-
-The clinical-utility checks add value: APOE-ε4 carriers and k-means EHR clusters both show differential predicted time-to-worsening in the expected direction, anchoring outputs beyond internal accuracy metrics.
+Architecture-agnostic validation across ResNet18, AlexNet, and ViT-Base on three datasets demonstrates generalizability beyond single-architecture split-learning work. The validation-aligned layer-credit mechanism, converting per-segment gradient alignment into entropy-regularized allocation via a closed-form solution, is a genuinely useful resource-allocation contribution independent of the medical framing. The zero-knowledge verification scheme offers sensible auditability for a trust-minimized multi-institutional setting.
 
 ## 3. Weaknesses
 
-No algorithmic novelty: LATTE's architecture is unchanged from Wen et al. 2024, whose authors overlap with this manuscript's senior authors; the contribution is a new outcome definition, not a new method.
-
-Gold-standard and imputation cohorts differ systematically in age and mortality; only prevalence recalibration is applied, with no correction for covariate shift, despite this being central to the scalability claim.
-
-External validation is absent; all data are single-site, and LATTE's cited portability was shown for other diseases, not this one.
-
-The k-means validation is partly circular, built from the same features seeding the model's inputs; the authors also concede CDR Global's apparent superiority may reflect scale coarseness, not model advantage.
+The privacy claim rests entirely on empirical membership-inference resistance; the Discussion itself concedes no differential-privacy guarantee exists, while gradient-leakage attacks are never tested despite gradients crossing every module boundary. Figure 3 explicitly omits federated learning as a comparator, calling this the field's "developmental context" rather than fixing it — disqualifying on its own for a privacy-motivated paper. The clinical cohort lacks subgroup analysis and confidence intervals, and the 94.25%/95.50% discrepancy undermines trust in the headline number. Brain-DLNet's fixed three-way split is architecture-driven rather than a negotiated governance structure, leaving inter-institutional disagreement and capacity mismatch unaddressed.
 
 ## 4. Editorial Decision
 
-**Reject**, transfer to *npj Digital Medicine*. Absent external validation and unaddressed covariate shift are structural, non-revisable limitations of this single-site design, and the contribution applies a published algorithm rather than advancing one.
+**Reject.** The unresolved clinical-accuracy inconsistency, the acknowledged absence of a federated-learning baseline in the central privacy experiment, and the missing formal privacy guarantee are independent, non-revisable grounds requiring re-run experiments rather than a text revision.
+
+---
 
 ## 5. Suggested Reviewer Expertise
 
-Reviewers should include expertise in semi-supervised and weakly supervised deep learning for longitudinal EHR event-timing phenotyping, including attention-based recurrent architectures and knowledge-graph-derived concept embeddings; survival and competing-risk modeling for chronic neurodegenerative disease trajectories; assessment of calibration and domain/covariate shift across heterogeneous EHR cohorts; and, clinically, behavioral neurology or dementia specialists with expertise in CDR/MMSE/MoCA-based endpoint definitions, MCID methodology, and APOE-stratified AD registry data (e.g., NACC/ADRC).
+*(verbatim, unchanged)*
 
-## 6. State-of-the-Art Literature Review (Past 3 Years)
+Reviewers should cover: split learning and split-federated learning theory (to assess DLNet's actual novelty margin over Vepakomma et al. and SplitFed); membership-inference and gradient-leakage attack methodology in distributed training; entropy-regularized resource allocation and contribution estimation (Shapley-value or credit-assignment methods) in federated systems; Swin Transformer-based medical image classification; and neuro-oncology / neuroradiology, specifically glioma–meningioma differential diagnosis on MRI, to evaluate the clinical plausibility of the reported subtype confusion pattern.
 
-The closest methodological precedent is LATTE itself (Wen et al., *Patterns*, 2024), which this manuscript directly reuses. Competing approaches to EHR-based AD/ADRD prediction over the past three years favor transformer/foundation-model architectures: an EHR-BERT-based transformer pretrained on NYU Langone records predicts incident MCI/ADRD 12–36 months ahead (Zhu et al., 2025), and TA-RNN, an attention-based time-aware recurrent network, predicts AD progression from ADNI longitudinal data (Al Olaimat & Bozdag, *Bioinformatics*, 2024). Both target incident diagnosis or short-horizon conversion rather than sustained post-diagnosis cognitive worsening, so this manuscript's outcome framing is comparatively novel even though its architecture is not; the authors do not benchmark against or discuss this competing transformer-based paradigm. On the endpoint side, Ito and Hutmacher (*J Alzheimers Dis*, 2014) modeled time-to-clinically-worsening from longitudinal CDR-SB in a trial-quality MCI cohort, anticipating this manuscript's core framing by a decade in cleaner data; the manuscript does not cite this precedent. The MCID thresholds underlying the outcome definition come from an active and contested literature, including a 2024 rapid review (Muir et al., *Alzheimer's & Dementia*) and a published methodological critique disputing anchor-based MCID estimates used in that review; the manuscript treats its thresholds as settled rather than engaging this controversy.
+## 6. State-of-the-Art Literature Review (Past Three Years)
+
+*(verbatim, unchanged)*
+
+The dominant trend since 2023 has been communication-efficient and robustness-focused federated/split learning rather than new partitioning paradigms: block-coordinate accelerated federated methods (FedBCGD, cited as ref. 6), split-federated co-learning under label noise (Kafshgari et al. 2026, ref. 10), and privacy-hardened federated frameworks combining homomorphic encryption with differential privacy (Gomathi et al. 2026, ref. 20) all extend the communication-protocol axis the authors say they are moving beyond. Zero-knowledge-verified federated learning has also emerged concurrently (zkFL-health, ref. 22, arXiv 2025), meaning DLNet's verification contribution is contemporaneous with, not ahead of, the field. On the clinical-imaging side, Swin-based brain tumor classifiers reporting comparable or higher single-site accuracy (MTA-Swin at 98.57%, and Swin-Tiny zero-shot transfer work on BRISC-2025) have appeared in 2025–2026 without any distributed-learning framing, suggesting the accuracy ceiling Brain-DLNet approaches is not itself remarkable — the contribution has to rest entirely on the multi-institutional governance angle, which is exactly where the missing federated-learning baseline hurts most.
+
+## Suggested Reviewers' Names
+
+*(verbatim, unchanged)*
+
+*Split/federated learning theory:* Praneeth Vepakomma; Chandra Thapa; Otkrist Gupta; Zeyu Han (Kafshgari et al. collaborator network).
+
+*Privacy attacks in distributed training:* Reza Shokri; Ligeng Zhu; Milad Nasr.
+
+*Resource allocation / contribution estimation in FL:* Fan Lai; Zelei Liu.
+
+*Medical imaging / Swin-based classification:* Ali Hatamizadeh; authors of the MTA-Swin (2026) and Tumor-Swin Transformer lines of work.
+
+*Neuroradiology (glioma/meningioma differential):* a practicing neuroradiologist with multi-centre brain tumor MRI cohort experience — name to be identified by the editorial office given no author in the cited literature set matches this specific clinical role.
+
+055772
+# Editorial Report — Manuscript 055772
+## "Anticipatory decoding of walking direction from gait-phase-aligned shank sEMG"
 
 ---
 
-## Suggested Reviewers
+## EDITORIAL INTEGRITY ALERT (to Handling Editor)
 
-1. **Narges Razavian, PhD** — Assistant Professor, Population Health and Radiology, NYU Grossman School of Medicine. Directly comparable work: transformer-based EHR foundation model predicting MCI/ADRD onset (Zhu et al., 2025).
-2. **Serdar Bozdag, PhD** — Associate Professor, Computer Science and Engineering, University of North Texas. Directly comparable work: TA-RNN, attention-based time-aware recurrent network for longitudinal AD progression prediction (Al Olaimat & Bozdag, *Bioinformatics*, 2024).
-3. **Suzanne E. Schindler, MD, PhD** — Associate Professor of Neurology, Washington University in St. Louis. Clinical expertise in CDR-SB-based outcome measures, ADRC registry data, and AD biomarker-cognition correlation.
-
-052939
-# Editorial Report
-**Manuscript:** Associations of 3D abdominal MRI-derived composite and organ-specific aging with disease, mortality and lifestyle
-**Authors:** Wang, Deng, Wang, Attia, et al.; corresponding: Yang, Li (Cedars-Sinai)
-**Journal:** Nature Communications (Digital Health)
-
----
-
-## EDITORIAL INTEGRITY ALERT — TO HANDLING EDITOR
-
-Independent prior-art search identifies a medRxiv preprint by the same corresponding authors (Yufeng Wang, Debiao Li, Ju Dong Yang; Biomedical Imaging Research Institute, Cedars-Sinai), posted 12 May 2026 under the title "MRI reveals the hierarchical organization of abdominal biological aging from shared burden to disease-specific organ engagement" (doi: 10.64898/2026.05.08.26352767). It reports the identical UK Biobank Application (132578), the same eight-compartment MedNeXt pipeline, the same Overall Aging Gap (OAG) construct, and the same leave-one-out axis-conditional Cox design. This preprint is not disclosed anywhere in the submitted manuscript.
-
-More serious than the non-disclosure itself is that the two documents report materially different numbers from what should be the same underlying extraction: healthy training cohort N = 7,469 (submitted) vs N = 7,715 (preprint); analytical cohort N = 58,110 vs N = 56,525; prospective cohort N = 16,892 vs N = 20,266; mean inter-compartment correlation r = 0.408 vs r = 0.423; FDR-significant prevalent diseases 190/430 vs 271/430. The preprint also contains a PDFF-based training-cohort exclusion criterion, a second mortality cohort (N = 40,985), cross-modal biomarker phenotyping, and anatomical negative controls that do not appear in the submission. These are not rounding-level discrepancies; they indicate the two circulating outputs came from different cohort-derivation or exclusion pipelines applied to the same data, with no reconciliation offered anywhere. The handling editor should request from the authors, before any review assignment: (1) confirmation of which pipeline is the frozen, pre-registered analysis; (2) an explanation for the divergent cohort sizes and effect estimates; and (3) a corrected disclosure statement covering the preprint. This is a data-provenance question that external reviewers cannot be expected to adjudicate without that clarification.
+The Declarations state: *"Ethical approval: This article does not contain any studies involving human, animal participants performed by any of the authors."* Section 4.1 directly contradicts this: eight human participants (4 male, 4 female, students, age 25±3) were recruited and physically instrumented to walk with the intelligent walker. This is either a template error left uncorrected or a genuine absence of ethics review for human-subjects data collection. Either reading is disqualifying at submission: the manuscript cannot be sent for review until the authors clarify which is true and, if human data were collected, supply the IRB/ethics-committee approval reference. No blinded author list was provided with this review copy, which also prevented an independent check for undisclosed preprints or overlapping publications from the same group; this should be verified by the handling editor once authorship is unblinded.
 
 ---
 
 ## 1. Overall Assessment
 
-Eight MedNeXt models on 67,130 UK Biobank abdominal MRIs produce compartment-specific age gaps (liver, pancreas, kidneys, spleen, visceral/subcutaneous fat, muscle) that are intercorrelated (mean r=0.408) and average into an Overall Aging Gap (OAG) predicting multimorbidity, 14 incident diseases, and mortality (HR 1.15–1.49/s.d.). Leave-one-out Cox models then isolate sparse, anatomically coherent compartment residuals (kidney–CKD, liver–liver disease, fat/muscle–T2D). Execution is competent, but the claimed conceptual advance — shared axis plus conditional compartment refinement rather than parallel clocks — is not new: Kivimäki et al. (2025) and Huang et al. (2026), both cited by the authors, already perform this exact decomposition in other modalities. The real contribution is narrower: porting established logic to one new modality.
+The manuscript aligns shank sEMG to IMU-detected heel-strike/toe-off events to decode walker turning direction, amplitude, and fall risk before the action occurs. A bidirectional GRU reaches 94.0% accuracy at a 200 ms lead time, and phase-alignment outperforms fixed time-window cropping across eight architectures. The mechanism is demonstrated, not asserted, and the physiological validation is more rigorous than most work in this space. But the evidentiary base is thin: eight healthy students on one flat surface, no cross-subject testing, for a device motivated by mobility impairment in a population never sampled. Combined with a Declarations statement contradicting the Methods on human-subjects involvement, the manuscript does not clear this venue's bar.
 
 ## 2. Strengths
 
-The pipeline is rigorous at scale: MAE 2.69y, R²=0.816, calibration and repeat-scan stability (ICC=0.74) confirmed. The leave-one-out joint Cox design correctly avoids part-whole circularity by jointly estimating compartment and residual-OAG coefficients rather than conditioning a PAG on an OAG containing it. Robustness checks (partial correlations controlling age/sex/BMI; kidney sensitivity excluding renal codes) are thorough for a single-cohort design.
+Phase-alignment is shown, via Figure 4, to reduce feature aliasing relative to fixed-window cropping, a believable mechanism for the reported gains. The eight-architecture ablation is systematic, yielding a +6.7 pp average and +13.8 pp maximum gain from phase labeling, and identifies 200 ms as the accuracy/lead-time operating point. The MUAP clustering and waveform analysis of four target muscles grounds discriminability in neuromuscular function, not accuracy alone. The hardware is properly characterized, with sub-10 microsecond synchronization and IEC 60601-2-40-consistent validation.
 
 ## 3. Weaknesses
 
-Beyond the provenance issue above, there is zero external validation in a healthy-volunteer, largely European cohort. Incremental discrimination over age+BMI+smoking+alcohol is marginal (ΔC 0.003–0.049) with no comparison against a standard clinical risk score, undercutting the "broadly informative" framing. OAG×HLS interaction survives FDR correction for only 2/15 endpoints, yet Figure 5 and the discussion present the stratified pattern across nearly all endpoints as if confirmatory. Three of eight compartments are body-composition rather than organ measures, and no analysis tests whether OAG's signal collapses against an adiposity-only score.
+The cohort, eight students from one site and age band, cannot support the claim about mobility-impaired users, a population never tested despite the authors' own cited evidence that gait synergy timing shifts with age. The design never specifies subject-independent versus subject-dependent splits, the most consequential detail for this claim, and the BiGRU-BiLSTM-Advanced-TCN ranking carries no significance test. Two directly competing papers, a rollator turning-intention system and a similarly structured BiGRU decoder, are absent.
 
 ## 4. Editorial Decision
 
-**Reject and return for clarification.** The undisclosed, numerically divergent preprint must be resolved before external review can proceed. Independent of that, the core novelty claim is pre-empted by cited concurrent work, and the absence of external validation or a clinical-baseline comparison are non-revisable gaps for a paper whose contribution is decomposition logic rather than a new modality.
-
-## 5. Suggested Reviewer Expertise
-
-Reviewers should have direct, article-level familiarity with axis-decomposition or mutual-adjustment approaches to multi-organ biological age (proteomic, methylation, or imaging-based), with 3D deep-learning age-regression architectures (MedNeXt/nnU-Net family) applied to large-scale MRI cohorts, and with UK Biobank-scale survival-analysis and FDR-correction methodology for PheWAS-style designs. On the clinical side, reviewers should bring nephrology expertise for evaluation of the kidney-CKD engagement claims and hepatology/metabolic-disease expertise for the liver- and adiposity-linked findings, given the manuscript's disease-specific claims concentrate in these two systems.
-
-## 6. State-of-the-Art Literature Review (Past 3 Years)
-
-The field has moved rapidly past organ-age-gaps-as-parallel-clocks. Tian et al. (Nat. Med. 2023) and Oh et al. (Nature 2023) established multi-organ aging from blood biomarkers and plasma proteomics, respectively, at population scale. Argentieri et al. (Nat. Med. 2024) extended proteomic clocks to diverse populations. On imaging specifically, Le Goallec et al. (Nat. Commun. 2022) first showed correlated liver–pancreas MRI age gaps (r = 0.53, closely matching this manuscript's r = 0.56 for the same organ pair), and this year the MULTI Consortium (Wen et al., Nat. Med. 2026, N = 313,645) published seven MRI-based organ clocks spanning brain, heart, liver, adipose, spleen, kidney, and pancreas integrated with proteomics, metabolomics, and genome-wide association — a substantially larger and more mechanistically integrated MRI aging-clock study than the present submission, though it does not perform an axis-conditional decomposition. Most directly relevant, Kivimäki et al. (Lancet Digit. Health 2025) applied mutual organ-age adjustment in the Whitehall II proteomic cohort, and Huang et al. (Sci. China Life Sci., published 8 May 2026) formalized a common-versus-organ-specific structural decomposition across multi-omics layers in over 500,000 UK Biobank participants — the same conceptual move this manuscript makes, in a different modality, published essentially concurrently. The manuscript cites all four but should engage more critically with the fact that its central organizing claim is now a replication of established logic in a new but narrower modality, not a novel interpretive framework.
-
-## 7. Suggested Reviewers
-
-**Multi-organ aging / axis-decomposition methodology:** He Huang (Sci. China Life Sci. 2026 structural-decomposition paper); Zhiyuan Song and Huizi Cao (co-first authors, MULTI Consortium, Nat. Med. 2026 MRI organ clocks); Ye Ella Tian (Nat. Med. 2023 heterogeneous multi-organ aging).
-
-**Deep-learning MRI age regression:** Thomas Küstner (Tübingen; npj Aging 2026 multi-organ MRI biological-age framework, ResNet/deep-regression architectures on UK Biobank).
-
-**Nephrology / kidney aging:** Xianhui Qin (Nanfang Hospital, Southern Medical University; biomarker-based biological aging and CKD outcomes).
-
-**Hepatology / metabolic imaging:** to be identified via targeted search matched to liver-PDFF and NAFLD-aging literature if the editor wishes to proceed to review after the integrity issue is resolved.
-
-## Further Literature
-
-1. **Tian, Y.E. et al. Heterogeneous aging across multiple organ systems and prediction of chronic disease and mortality.** *Nat. Med.* 29, 1221–1231 (2023). PMID: 37024597. Independent, foundational blood-biomarker precedent for treating multi-organ age gaps as a joint system rather than isolated clocks; cited by the manuscript but not engaged as a direct methodological ancestor of the axis/residual framing.
-
-2. **Oh, H.S.-H. et al. Organ aging signatures in the plasma proteome track health and disease.** *Nature* 624, 164–172 (2023). PMID: 38057571. Independent. Reports substantially weaker inter-organ coupling (mean r≈0.21) than this manuscript's imaging-based r=0.408, a contrast the authors use to argue imaging captures a more integrated signal — a claim that itself needs a modality-matched confound check (shared acquisition/preprocessing vs. shared biology) that is not performed.
-
-3. **Argentieri, M.A. et al. Proteomic aging clock predicts mortality and risk of common age-related diseases in diverse populations.** *Nat. Med.* 30, 2450–2460 (2024). PMID: 39117878. Independent. Demonstrates cross-ancestry generalizability that this UK Biobank-only, predominantly European submission does not attempt.
-
-4. **Le Goallec, A. et al. Using deep learning to predict abdominal age from liver and pancreas magnetic resonance images.** *Nat. Commun.* 13, 1979 (2022). PMID: 35418184. Directly prior art in the same modality and two of the same organs; the reported liver–pancreas correlation (0.53) closely matches this manuscript's 0.56, supporting the finding but also confirming the coupling phenomenon itself is already established, not newly discovered.
-
-5. **Wen, J. et al. (MULTI Consortium) MRI-based multi-organ clocks for healthy aging and disease assessment.** *Nat. Med.* 32, 82–92 (2026). PMID: 41102562. Independent, larger (N=313,645), and more mechanistically integrated (genomics, proteomics, metabolomics) competing MRI multi-organ aging study published shortly before this submission; does not perform axis-conditional decomposition, which is this manuscript's main point of differentiation, but the size and multi-omics linkage gap should be addressed directly rather than left as an uncontextualized citation.
-
-6. **Kivimäki, M. et al. Proteomic organ-specific ageing signatures and 20-year risk of age-related diseases: the Whitehall II study.** *Lancet Digit. Health* 7, e195–e204 (2025). Independent. Applies the identical mutual-adjustment/leave-one-out logic to proteomic organ clocks; the manuscript correctly cites this as methodological precedent but this weakens rather than supports the novelty claim in Section 1.
-
-7. **Huang, H., Li, Y., Song, Q. et al. Structural decomposition enables multi-omics dissection of common and organ-specific aging.** *Sci. China Life Sci.* (2026). doi:10.1007/s11427-025-3242-5. Published 8 May 2026, four days before the related medRxiv preprint (see entry 10). Independent, same-conceptual-class prior art: a formal common-vs-organ-specific structural decomposition across multi-omics layers in >500,000 UK Biobank participants. This is the single most damaging citation to the manuscript's originality claim and deserves a direct comparative paragraph rather than a passing discussion mention.
-
-8. **Ecker, V., Yang, B., Gatidis, S. & Küstner, T. Imaging-derived biological age across multiple organs links to mortality and aging-related health outcomes.** *npj Aging* (2026). doi:10.1038/s41514-026-00377-7. Independent competing imaging-based multi-organ (brain, cardiac, abdomen, OCT fundus) aging-clock study using ResNet-based regression on ~143,000 UK Biobank samples; broader anatomical scope than the present abdomen-only submission and not cited.
-
-9. **Ren, P. et al. Imaging-based organ-specific aging clock predicts human diseases and mortality.** *npj Digit. Med.* 9, 278 (2026). doi:10.1038/s41746-026-02488-7. Independent. Reports a pancreas MRI clock with higher raw performance (MAE=2.94) but explicitly trades this against organ-specificity — directly relevant to this manuscript's own MAE/R² tradeoff discussion and should be cited alongside it.
-
-10. **Wang, Y. et al. MRI reveals the hierarchical organization of abdominal biological aging from shared burden to disease-specific organ engagement.** medRxiv 2026.05.08.26352767 (posted 12 May 2026; unreviewed preprint — not peer-reviewed evidence). Same-author-group, same-cohort concurrent version of the present submission under a different title, with materially different cohort sizes and effect estimates (see Integrity Alert). Flagged here per policy as an undisclosed, unreviewed prior version rather than independent literature; must be reconciled before further evaluation.
-
-053962
-**1. Overall Assessment**
-
-The manuscript claims YOLO11n, repackaged as "LiteChestGreenXY11n," outperforms YOLOv5s/v8s/v11s on chest X-ray abnormality localization while using less compute and energy, formalized via a proposed Energy-Aware Clinical Deployment Suitability Index (EA-CDSI). This claim does not hold. Reported mAP@0.5 differences (0.344–0.355) are within a 3% band on a 504-image test set, with no confidence intervals or repeated runs. The EA-CDSI is mathematically degenerate: min-max normalization sets the lowest-resource model's cost to exactly zero, so LiteChestGreenXY11n's raw EA-CDSI (320,344.75) is an artifact of dividing by the epsilon term, not a meaningful signal — fatal to the paper's stated primary contribution.
-
-**2. Strengths**
-
-The benchmarking protocol holds resolution, batch size, epochs, and hardware constant across four YOLO variants, sounder practice than most comparable lightweight-CXR studies cited. Energy accounting in Joules per inference is a genuinely underused axis in this literature. Applying Grad-CAM identically across all four models for direct comparison is a reasonable design choice.
-
-**3. Weaknesses**
-
-LiteChestGreenXY11n has no described architectural modification relative to stock YOLO11n-nano; as written, this is a relabeling exercise, not a new framework. The EA-CDSI formula is structurally broken and easily gamed by dataset or hardware choice. Table 3's Grad-CAM Quality Score, Heatmap Sharpness, and Clinical Interpretability ratings have no disclosed scoring protocol, radiologist panel, or inter-rater reliability statistic. The dataset is an undisclosed VinDr-CXR derivative (classes match VinDr-CXR's local-label set exactly), sourced via Roboflow rather than the original PhysioNet release, with no citation of Nguyen et al. (2022), no discussion of the original IRB approval, and no check on leakage from the re-partitioned split.
-
-**4. Editorial Decision**
-
-**Reject.** The core quantitative contribution is mathematically invalid, the model lacks disclosed architectural novelty, and the explainability metrics are unvalidated — structural, non-revisable flaws. Given its computational-benchmarking framing, this work is better suited to **Communications Engineering** after fundamental revision (redesigned composite metric, disclosed dataset provenance); npj Digital Medicine would be premature absent clinical validation.
+Reject. The ethics contradiction is independently disqualifying until resolved by the editorial office. Even setting it aside, the cohort and design cannot support the claimed generalizability, and the missing literature weakens the novelty argument. Resubmission should resolve the ethics statement, report subject-independent accuracy, and engage the omitted prior art.
 
 ---
 
-**5. Suggested Reviewer Expertise**
+## 5. Suggested Reviewer Expertise
 
-Reviewers should have expertise in: efficient/lightweight object detection architecture design (YOLO family internals, not just application); Grad-CAM and saliency-based XAI validation methodology, including inter-rater reliability protocols; Green AI / energy-efficiency benchmarking of deep learning systems; composite index construction and normalization pitfalls in multi-criteria decision metrics; and thoracic radiology, specifically radiologist-annotated CXR datasets (VinDr-CXR class taxonomy) for clinical relevance assessment of localization outputs.
-
-**6. State-of-the-Art Literature Review (Past 3 Years)**
-
-Recent work has moved past demonstrating that YOLO variants can detect CXR abnormalities toward rigorously validating explainability and efficiency claims. Ahsan et al. (MDPI, Nov. 2025) paired YOLOv11 with Grad-CAM for pneumonia detection specifically, evaluated across two independent datasets with disclosed metric protocols — directly overlapping with this manuscript's core method but with stronger external validation. Rajaraman and Liang's ensembled YOLO work (PMC, 2025) addresses multi-organ CXR detection with attention to generalization across imaging sources, a step this manuscript does not attempt. On the dataset side, the Mamba-YOLOvX study (ScienceDirect, 2025) benchmarks directly on VinDr-CXR and explicitly documents class-imbalance effects (e.g., poor atelectasis/pleural-thickening detection), a confound this manuscript's nine-class subset likely inherits but never discusses. This manuscript does not engage with any of this concurrent work, despite citing tangential lightweight-model papers (SlimNet/EdgeNet, NeuroVision-Lite) that are less directly comparable than the YOLOv11+Grad-CAM CXR literature it omits.
-
-**Suggested Reviewer Names**
-
-*Lightweight detection/YOLO architecture:* Sovit Ranjan Rath; Mohammad Hossein Rezvan; Rejin Varghese (YOLOv8/v9 architecture analysis authors).
-*XAI/Grad-CAM validation:* Sivaramakrishnan Rajaraman; Andrea De Simone; Pooya Khosravi.
-*Green AI/energy efficiency:* Kostas Ordoumpozanis; Roberto Verdecchia; Sasha Luccioni.
-*Thoracic radiology/VinDr-CXR:* Ha Q. Nguyen; Hieu H. Pham; Khanh Lam.
+Reviewers should cover: gait-phase-aware temporal deep learning for multimodal sEMG-IMU fusion in lower-limb intent decoding (the paper's core methodological claim); wearable biosensor hardware and synchronization validation for surface EMG acquisition systems; motor-unit action potential decomposition and EMG-based interpretability methods, to assess whether the physiological-validation chapter is methodologically sound; and, on the clinical side, geriatric gait, balance, and turning-related fall risk in walker/rollator-assisted mobility, to evaluate whether the cohort and task design are adequate for the paper's stated clinical motivation.
 
 ---
 
-**Further Literature**
-
-1. Nguyen, H.Q. et al. "VinDr-CXR: An open dataset of chest X-rays with radiologist's annotations." *Scientific Data* 9, 429 (2022). DOI: 10.1038/s41597-022-01498-w. Peer-reviewed. This is the original source dataset the manuscript's nine-class subset is drawn from (via an uncited Roboflow mirror); the manuscript should cite this directly and address the original patient-level splitting and IRB approval rather than treating the Roboflow copy as an independent resource.
-
-2. Ahsan et al. "An Explainable YOLO-Based Deep Learning Framework for Pneumonia Detection from Chest X-Ray Images." *Algorithms* 18(11):703 (2025). Peer-reviewed. Nearly identical method (YOLOv11 + Grad-CAM) applied to CXR, with cross-dataset evaluation the present manuscript lacks; a direct, uncited competitor.
-
-3. Rajaraman, S. & Liang, Z. "Ensembled YOLO for multiorgan detection in chest x-rays." *Proc SPIE* 13407 (2025). Peer-reviewed. Demonstrates YOLO ensembling for robustness across diverse CXR sources, a generalization strategy absent from this manuscript's single-source evaluation.
-
-4. Mamba-YOLOvX localization/classification study on VinDr-CXR. *ScienceDirect* (2025). Peer-reviewed. Benchmarks directly on VinDr-CXR and documents severe class-imbalance effects on detection accuracy — a confound this manuscript's class subset inherits but does not analyze.
-
-5. Sobek, J. et al. "MedYOLO: a medical image object detection framework." *J Imaging Inform Med* 37(6):3208-3216 (2024). Peer-reviewed; already cited by the manuscript [7]. Prior lightweight-YOLO-for-medical-imaging work the authors reference but do not benchmark against directly, despite it being a closer competitor than the generic YOLOv5s/v8s/v11s baselines chosen.
-
-6. Ordoumpozanis, K. & Papakostas, G.A. "Green AI: Assessing the carbon footprint of fine-tuning pre-trained deep learning models in medical imaging." *3ICT* (2024). Peer-reviewed; already cited [18]. Establishes carbon/energy accounting methodology in medical imaging that this manuscript's EA-CDSI should have been benchmarked against for measurement rigor (e.g., repeated-trial variance), which it lacks.
-
-7. Khan, S. et al. "Green AI techniques for reducing energy consumption in AI systems." *Array* (2025): 100652. Peer-reviewed; already cited [28]. Survey of Green AI methods; the manuscript invokes this framing but does not adopt any of its recommended measurement-reliability practices (e.g., multiple power-draw samples, hardware-isolation controls).
-
-8. De Simone, A. et al. "Optimizing Uncertainty-Aware Deep Learning for On-the-Edge Murmur Detection in Low-Resource Settings." arXiv:2511.00966 (2025). **Unreviewed preprint.** Relevant for its uncertainty-quantification approach to edge deployment suitability, an axis (confidence/calibration) entirely missing from this manuscript's EA-CDSI.
-
-9. Karagoz, G. et al. "XIMED: A Dual-Loop Evaluation Framework Integrating Predictive Model and Human-Centered Approaches for Explainable AI in Medical Imaging." *Machine Learning and Knowledge Extraction* 7(4):168 (2025). Peer-reviewed; already cited [17]. Provides a human-centered XAI evaluation protocol with disclosed rater methodology — precisely the validation structure missing from this manuscript's Table 3 Grad-CAM scores.
-
-054248
-**Reject.** On reflection, "send for review, contingent on resolution" was too hedgy — that's not a real editorial state. A paper with an unresolved undisclosed-overlap question shouldn't go to reviewers at all; sending it out treats the integrity question as separable from the science when it isn't. The correct move is to reject now, without prejudice, and invite resubmission only once the authors disclose the March 2026 preprint, cite it, and demonstrate the submission's incremental contribution stands independently of it.
-
-Three things support this beyond the disclosure problem itself:
-
-The concept-meaning task was quietly weakened from twenty candidate definitions (preprint) to four (this submission). That's not a neutral methodological choice — it removes the one part of the shared benchmark where the preprint found real signal (72.6% baseline accuracy, sharp poisoned-context degradation) and replaces it with a task that ceilings out above 90% for most models. Absent justification, this reads as re-engineering the instrument to produce a different headline rather than a principled redesign, which is a bigger problem than ordinary revisability covers.
-
-The paper's actual novel content — model-version transitions and the downstream disease-inference experiment — is real, but it doesn't need the disputed benchmark infrastructure to stand on its own. That's a sign the two papers should not coexist as currently drawn: either this is a distinct paper built around version-transition and downstream propagation (with the shared concept-benchmark material properly cited and minimized), or it's the same study double-published. The authors control which, but they haven't told us.
-
-The TeaBERT three-distractor disease-inference design is a structural choice baked into the dataset, not something reviewers can fix with a revision request — if it's inflating the 13.1% flip rate, that requires new data construction, which is a rejection-grade limitation on its own per the non-revisable/structural-dataset criterion.
-
-**Editorial Decision (revised):** Reject. The manuscript shares its core benchmark and roughly half its results with an undisclosed, same-author March 2026 medRxiv preprint, and the one task modified between the two versions was weakened in a way that removes rather than adds discriminative power — together these prevent sending the paper to review as submitted. Recommend transfer to **npj Digital Medicine**, with resubmission conditioned on explicit disclosure of and differentiation from the preprint, restoration or justification of the definition-recognition task design, and a stated rationale for the three-distractor disease-inference construction.
-
-054291
-# Editorial Report — "The VIRTUheart Framework: Robust 3D Coronary Reconstruction from Monoplane Angiography for Virtual Fractional Flow Reserve"
-
-## 1. Overall Assessment
-
-The manuscript discloses the full mathematics behind VIRTUheart's 3D coronary reconstruction from two non-simultaneous monoplane angiographic projections: Hermite cubic spline centreline interpolation, bidirectional forward/backward tracking to resolve epipolar-line/centreline near-parallelism, and single-point rigid-body registration for residual motion. This transparency is valuable against a field dominated by proprietary commercial tools (QFR, CAAS vFFR, FFRangio).
-
-However, the contribution is largely an explicit write-up and modest refinement of an already-published, already-clinically-validated tool (in use since 2013), not a new empirical result. The novel components — spline formulation, the 32° bidirectional threshold, single-point registration — are validated on one digital phantom vessel under four synthetic movements, with no patient data, no comparator method, and no uncertainty quantification.
-
-## 2. Strengths
-
-The full derivation (Section 2, Appendix A) is genuinely reproducible detail rarely published for a clinically deployed vFFR tool. Bidirectional tracking sensibly addresses a well-characterised failure mode, with Table 2 showing the forward/backward angle asymmetry motivating it. Single-point registration is computationally cheap and consistent with the 10-minute procedural constraint; Table 1 shows a credible mechanism by which omitting it inflates radial error at maximal stenosis from 1.41% to 42.30% under a 5,5,0 mm shift.
-
-## 3. Weaknesses
-
-Phantom validation uses a single vessel (60% LCX stenosis) under four discrete translations — insufficient to characterise behaviour across tortuosity, stenosis severity, or the rotational motion the authors acknowledge as unmodelled. The 32° threshold is "determined empirically" with no calibration dataset or sensitivity analysis reported. Cited clinical validation (VIRTU-1, VIRTU-Fast, COMPLETE, ORBITA) predates or is independent of this specific algorithm; none demonstrates that this newly formalised pipeline reproduces those results. No head-to-head benchmarking exists against QFR, CAAS, FFRangio, NeCA, or DeepCA, despite the SOTA section itself arguing this comparison is overdue.
-
-## 4. Editorial Decision
-
-**Reject**, with transfer recommendation. This is a well-written methods disclosure, but its novel components are validated on a single synthetic vessel with no comparator, and its clinical evidence is inherited from earlier, non-equivalent pipeline versions. I recommend **Communications Engineering** as primary transfer target, given the contribution is algorithmic/mathematical transparency rather than new patient outcomes; **npj Digital Medicine** is a secondary option if authors expand patient-level validation of this specific pipeline version.
-
-## 5. Suggested Reviewer Expertise
-
-Reviewers should have direct expertise in: epipolar geometry and multi-view 3D reconstruction from X-ray projection data; parametric spline-based curve fitting for vascular centreline modelling; interventional cardiology with hands-on angiography-derived physiology (vFFR/QFR) experience; digital phantom and in-silico validation methodology for medical imaging pipelines; and CFD-based coronary flow modelling.
-
 ## 6. State-of-the-Art Literature Review (Past 3 Years)
 
-The field has bifurcated over the past three years into explicit geometric methods and learned/implicit representations. On the deep-learning side, Wang et al.'s NeCA uses self-supervised neural implicit representation with a multiresolution hash encoder and differentiable cone-beam forward projection to reconstruct 3D coronary trees from two projections without requiring 3D ground truth or large training sets, and the related DeepCA line pursues GAN-based reconstruction from sparse views — both cited by the authors but not benchmarked against. On the clinical-computational side, large multicentre comparisons such as the QFR-versus-FFR non-inferiority trial (Andersen et al., 2024, cited by the manuscript) and continued CAAS vFFR / FFRangio clinical deployments have shifted the field's emphasis toward head-to-head diagnostic accuracy and outcome prediction rather than reconstruction transparency alone. The manuscript's contribution — disclosing the mathematics of an already fifteen-year-old tool — engages meaningfully with the epipolar-geometry literature (Çimen et al.) but does not engage empirically with the learned-representation methods it cites, leaving the central question the field is now asking — how explicit geometric methods compare quantitatively to implicit/learned ones on real, non-simultaneous monoplane data — unanswered.
+Two recent large reviews frame the field: Chen et al.'s human motion intent prediction (HMIP) survey (*npj Artificial Intelligence*, 2026) and Zhang, Sid'El Moctar, Boudaoud & Rida's 181-study review of sEMG-IMU sensor fusion (*Information Fusion*, 2026) both identify multimodal phase-aware temporal modeling as the field's active frontier, consistent with this manuscript's framing. Gao, Chen, Farina, Zhao et al.'s wearable-mobility perspective (*Nature Communications*, 2025) makes the complementary point this manuscript itself echoes: EMG-only or IMU-only sensing each face a delay-versus-noise tradeoff that multimodal fusion is meant to resolve. At the architecture level, PiMAN (*Neurocomputing*, 2025) and the DCAF-Net stroke-rehabilitation exoskeleton decoder (arXiv:2512.12184, 2025) both apply gated/attentive recurrent fusion to anticipatory pre-movement sEMG, and Wang et al.'s fuzzy multitask lower-limb intent recognizer (*IEEE Trans. Fuzzy Syst.*, 2024, already cited by the manuscript) established multi-output intent decoding as a recent trend this paper extends to turning amplitude and fall risk.
+
+Most directly, Chen, Clos, Price & Caleb-Solly's digital-twin rollator study (arXiv:2509.05116, 2025) is the closest existing system: sEMG+IMU fusion for turning-intention classification on an actual rollator, evaluated with an explicit cross-subject protocol. Against this landscape, the manuscript's genuine advance is the phase-alignment mechanism as a model-agnostic accuracy enhancer and the systematic lead-time ablation, neither of which the Nottingham study or PiMAN provide. But its complete omission of both papers is a real gap, and the absence of any cross-subject number — the one metric the closest competing paper foregrounds — leaves the manuscript's central generalizability claim untested relative to where the field already stands.
+
+---
 
 ## 7. Suggested Reviewers' Names
 
-**Epipolar/3D reconstruction geometry:** Serkan Çimen; Alejandro F. Frangi; Maysam Orouskhani.
-**Spline-based vascular modelling:** Alistair Young; Pau Medrano-Gracia.
-**Interventional cardiology / angiography-derived physiology:** William Fearon; Nils Johnson; Bon-Kwon Koo.
-**Deep-learning coronary reconstruction:** Abhirup Banerjee; Vicente Grau; Yiying Wang.
+**Technical:**
+- Imad Rida (Université de Technologie de Compiègne) — co-author, sEMG-IMU sensor-fusion review, *Information Fusion* (2026).
+- Praminda Caleb-Solly (University of Nottingham) — senior author, digital-twin rollator turning-intention system, arXiv:2509.05116 (2025); directly matches the walker-turning application.
+- Dario Farina (Imperial College London) — corresponding author, wearable-assisted-mobility perspective, *Nature Communications* (2025); leading authority on surface EMG neuromuscular decoding. Included as a senior domain anchor per the "last resort" full-professor allowance, given the centrality of his group's review to this exact sub-field.
+- Hubin Zhao (UCL) — co-corresponding author on the same *Nature Communications* (2025) piece; wearable assistive-system integration.
 
-## Further Literature
+**Clinical:**
+- Teresa Liu-Ambrose (University of British Columbia, Aging, Mobility and Cognitive Neuroscience Laboratory) — falls- and gait-intervention research in older adults (e.g., *Phys. Ther.*, 2025).
+- A second clinical reviewer with hands-on geriatric or post-stroke rollator/walker deployment experience should be sourced through the journal's rehabilitation-medicine network; I could not verify a specific matching name with sufficient confidence from the open literature to recommend one here rather than fabricate a plausible-sounding candidate.
 
-1. **Wang et al., "NeCA," Bioengineering 11(12):1227, 2024 (DOI 10.3390/bioengineering11121227).** Peer-reviewed, independent (Oxford) group. Cited by the manuscript. Self-supervised neural-implicit alternative to explicit epipolar reconstruction from two projections; directly competing paradigm, not benchmarked head-to-head against VIRTUheart.
+---
 
-2. **Wang et al., "DeepCA," WACV 2025 (IEEE Xplore; preprint arXiv:2407.14616).** Peer-reviewed conference paper, independent (Oxford) group. Cited by the manuscript. Explicitly targets non-rigid cardiac/respiratory motion between non-simultaneous projections via a Wasserstein GAN — a direct methodological contrast to this manuscript's rigid single-point registration assumption, which the authors themselves flag as a limitation.
+### Strongest counterargument to this rejection
 
-3. **Andersen et al., "Quantitative flow ratio versus fractional flow reserve," Lancet 404(10465):1835–1846, 2024.** Peer-reviewed multicentre non-inferiority RCT, independent group. Cited by the manuscript. Establishes the clinical-trial evidentiary bar (patient-level non-inferiority) that competing angiography-derived physiology tools have met; the current manuscript's specific reconstruction algorithm has no equivalent trial-level validation.
+A defender of the paper would say: the ethics line is very plausibly a boilerplate template artifact rather than a real compliance failure, the phase-alignment mechanism and lead-time ablation are legitimate, reproducible engineering contributions independent of cohort size, and eight-subject pilot cohorts are conventional for first-in-kind sensor-fusion demonstrations in this literature (including the Nottingham rollator paper itself, n=11). Under that reading, a "reject with resubmission encouraged" rather than a hard reject, contingent solely on the ethics clarification, would be defensible. I still weight the cohort/generalizability gap and missing competing citations as independently sufficient for rejection at this venue's bar, but the editorial office should not treat the ethics line as certain fraud before asking the authors directly.
 
-4. **Lashgari, Choudhury, Banerjee, "Patient-specific in silico 3D coronary model," Front. Cardiovasc. Med. 11:1398290, 2024.** Peer-reviewed review, independent (Oxford) group. Cited by the manuscript. Recent comprehensive review of the segmentation-to-CFD pipeline space; situates VIRTUheart as one of several competing frameworks rather than a uniquely transparent one.
+055918
+## 1. Overall Assessment
 
-5. **Çimen, Gooya, Grass, Frangi, "Reconstruction of coronary arteries from X-ray angiography: A review," Med. Image Anal. 32:46–68, 2016.** Peer-reviewed, independent group. Cited by the manuscript. Foundational review of epipolar-geometry reconstruction methods; the current manuscript's core mathematical apparatus is a direct descendant of this line rather than a conceptual departure from it.
+This multicenter study trains a ResNet-50+CBAM multimodal fusion model on 1289 Chinese adolescents (single 1.5T GE scanner) and validates on two independent external cohorts spanning 1.5T/3.0T and GE/Siemens, targeting continuous age and China's four legal-responsibility thresholds (12/14/16/18 years). The validation breadth exceeds most prior single-site knee-MRI literature, but center and scanner manufacturer are fully collinear, and sensitivity at the forensically critical 18-year threshold falls to 0.47 externally.
 
-6. **Kaba et al., deep-learning coronary segmentation/classification review, 2023.** Peer-reviewed, independent group. Cited by the manuscript. Relevant to the manuscript's Step 1 (2D centreline segmentation), which is treated as an automated pre-processing step but not itself validated in this paper.
+## 2. Strengths
 
-7. **Taylor et al., ORBITA hMVR microvascular resistance analysis, 2025–2026.** Peer-reviewed, **same author group** (Sheffield). Cited by the manuscript. Demonstrates downstream clinical utility of VIRTUheart-derived geometry for microvascular resistance, but does not validate the specific Hermite-spline/bidirectional-tracking reconstruction introduced in this paper — an important same-group distinction the manuscript blurs.
+The two-cohort external validation, training-set-only Youden cutoffs, and patient-level splitting represent genuinely rigorous design choices rarely seen together in this literature. Threshold selection is legally grounded in the 2020 criminal-responsibility amendment rather than arbitrary. Calibration plots, decision curve analysis, and DeLong-based subgroup testing exceed the evaluation depth of cited comparators, and the authors report rather than suppress unfavorable findings (18-year sensitivity drop, field-strength AUC gap, regression-to-mean bias).
 
-8. **Fearon et al., FFRangio (CathWorks) full-coronary-tree reconstruction, 2026.** Cited by the manuscript as an emerging competitor. Independent group. Represents the commercial full-tree benchmark against which the manuscript's single-vessel, two-view approach is explicitly *not* compared, despite the manuscript itself calling for this comparison in its Discussion.
+## 3. Weaknesses
 
-9. **Ghobrial et al., VIRTUheart real-world catheterisation laboratory feasibility, 2024.** Peer-reviewed, **same author group**. Cited by the manuscript. Demonstrates procedural-time feasibility of the broader vFFR workflow but not geometric accuracy of this specific reconstruction algorithm.
+Center and manufacturer are structurally confounded (center 2 all-GE, center 3 all-Siemens), so the claimed field-strength/vendor robustness cannot be attributed to either factor alone. No ablation isolates CBAM, multimodal fusion, or auxiliary inputs, yet the Discussion claims the model "mirrors" radiologist reasoning without attention-map evidence. The 18-year threshold—most consequential for criminal responsibility—performs worst, with no same-cohort benchmark against manual Vieth/Schmeling staging. The severe training-age imbalance (57.7% >18y vs 5.4% <12y) drives an acknowledged but uncorrected regression-to-mean bias.
 
-10. **Anonymous Scientific Reports phantom-validation study (Sheffield VIRTUheart group), 2021, "The importance of three-dimensional coronary artery reconstruction accuracy when computing vFFR," PMC8490364.** Peer-reviewed, **same author group**, **not cited in the current manuscript**. Validated an earlier epipolar-line-based reconstruction against 66 phantom datasets spanning seven stenoses and fifteen 3D-printed patient-based geometries — a substantially larger and more systematic phantom validation than the single-vessel, four-condition test presented here. Its omission is notable given its direct relevance to, and methodological precedence over, the present validation approach.
+## 4. Editorial Decision
 
-054466
-## Editorial Report — TRIM: Unlearning Transformer for Multimodal Trial Emulation (Condensed)
+**Reject**, transfer to *Communications Medicine*. The confounded design, absent ablations, and weakest performance at the highest-stakes threshold are structural flaws, not revisable in minor revision.
 
-### 1. Overall Assessment
+056486
+## Editorial Report — Manuscript 056486 (Revised)
 
-TRIM repurposes negative control outcomes (NCOs) from a passive bias-detection diagnostic into an active pruning signal: NCO-derived per-subject disagreement scores identify and prune components of a multimodal transformer propensity network, which is then refit to produce debiased propensity scores for target trial emulation (TTE) of dopaminergic therapies in PPMI. This is a genuine conceptual extension of empirical calibration (Schuemie et al.) into a structured-pruning intervention, and the ablation depth — a 54-setting hyperparameter sweep (972 runs), transformer-vs-MLP frozen-encoder comparison, held-out NCO splits — is unusually thorough for applied clinical ML. But the entire demonstration lives inside one densely-phenotyped research cohort, and the paper never checks its emulated estimates against the RCT ground truth that exists for exactly its own comparisons (levodopa vs. MAO-B inhibitors). That gap undermines the paper's central claim that pruning improves accuracy rather than merely smoothness.
+*"Agentic AI for point-of-care design of patient-specific orbital implants" (OPDA)*
 
-### 2. Strengths
+---
 
-TRIM's reframing of NCOs as an active debiasing lever, not just a post hoc correction, is methodologically novel. The robustness battery — consistent EASE reduction across 8/9 pairs and the full hyperparameter sweep — supports that the effect is not a tuning artifact. The multimodal architecture (InfoNCE alignment, masked-autoencoder imputation) is tested against an appropriately matched MLP baseline, and the frozen-transformer's cleaner few-shot transfer is a useful finding. The attention-interpretability section is unusually disciplined, tying claims to verifiable metrics rather than attention weights alone.
+### 1–4. Assessment, Strengths, Weaknesses, Decision (condensed)
 
-### 3. Weaknesses
+OPDA is a multi-agent, human-supervised system converting natural-language clinical instructions into manufacturing-ready orbital PSI meshes, coordinating EPC-Net segmentation, VLM-guided landmark registration, SSM-based orbital prediction, case-matched base generation, VLM-assisted perforation/screw-hole design, and outcome-grounded memory across a 15-centre, 168-assembly preclinical study. The engineering integration is genuine and the validation scale unusually thorough for this literature, but the central acceptability claim is undercut by the manuscript's own numbers, and reliance on undisclosed proprietary cloud APIs for safety-relevant steps raises governance concerns only partly acknowledged.
 
-No benchmarking against PD MED (Lancet, 2014), the RCT establishing levodopa's motor superiority over MAO-B inhibitors for exactly this comparison class. Validation occurs entirely in PPMI, a protocol-driven research cohort shown to diverge systematically from real-world PD populations (Beaulieu-Jones et al., 2024) — undercutting the paper's real-world screening claims. Directly comparable prior work is missing: van den Heuvel et al. (2021) already ran causal treatment-effect estimation in PPMI itself, and deep-learning-unlearning-for-causal-inference precedents (Ramachandra & Sethi, 2023) are not engaged with. Several fixed NCOs are rare binary flags with unreported event counts, raising instability concerns in the bias index. The high-bias subset disproportionately captures genetically enriched (LRRK2/GBA) participants, risking systematic down-weighting of a subgroup of increasing precision-medicine interest, unaddressed via subgroup ATEs.
+The agentic decomposition is validated, not asserted: Extended Data Table 3 shows simplified variants of all four non-deterministic modules scoring materially lower (2.23–3.08) than the full pipeline (4.03–4.34). EPC-Net segmentation is benchmarked against DentalSegmentator, Mimics, 3D U-Net, UNETR and nnU-Net with both quantitative metrics (Dice 0.93, HD95 2.62mm) and blinded clinician scoring. The demographic generalizability check (European/East-Asian/African, n=40 each, ANOVA, all P>0.1) is unusually rigorous, and model selection is systematic, benchmarking 27 candidate LLMs with multilingual adversarial querying.
 
-### 4. Editorial Decision
+The headline usability figure is internally inconsistent with the paper's own acceptance criterion: mean score 3.88/5 across 168 assemblies falls below the ≥4/5 threshold defined as "first-pass acceptable," yet the Discussion calls the designs "broadly usable." Two different V1.0 baselines (70.8% manufacturability vs. 55% expert-rated acceptance) are used inconsistently, with the memory-adaptation headline built on the lower, more dramatic figure. The fabrication-feasibility claim rests on n=3 cases via one partner, and the study is preclinical throughout, with no intraoperative or outcome data — appropriately scoped in the Discussion but understated in the Abstract. Literature engagement omits directly comparable cranial-implant deep-learning work from a co-author's own group.
 
-Reject, with recommendation to transfer to *npj Digital Medicine* (alternative: *npj Parkinson's Disease*). The pruning mechanism is a real contribution, but validating clinical-plausibility claims requires either RCT benchmarking or a second, more representative RWD source — not patchable in a short revision. Missing engagement with van den Heuvel et al. and the deep-causal-unlearning literature also needs resolution before novelty can be properly assessed.
+**Decision: Send for Review**, contingent on resolving the integrity alert above and requiring reviewers to adjudicate the sub-threshold usability claim, the divergent acceptance baselines, the data-governance question, and the AAAI-26 overlap. None of these is a non-revisable structural flaw.
 
 ---
 
 ### 5. Suggested Reviewer Expertise
 
-Reviewers should cover: (1) deep-learning-based causal inference and treatment-effect estimation on multimodal or EHR-derived data, specifically prior work combining representation learning with propensity modeling; (2) negative-control methodology and empirical calibration for residual confounding, including its assumptions and failure modes; (3) neural network pruning / machine unlearning as applied to tabular or structured clinical models, distinct from LLM-unlearning contexts; (4) movement-disorder clinical epidemiology, specifically real-world and observational treatment-effect studies in Parkinson's disease and familiarity with PPMI's eligibility structure and MDS-UPDRS/MoCA measurement properties; and (5) target trial emulation methodology and its validation standards (benchmarking emulated estimates against RCTs).
+Multi-agent LLM/VLM orchestration for tool-use and 3D geometric reasoning pipelines; statistical shape modelling and point-cloud/mesh registration for craniofacial anatomy; medical image segmentation benchmarking methodology (nnU-Net-class comparative validation); data-governance and regulatory compliance for cloud-hosted foundation models in clinical deployment; and oral/craniomaxillofacial trauma surgery with hands-on orbital PSI design and fixation experience.
 
 ### 6. State-of-the-Art Literature Review (Past 3 Years)
 
-The field has moved in two directions relevant here. First, deep-learning causal inference on structured/multimodal clinical data has matured beyond single-modality EHR models: Targeted-BEHRT (Rao et al., 2022) tested deep causal EHR models against an RCT-established null association; DoubleMLdeep (Klaassen et al., 2024) and related work from the Feuerriegel group (Frauen, Melnychuk) extend doubly-robust/representation-based causal estimation explicitly to multimodal settings, directly overlapping TRIM's stated contribution of "unified multimodal RWD analysis." Second, target trial emulation itself has been formalizing its validation standards: the TARGET reporting guideline (JAMA, September 2025) and large-scale RCT-replication efforts (Wang et al., JAMA 2023, emulating 32 trials) have pushed the field toward mandatory benchmarking of emulated estimates against randomized ground truth wherever it exists — a standard TRIM's own comparisons (levodopa vs. MAO-B inhibitors) could meet via PD MED but do not attempt. Within PD specifically, van den Heuvel et al. (2021) already applied classical causal machine learning (MSM/g-formula) to PPMI treatment-timing questions, and Beaulieu-Jones et al. (2024) established that PPMI-like research cohorts diverge systematically from real-world PD populations in treatment initiation timing and disease trajectory — a finding that directly bears on TRIM's generalizability claims and is not engaged with. TRIM advances the field methodologically (pruning-as-debiasing is new) but is positioned against a narrower slice of prior art (empirical calibration, attention-interpretability critique) than the literature actually contains, and it inherits rather than addresses the RWD-representativeness problem the field has just begun explicitly flagging.
+The closest direct comparator is Reinhard et al. (*Nature Communications*, 2024), which automated data-driven design and 3D printing of custom ocular prostheses — a single-task, non-conversational pipeline the manuscript cites but does not sharply differentiate from beyond "orbital implant vs. prosthesis." Xu et al. (*Medical Image Analysis*, 2025), also cited, used a prior adversarial generative network for automatic orbital blowout-fracture reconstruction, but without clinician-in-the-loop revision or manufacturing handoff. The sibling cranial-implant literature descending from the MICCAI AutoImplant challenges (Li et al., *IEEE TMI* 2021; Memon, Shi, Egger & **Chen**, *Med Biol Eng Comput* 2025 — the last from a co-author's own lab) established deep-learning shape-completion baselines (Dice ~0.91, HD95 ~1.5mm) for a closely related bony-defect problem and is conspicuously absent from this manuscript's framing. Broader 2025–2026 "agentic medical AI" work (Ferber et al., Ghareeb et al., both *Nature* 2026, both cited) remains largely text- or decision-support-oriented; OPDA's claim to be first to execute inspectable operations directly on 3D anatomical meshes is plausible relative to that literature, but the paper would be considerably strengthened by directly benchmarking against AutoImplant-lineage cranial methods rather than relying on the orbital sub-domain alone to establish novelty.
 
-### 7. Suggested Reviewer Names
+### 7. Suggested Reviewers' Names
 
-**Technical / causal-ML (70%):**
-Jesse H. Krijthe (Delft University of Technology — co-author of the directly comparable PPMI causal-treatment-effect study using IPTW/g-formula); Dennis Frauen (LMU Munich — deep learning for treatment-effect estimation under confounding); Shishir Rao (University of Oxford — Targeted-BEHRT, deep causal inference on longitudinal EHR with negative-control validation); Sven Klaassen (Universität Hamburg — DoubleMLdeep, multimodal causal effect estimation).
+*Multi-agent LLM/VLM orchestration:* Yubin Kim, Chanwoo Park, Marzyeh Ghassemi, Pranav Rajpurkar
+*Statistical shape modelling / craniofacial registration:* Jan Egger, Hannes Ulrich, Franca Wagner, Mauricio Reyes
+*Segmentation benchmarking:* Fabian Isensee, M. Jorge Cardoso, Klaus Maier-Hein
+*Data governance / regulatory science for clinical foundation models:* Karim Lekadir, Judy Wawira Gichoya, Roxana Daneshjou
+*Craniomaxillofacial / orbital trauma surgery:* Alfred G. Becking, Ruud Schreurs, Constantinus Politis
 
-**Clinical / movement disorders (30%):**
-Lieneke van den Heuvel (Radboud University Medical Center — PPMI-based observational causal analysis of PD treatment timing); Brett K. Beaulieu-Jones (Harvard Medical School / Beth Israel Deaconess — real-world vs. research-cohort divergence in PD progression).
+---
+
+### Further Literature (Past 3 Years, Similar Scope)
+
+1. **Reinhard, J. et al.** Automatic data-driven design and 3D printing of custom ocular prostheses. *Nature Communications* 15, 1360 (2024). — *Cited by manuscript (ref. 10).* Closest single-task comparator: fully automated, data-driven design-to-print pipeline for a related periorbital prosthetic device. Not conversational/agentic and has no clinician-revision loop; manuscript should more explicitly state what OPDA's multi-agent architecture adds beyond this precedent rather than treating it as a generic prior citation.
+
+2. **Xu, J. et al.** Intelligent surgical planning for automatic reconstruction of orbital blowout fracture using a prior adversarial generative network. *Medical Image Analysis* 99, 103332 (2025). — *Cited (ref. 8).* Directly competing orbital-fracture reconstruction method (GAN-based) on the same anatomical target. Automated but single-shot, non-agentic, with no manufacturing handoff or expert-in-the-loop revision — the natural head-to-head baseline reviewers should ask OPDA to be benchmarked against quantitatively, not just narratively distinguished.
+
+3. **Vanslambrouck, P. et al.** Virtual reconstruction of orbital defects using Gaussian process morphable models. *International Journal of Computer Assisted Radiology and Surgery* 19, 1909–1917 (2024). — *Cited (ref. 9); author overlap with Van Dessel/Willaert/Sun.* This is the authors' own prior SSM method, retrained here as OPDA's Mesh Predictor backbone. Incremental relationship (retraining on a larger, 5,850-mesh cohort) is disclosed but not quantitatively separated from the new agentic contribution — reviewers should request an ablation isolating gains attributable to the larger SSM cohort versus the new agentic wrapper.
+
+4. **Memon, A. R., Shi, H., Memon, T. R., Egger, J. & Chen, X.** Deep learning-based automatic cranial implant design through direct defect shape prediction and its comparison study. *Medical & Biological Engineering & Computing* 63, 2815–2826 (2025). DOI: 10.1007/s11517-025-03363-5. — **Uncited; author overlap (Xiaojun Chen, co-author).** Directly comparable automated implant-design pipeline for a sibling bony defect (cranial vs. orbital), benchmarked with Dice/HD95 against AutoImplant baselines. Its absence from the reference list, despite shared authorship, is a literature-engagement gap that should be corrected.
+
+5. **Gao, Y., Li, F., Van Dessel, J., [...] & Willaert, R.** Can Large Language Models Grasp 3D Medical Anatomy Shapes? (Student Abstract). *Proceedings of the AAAI Conference on Artificial Intelligence* (March 2026). — **Uncited; author overlap (same corresponding-author group). Unreviewed/limited-review venue (student abstract track).** Directly anticipates the manuscript's VLM-3D-anatomy-reasoning premise underlying the Spatial Aligner. See Editorial Integrity Alert — must be disclosed and differentiated.
+
+6. **Liu, Y. et al.** Benchmarking large language model-based agent systems for clinical decision tasks. *npj Digital Medicine* 9, art. 02443-6 (2026). DOI: 10.1038/s41746-026-02443-6. — *Uncited; no author overlap.* Methodologically parallel: systematically benchmarks agentic AI systems (planner–executor–verifier architectures) against baseline LLMs across clinical tasks, finding only modest accuracy gains at significant resource cost. Directly relevant counterpoint to OPDA's own 27-model MCDM benchmarking exercise (Extended Data Table 1) and worth citing to temper claims of straightforward agentic superiority.
+
+7. **FUAS-Agents: Autonomous Multi-Modal LLM Agents for Treatment Planning in Focused Ultrasound Ablation Surgery.** arXiv:2505.21418 (2025/2026). — **Uncited; preprint, unreviewed.** Closest scope match outside orbital surgery: a multimodal, multi-agent LLM system for procedural treatment planning validated on a multicentre dataset (>3,000 cases across three institutions). Useful comparator for OPDA's claim of novelty in connecting agentic reasoning to procedural/device planning, though the comparison should be treated cautiously given non-peer-reviewed status.
+
+8. **Ferber, D. et al.** Towards autonomous medical artificial intelligence agents. *Nature* (2026). — *Cited (ref. 37).* General framework/positioning paper for medical agentic AI; OPDA's introduction leans on this citation but could more precisely locate itself within Ferber et al.'s proposed autonomy taxonomy (the manuscript explicitly self-classifies as "human-supervised," not autonomous, which should be cross-referenced to this framework's terminology).
+
+9. **Ghareeb, A. E. et al.** A multi-agent system for automating scientific discovery. *Nature* (2026). — *Cited (ref. 38).* General multi-agent scientific-reasoning system, not device-design-specific; useful for the architectural comparison (specialist sub-agents with cross-agent reflection and judge integration) that OPDA's PSI Base Generator MDT-inspired matching module also uses, but the parallel is not drawn out in the manuscript.
+
+10. **Consorti, G., Monarchi, G. & Catarzi, L.** Presurgical virtual planning and intraoperative navigation with 3D-preformed mesh: a new protocol for primary orbital fracture reconstruction. *Life* 14, 482 (2024). DOI: 10.3390/life14040482. — **Uncited; no author overlap.** Non-AI, mirroring-based manual/semi-manual CAD workflow for orbital fracture PSI planning with intraoperative navigation. Useful as the "conventional workflow" baseline against which OPDA's time/cost claims are implicitly but not explicitly benchmarked — a concrete published comparator rather than the internal UZ Leuven 5-hour estimate currently used.
+
+056298
+## Editorial Report: Koulaouzidis et al., "Agentic trial emulation requires outcome-calibrated validation before informing clinical trial design" (Matters Arising)
+
+### 1. Overall Assessment
+This Matters Arising challenges EmulatRx (Li et al., *Nat Commun* 2026) on a specific, verifiable point: its nesiritide showcase reports HR 0.59 (95% CI 0.46–0.76), a significant benefit, while the ASCEND-HF trial it emulates found HR 0.93 (95% CI 0.90–1.08), a null result its own authors deemed non-recommendable. I confirmed both figures against primary sources; the letter's framing is accurate. The broader argument — that a single-run agentic pipeline should not be treated as validated causal-evidence generation absent RCT calibration — is sound and appropriately scoped for the format.
+
+### 2. Strengths
+The discordance argument is independently verifiable and clinically consequential: it converts a randomized null into an observational "significant benefit," exactly the failure mode that would mislead trial designers. The critique of the Statistician-agent's cross-LLM reproducibility claim is sharp and correct — identical HRs across four LLM backbones reflect deterministic downstream statistical libraries, not convergent causal reasoning, a reading the original paper's own methods text supports. Citations to Hernán/Robins, Austin, Cole/Hernán, and VanderWeele/Ding are accurate and appropriately deployed.
+
+### 3. Weaknesses
+The letter never engages EmulatRx's clone-censor-weight/IPCW machinery for immortal-time bias, leaving it open to a strawman objection on censoring. More seriously, it misses a medRxiv preprint of the same system under a different name ("TrialGenie," 2025), whose identical nesiritide showcase reports HR 0.73 (95% CI 0.63–0.84) on a smaller, differently-balanced cohort — direct evidence of within-pipeline instability that would have strengthened the reproducibility argument substantially. Page 3 of the submitted PDF is missing, so roughly half the letter's argument (cohort construction, safety signals, reproducibility) could not be fully verified.
+
+### 4. Editorial Decision
+Send for review, contingent on the complete manuscript and engagement with the TrialGenie discordance, alongside a solicited formal Reply from Li et al. The core claim clears the bar for a Matters Arising; the gaps are fixable pre-review, not disqualifying.
+
+---
+
+### 5. Suggested Reviewer Expertise
+
+Reviewers should include someone with hands-on expertise in target trial emulation methodology specifically — estimand specification, clone-censor-weight/IPCW implementation, and calibration of observational estimates against RCT benchmarks (not generic "causal inference" background, since the dispute turns on implementation details). A second technical reviewer should have specific experience with LLM-agent pipelines applied to structured EHR data (SQL/OMOP cohort construction, concept mapping error taxonomies), since the letter's cohort-construction critique (page 3, unverified by me) likely turns on this. A third should have expertise in real-world evidence reproducibility and regulatory-grade RWE standards (e.g., FDA/EMA real-world evidence frameworks), to adjudicate whether "workflow-support tool" versus "validated causal-evidence system" is the correct regulatory-relevant framing. On the clinical side, a heart-failure trialist familiar with ASCEND-HF and nesiritide's post-trial reputation would confirm the letter's clinical framing is not overstated.
+
+### 6. State-of-the-Art Literature Review (Past 3 Years)
+
+The specific problem this letter raises — calibrating agentic or ML-based trial emulation against RCT benchmarks before trusting the output — already has an emerging methodological answer that neither Li et al. nor Koulaouzidis et al. engage with. TrialCalibre (Habibdoust & Song, ICML 2025) automates exactly the "Benchmark, Expand, Calibrate" workflow the letter calls for in the abstract: compare an observational emulation against an existing RCT, then use the measured divergence to calibrate a second emulation for a related indication. This is precisely the "explicit calibration against the randomized-trial estimand" the letter demands in its abstract, and its absence from both papers is notable. Separately, Orcutt et al. (*Nat Med* 2025) evaluated generalizability of ML-based oncology trial emulations against real trial results at scale, and is the closest existing empirical precedent for systematically checking RWE-pipeline output against RCT ground truth — a natural citation the letter omits. The broader field of agentic clinical-trial systems (AUTOCT, ClinicalAgent, and the TrialGenie predecessor itself) has moved fast on architecture and slower on validation; a 2025 survey (arXiv 2509.00987) already documents TrialGenie/EmulatRx's agent design without flagging the preprint-to-publication discordance found here, suggesting this gap has gone unnoticed community-wide, not just by these two papers. The letter's contribution, once completed, would be one of the first post-publication challenges specifically targeting result stability and RCT-discordance in this class of system — that is a real gap in the literature worth filling, provided the missing arguments are as rigorous as the two I could verify.
+
+### 7. Suggested Reviewers' Names
+
+**Target trial emulation / calibration methodology:** Issa Dahabreh (Harvard T.H. Chan, RCT-duplicate and target trial emulation methods); Jessica Young (Harvard, causal inference and TTE); Xavier Orcutt is himself a candidate given direct authorship of the RCT-vs-RWE generalizability paper cited above.
+
+**LLM-agent pipelines on EHR data:** Suraj Rajendran should be recused (co-author on the target paper's cited prior work); consider Monica Agrawal (Duke, clinical NLP and LLM agents on structured/unstructured EHR data) or Zifeng Wang (postdoc-level, clinical trial LLM agents, AUTOCT-adjacent work).
+
+**RWE reproducibility / regulatory standards:** Shirley Wang (Brigham and Women's/Harvard, RWE reproducibility — she is a co-author on the Wang/Sreedhara/Schneeweiss paper both manuscripts cite, and lead author on the RCT-DUPLICATE and TrialCalibre-adjacent standardization work below, making her well-positioned but requiring a conflict check).
+
+**Clinical heart failure / trial context:** G. Michael Felker (Duke, heart failure trialist, ASCEND-HF co-investigator — conflict check required given trial involvement) or Justin Ezekowitz (University of Alberta, acute heart failure trials, also ASCEND-HF-adjacent — same caveat).
 
 ---
 
 ### Further Literature
 
-1. **PD MED Collaborative Group et al., "Long-term effectiveness of dopamine agonists and monoamine oxidase B inhibitors compared with levodopa as initial treatment for Parkinson's disease (PD MED)."** *Lancet* 384, 1196–1205 (2014). DOI: 10.1016/S0140-6736(14)60683-8. Not cited. The RCT ground truth for exactly the C/L-DOPA vs. rasagiline/selegiline comparisons TRIM emulates; levodopa showed somewhat better motor control than MAO-B inhibitors. TRIM's ATEs should be checked for directional concordance against this trial rather than judged only by internal calibration metrics.
+1. **Wang SV, Schneeweiss S; RCT-DUPLICATE Initiative.** "Emulation of Randomized Clinical Trials With Nonrandomized Database Analyses: Results of 32 Clinical Trials." *JAMA*. 2023;329(16):1376–1385. doi:10.1001/jama.2023.4221. Not cited by manuscript. Independent of both author groups. This is the systematic, 32-trial version of exactly the single-showcase discordance problem the letter raises, and the strongest available empirical anchor for its "outcome-calibrated validation" demand — it should be cited, not left implicit.
 
-2. **Van den Heuvel, L. et al., "Estimating the Effect of Early Treatment Initiation in Parkinson's Disease Using Observational Data."** *Movement Disorders* 36, 407–414 (2021). DOI: 10.1002/mds.28339. Not cited. The most directly comparable prior art: causal treatment-effect estimation (MSM, IPTW, g-formula) performed in PPMI itself. Independent literature; establishes a methodological and empirical baseline TRIM should be benchmarked against, not merely a citation gap.
+2. **Orcutt X, Chen K, Mamtani R, Long Q, Parikh RB.** "Evaluating generalizability of oncology trial results to real-world patients using machine learning-based trial emulations." *Nat Med*. 2025;31(2):457–465. doi:10.1038/s41591-024-03352-5. Not cited by manuscript (cited by the target EmulatRx paper as ref. 4). Independent. Stratifies ML-based trial emulation against 11 landmark RCTs by prognostic risk, quantifying exactly where real-world benefit undershoots RCT benefit — a working example of the stratified, RCT-anchored validation Table 1 calls "needed" but does not itself demonstrate.
 
-3. **Beaulieu-Jones, B. K. et al., "Disease progression strikingly differs in research and real-world Parkinson's populations."** *npj Parkinson's Disease* 10, 58 (2024). DOI: 10.1038/s41531-024-00667-5. Not cited. Independent literature. Directly undermines TRIM's implicit generalizability claim by showing PPMI-like research cohorts diverge systematically from real-world PD populations in treatment timing and progression — the single-cohort validation weakness identified in this review.
+3. **Habibdoust A, Song X.** "TrialCalibre: A Fully Automated Causal Engine for RCT Benchmarking and Observational Trial Calibration." ICML 2025; arXiv:2604.25832. Peer-reviewed conference proceeding. Not cited by manuscript. Independent. Automates the "Benchmark, Expand, Calibrate" workflow the letter's own abstract demands — the closest thing in the literature to a ready-made answer to its central ask, and its omission is the letter's single biggest missed citation on the solutions side.
 
-4. **Rao, S. et al., "Targeted-BEHRT: Deep learning for observational causal inference on longitudinal electronic health records."** *IEEE Transactions on Neural Networks and Learning Systems* (2022). arXiv:2202.03487. Preprint/arXiv version flagged as such where journal version unconfirmed; treat with appropriate caution. Not cited. Independent literature. Closely overlapping goal (deep causal inference validated via a known-null RCT association) using a different mechanism (representation learning, not NCO-guided pruning) — a natural comparator for TRIM's novelty claims.
+4. **Li H, Pan W, Rajendran S, Zang C, Wang F.** "TrialGenie: Empowering Clinical Trial Design with Agentic Intelligence and Real World Data." medRxiv 2025.04.17.25326033 (posted April 17, 2025). **Unreviewed preprint — flag explicitly.** Not cited by manuscript. Shares all listed authors with the target EmulatRx paper; independent of Koulaouzidis et al. The direct predecessor system, identical architecture, same NCT00475852 nesiritide case study, but reports HR 0.73 (95% CI 0.63–0.84, PSM, n=6,971) versus the published HR 0.59 (95% CI 0.46–0.76, IPTW, n=13,942) — the single most important omission in the letter's reproducibility argument.
 
-5. **Klaassen, S., Teichert-Kluge, J., Bach, P., Chernozhukov, V., Spindler, M. & Vijaykumar, S., "DoubleMLdeep: Estimation of causal effects with multimodal data."** arXiv:2402.01785 (2024). **Preprint — unreviewed, flagged accordingly.** Not cited. Independent literature. Directly overlaps TRIM's "unified multimodal RWD" framing via a doubly-robust deep-learning estimator rather than pruning; should be discussed to sharpen what pruning-based unlearning adds over doubly-robust multimodal estimation.
+5. **Rajendran S, Xu Z, Pan W, Zang C, Siempos I, Torres L, Xu J, Bian J, Schenck EJ, Wang F.** "Multicenter target trial emulation to evaluate corticosteroids for sepsis stratified by predicted organ dysfunction trajectory." *Nat Commun*. 2025;16:4450. doi:10.1038/s41467-025-59643-z. Not cited by manuscript (cited by the target EmulatRx paper as ref. 8 — a self-citation; four of ten authors overlap with the EmulatRx author list). A non-agentic, human-run TTE from the same lab; useful to check whether this group's manual TTE work independently calibrates against RCT benchmarks (e.g., ADRENAL, APROCCHSS) in a way EmulatRx's automated showcase did not.
 
-6. **Ramachandra, V. & Sethi, M., "Machine Unlearning for Causal Inference."** arXiv:2308.13559 (2023). **Preprint — unreviewed, flagged accordingly.** Not cited. Independent literature. Introduces machine unlearning applied to propensity-score models for causal inference — the same combination of concepts (unlearning + propensity modeling) that TRIM builds on; earliest identified prior use of this pairing and should anchor TRIM's novelty framing.
+6. **Feuerriegel S, Frauen D, Melnychuk V, Schweisthal J, Hess K, Curth A, Bauer S, Kilbertus N, Kohane IS, van der Schaar M.** "Causal machine learning for predicting treatment outcomes." *Nat Med*. 2024;30(4):958–968. doi:10.1038/s41591-024-02902-1. Not cited by manuscript (cited by the target EmulatRx paper as ref. 5). Independent. A methods-level Perspective explicitly warning against biased or incorrect causal-ML predictions absent careful validation — independent authority the letter could cite instead of relying solely on older Hernán-era TTE literature.
 
-7. **Wang, S. V., Schneeweiss, S., Franklin, J. M. et al., "Emulation of randomized clinical trials with nonrandomized database analyses: results of 32 clinical trials."** *JAMA* 329, 1376–1385 (2023). DOI: 10.1001/jama.2023.4221. Not cited. Independent literature. Establishes the field-standard practice of systematically benchmarking TTE emulations against RCT results; directly supports the recommendation that TRIM validate its ATEs against PD MED rather than relying solely on internal EASE/ECE diagnostics.
+7. **Htoo PT, Wang SV, Schneeweiss S, et al.** "Post hoc Population Standardization of Trial Emulation Studies in Claims Data: An RCT-DUPLICATE Analysis." *Clin Pharmacol Ther*. 2026. doi:10.1002/cpt.70241. Not cited by manuscript. Independent. The most current (2026, contemporaneous with both papers under discussion) methodological advance on post hoc calibration of trial-emulation cohorts against RCT populations — directly responsive to the letter's calibration demand and worth citing as evidence the field already has active tooling for this problem.
 
-8. **Schuemie, M. J., Hripcsak, G., Ryan, P. B., Madigan, D. & Suchard, M. A., "Empirical confidence interval calibration for population-level effect estimation studies in observational healthcare data."** *PNAS* 115, 2571–2577 (2018). DOI: 10.1073/pnas.1708282114. **Cited (ref. 6)** by the manuscript. Same conceptual lineage, independent group. This is the empirical-calibration/EASE foundation TRIM builds on; correctly cited, included here to note that TRIM's contribution is best read as an extension of this passive-diagnostic framework into an active pruning mechanism, a distinction the manuscript could state more explicitly.
+056516
+## EDITORIAL INTEGRITY ALERT (to Handling Editor)
 
-9. **Frauen, D. et al., "LLM-driven treatment effect estimation under inference-time text confounding."** *NeurIPS* (2025). Not cited. Independent literature. Represents the same research group's (Feuerriegel lab) broader program on deep learning for confounded treatment-effect estimation across modalities; useful for situating TRIM against the most active current group working on this exact intersection of deep learning and causal inference.
-
-10. **Tong, J., Hu, J., Hripcsak, G., Ning, Y. & Chen, Y., "Federated target trial emulation using distributed observational data for treatment effect estimation."** *npj Digital Medicine* (2025). Not cited. **Same-author-group prior work** (senior author Yong Chen). Demonstrates the group's active TTE research program in a different direction (federated/distributed data rather than multimodal debiasing); useful for reviewers assessing incremental contribution relative to the group's own recent output, though not a competing or duplicative submission.
-
-054793
-# Editorial Report: "MetaHarmonizer: robust biomedical metadata harmonization and a contamination control for inflated LLM performance on public benchmarks"
-
-## EDITORIAL INTEGRITY ALERT
-
-Independent search confirms this manuscript is textually identical, section for section, figure for figure, and reference for reference, to a bioRxiv preprint by the same author group (DOI 10.64898/2026.06.13.732088), publicly posted June 17, 2026, under a CC-BY license. The submitted manuscript does not disclose this preprint anywhere in its Data Availability, Code Availability, or cover materials as provided. Prior preprinting is permitted at this journal, but non-disclosure of an existing, identical, publicly indexed preprint at submission is a transparency lapse that must be resolved with the corresponding author before the manuscript proceeds to review. This is flagged as a process item, not a data-fabrication concern; the preprint and submission appear fully consistent with each other.
-
-## 1. Overall Assessment
-
-The manuscript's central claim is two-fold: LLM-only performance on public GDC/EFO benchmarks largely reflects pretraining memorization rather than transferable matching capability, and MetaHarmonizer offers a deterministic, competitive alternative. The contamination finding is the real contribution: the E3 target-rename collapse (LLM-only Top-1 losses of 12–24 pp) is clean and mechanistically interpretable, replicated across two model families. The tool itself, built from RapidFuzz, SapBERT, and FAISS in a cascade, is competent but recombinant rather than methodologically novel. Primary concerns are the undisclosed preprint noted above and whether an infrastructure paper without clinical evaluation clears this journal's bar.
-
-## 2. Strengths
-
-The contamination battery is the strongest element. Combining source paraphrase (E2), target renaming (E3), and memorization probes (P1–P3) isolates memorization more rigorously than existing n-gram-overlap methods; 80–100% verbatim GDC-identifier recovery in three of five models, replicated across Anthropic and Google families, has implications beyond this tool.
-
-Statistical discipline is unusually careful: aggregation choices are justified rather than asserted, Holm-corrected tests span 28 comparisons, and calibrated-confidence AUCs of 0.73–0.94 support the triage claim rather than sitting as an isolated metric.
-
-## 3. Weaknesses
-
-SchemaMapper's retrieval is brittle under exactly the condition it targets: under synonym-swap paraphrase, alias-augmented SchemaMapper lost 22–30 pp Top-1, roughly three times LLM-only's loss, undercutting the practical case more than the Discussion acknowledges.
-
-The benchmark is single-domain (CPTAC oncology, n = 165, 10 studies) despite the "domain-agnostic" framing, and the alias prompt was itself oncology-tuned. Two of nine LLMs failed to produce a usable alias dictionary and a third needed hallucination filtering, undermining the "training-free" pitch. LLM-only baselines used simple zero-shot prompting without retrieval augmentation, likely understating achievable performance.
-
-## 4. Editorial Decision
-
-**Send for Review, contingent on resolving the preprint-disclosure item.** The contamination methodology is a genuine contribution not undermined by the flaws above. Reviewers should adjudicate benchmark generalizability, paraphrase-fragility severity, and whether the tool stands independently of the contamination finding.
-
-## 5. Suggested Reviewer Expertise
-
-Reviewers should include expertise in embedding-based and ensemble schema matching for structured biomedical data (evaluation design, bipartite/graph reranking, benchmark construction such as Valentine-style protocols); biomedical ontology grounding and terminology services (EFO, NCIt, UMLS-trained encoders such as SapBERT, synonym/alias expansion pipelines); LLM benchmark contamination and memorization detection methodology (perturbation-based decontamination, membership-inference-adjacent probing, statistical treatment of pretraining leakage); and cancer genomics data curation and controlled-vocabulary governance (GDC/CPTAC/TCGA data dictionaries, FAIR metadata infrastructure for multi-omics repositories). A reviewer with applied statistics background in paired nonparametric testing and multiple-comparison correction for benchmark evaluation would strengthen adjudication of the paper's extensive statistical apparatus.
-
-## 6. State-of-the-Art Literature Review (Past 3 Years)
-
-The relevant landscape has moved quickly in 2025–2026. Magneto (Liu et al., arXiv 2412.08194), the manuscript's primary comparator, combines small-model retrieval with LLM reranking on the same CPTAC/GDC benchmark and remains competitive on MRR with SchemaMapper's best alias configuration. A directly relevant omission is BDIViz (Wu et al., IEEE VIS 2025 / arXiv 2507.16117) and its recent extension BDIViz-in-Action (arXiv 2604.10763), from the same VIDA-NYU group behind Magneto: an interactive visual-analytics system for the identical GDC/PDC schema-matching task that already implements ensemble matching with LLM-based validation and heatmap-driven human-in-the-loop triage, the same use case MetaHarmonizer's confidence-calibration section claims as a contribution. This should be engaged with directly, not merely benchmarked against Magneto's automated variants. A second concurrent, undisclosed-by-citation work is MetaMuse (bioRxiv, April 2026), a multi-agent LLM framework that, like OntologyMapper, uses SapBERT for terminology normalization, applied to GEO rather than GDC metadata; its existence suggests SapBERT-anchored normalization is converging as a field default rather than a distinguishing design choice. On the contamination side, the manuscript's E2/E3/E4 battery parallels, without citing, established perturbation-based contamination-detection techniques such as slot-masking probes (the "TS-Guessing" paradigm) and membership-inference-style benchmark auditing; situating the contribution against this literature, rather than only against Magar & Schwartz (2022) and the DCR framework (Xu et al., 2025), would better establish what the schema-matching-specific application adds. On balance, MetaHarmonizer's tool architecture replicates rather than surpasses the current frontier (Magneto, BDIViz, text2term), while its contamination-control protocol is the paper's one clearly novel contribution to the field.
-
-## Suggested Reviewers
-
-For schema-matching and entity-resolution methodology: Juliana Freire (NYU, VIDA Center; senior author on Magneto and BDIViz), Renée J. Miller (Northeastern University, schema-matching and data-integration foundations), Erhard Rahm (Leipzig University, COMA schema-matching framework).
-
-For biomedical ontology grounding and terminology services: Mark A. Musen (Stanford, BioPortal/ontology infrastructure), Rafael S. Gonçalves (Stanford, text2term), Olivier Bodenreider (National Library of Medicine, UMLS and biomedical terminology mapping).
-
-For LLM contamination and benchmark evaluation methodology: Roy Schwartz (Hebrew University of Jerusalem, data-contamination detection), Yanai Elazar (Allen Institute for AI, training-data leakage and memorization analysis).
-
-For cancer genomics data curation and controlled-vocabulary governance: Robert L. Grossman (University of Chicago, Genomic Data Commons architecture), a GDC/CPTAC data-curation lead identifiable through the NCI Center for Cancer Genomics.
-
-## Further Literature
-
-1. **Golchin, S. & Surdeanu, M.** "Time Travel in LLMs: Tracing Data Contamination in Large Language Models." *Proceedings of the Twelfth International Conference on Learning Representations (ICLR)*, 2024. arXiv:2308.08493, doi:10.48550/arXiv.2308.08493. Peer-reviewed (ICLR 2024). **Uncited** by the manuscript. No author overlap (University of Arizona). This is the direct general-domain precedent the authors should have engaged with: its "guided instruction" completion-probing method, where a model is prompted to complete a partially masked reference instance and scored on exact/near-exact match, is methodologically identical in structure to the manuscript's P2/P3 memorization probes, just applied to GDC schema fields instead of NLP benchmark partitions. The manuscript presents its probe battery as a novel task-agnostic contribution without acknowledging this lineage.
-
-2. **Wu, E., Koutras, C., Silva, C. T. & Freire, J.** "BDIViz: An Interactive Visualization System for Biomedical Schema Matching with LLM-Powered Validation." *IEEE Transactions on Visualization and Computer Graphics* (IEEE VIS 2025). arXiv:2507.16117. Peer-reviewed. **Uncited.** No author overlap with the MetaHarmonizer team, though it shares a co-author (Freire) with the manuscript's primary comparator, Magneto. Directly overlapping scope: an ensemble schema matcher with LLM-based validation and heatmap-driven human-in-the-loop triage, evaluated on the same GDC/PDC/CPTAC harmonization task. This is the closest existing system to the "calibrated confidence enables human-in-the-loop triage" claim made for SchemaMapper and should be a required comparator, not an omission.
-
-3. **Wu, E., Koutras, C., Silva, C. T. & Freire, J.** "BDIViz in Action: Interactive Curation and Benchmarking for Schema Matching Methods." arXiv:2604.10763, 2026. Preprint, not yet peer-reviewed. **Uncited.** No author overlap. Extends BDIViz into a benchmarking harness that uses human-validated curation as evolving ground truth for schema-matcher comparison, a methodological alternative to the manuscript's static ground-truth benchmarking convention that bears directly on its Recall@GT and per-query metric discussion.
-
-4. **"MetaMuse: A Multi-Agent AI System for Biomedical Metadata Curation and Harmonization."** bioRxiv, posted April 2026 (2026.04.12.718044v2), doi:10.1101/2026.04.12.718044. Preprint, not yet peer-reviewed; full author list not resolvable from available metadata, so overlap with the manuscript's author group cannot be confirmed and should be checked directly. **Uncited.** A concurrent, closely parallel design: a multi-agent LLM curation pipeline that, like OntologyMapper, uses SapBERT for terminology normalization, applied to GEO rather than GDC/EFO metadata. Its independent convergence on a SapBERT-anchored normalizer weakens the manuscript's implicit framing of this component choice as distinctive.
-
-5. **Liu, Y., Pena, E., Santos, A., Wu, E. & Freire, J.** "Magneto: Combining Small and Large Language Models for Schema Matching." arXiv:2412.08194, 2025. Preprint (not yet peer-reviewed in a venue confirmable from available metadata). **Cited** (ref. 9) and used as the primary SchemaMapper comparator. No author overlap. Included here because its fine-tuned LLM-reranker variant remains statistically indistinguishable from SchemaMapper+Opus-4.5-alias on MRR (Table 1), meaning the manuscript's central accuracy claim rests on beating only Magneto's weaker bipartite variants, not its strongest configuration.
-
-6. **Verbitsky, A., Boutet, P. & Eslami, M.** "Metadata Harmonization from Biological Datasets with Language Models." *Bioinformatics Advances* 5(1), vbaf241, 2025. doi:10.1093/bioadv/vbaf241. Peer-reviewed. **Cited** (ref. 20). No author overlap. Reports the same in-dictionary versus out-of-dictionary accuracy cliff (90–96% vs. 12–17%) that OntologyMapper's Stage 2.5 synonym-boost mechanism is implicitly designed to mitigate; the manuscript cites this once in the Introduction but never returns to it when discussing OntologyMapper's own out-of-corpus failure modes, a missed opportunity for direct methodological comparison.
-
-7. **Gonçalves, R. S. et al.** "The text2term Tool to Map Free-Text Descriptions of Biomedical Terms to Ontologies." arXiv:2407.02626, 2024. Preprint. **Cited** (ref. 13) and used as the primary OntologyMapper comparator. No author overlap (Stanford BMIR). Its TF-IDF/edit-distance approach is the field's most widely adopted lightweight baseline; the manuscript's own benchmark shows the gap between OntologyMapper and text2term narrows to 2.2 pp on OLS-EFO (disease) but widens to 16.4 pp on Biomappings-EFO, a benchmark-dependent pattern the Discussion attributes to synonym-set density but does not test directly (e.g., via a synonym-count-stratified analysis).
-
-055300
-# Editorial Integrity Alert — For Handling Editor Only
-
-**Undisclosed overlapping prior publication.** The submitted manuscript's pure-text dataset (TCM-5CMEval's five dimensions — TCM-Exam, TCM-LitQA, TCM-MRCD, TCM-CMM, TCM-ClinNPT) is not novel to this submission. An arXiv preprint, *TCM-5CEval: Extended Deep Evaluation Benchmark for LLM's Comprehensive Clinical Research Competence in Traditional Chinese Medicine* (arXiv:2511.13169, posted 17 Nov 2025), by an overlapping and largely identical author team (Tianai Huang, Jiayuan Chen, Lu Lu, Pengcheng Chen, Tianbin Li, Bing Han, Wenchao Tang, Jie Xu, Ming Li — same institutions: Shanghai University of TCM, Shanghai AI Laboratory, University of Washington), reports the identical five-dimension architecture, identical item counts per dimension and question type (e.g., TCM-Exam single-choice N=122, multiple-choice N=78, open-ended N=70 — exact matches), and identical funding acknowledgments (grants 82174506, 2024PT001, 2025BZ002). The submitted manuscript does not cite or disclose this preprint anywhere, despite it predating submission and being authored by the same group. This is textbook salami-slicing / undisclosed prior work, not a citation oversight — the core textual instrument being presented here as new is the same instrument already public under a near-identical name two months prior. This must be resolved with the authors before any further editorial action; it is not a matter for reviewers to adjudicate.
+**Citation misattribution on a stated baseline.** The manuscript lists EATA-C as a comparator ("EATA-C performs efficient adaptation with anti-forgetting constraints," Methods, classification-only) and cites reference [45] — Niu et al., ICML 2022, "Efficient test-time model adaptation without forgetting" — as its source. That ICML 2022 paper describes **EATA**, which has no calibration mechanism. EATA-**C** (the consistency-loss, min-max entropy re-calibration, and disagreement-based uncertainty indicator the manuscript's baseline actually implements) was introduced in a distinct, later work — Tan, Chen, Wu, Zhang, Chen, Zhao & Niu, "Uncertainty-Calibrated Test-Time Model Adaptation without Forgetting" — which does not appear anywhere in the reference list. This should be put to the authors directly before review proceeds.
 
 ---
 
-### 1. Overall Assessment
+## 1. Overall Assessment
 
-The manuscript introduces TCM-5CMEval, a five-dimension, multimodal (text, image, video) benchmark for evaluating LLMs on Traditional Chinese Medicine, paired with a psychometric validation layer (criterion validity against human cohorts, construct validity, item-stability reliability, subjective-scoring reliability) largely absent from prior TCM benchmarks such as TCMBench, TCMD, TCMEval-SDT, and MTCMB. The stated contribution — genuine multimodality plus human-anchored measurement validation — is a real gap in the literature. However, the pure-text component of this benchmark is not new: it is the previously arXiv-published TCM-5CEval (see Integrity Alert). The manuscript's actual incremental contribution is therefore narrower than presented — multimodal extension plus reliability/validity analysis layered onto an already-public textual instrument, not a de novo five-dimension benchmark.
+The manuscript documents "calibration collapse" — medical foundation models retaining task performance while confidence becomes unreliable after domain transfer, worsened by entropy-based TTA — across 13 models, 15 datasets, and three task families, proposing a bounded Gini objective (GITTA) as a partial fix. The phenomenon is real and the benchmark is broad and clinically instrumented (HCER0.9, deferral simulation). But the core mechanism — entropy minimization causes overconfidence, bounded objectives mitigate it — is not new; it restates results already established in general-domain TTA and now systematizes them for medicine. Two issues will most influence the decision: the misattributed baseline citation above, and the absence of any demographic subgroup analysis.
 
-### 2. Strengths
+## 2. Strengths
 
-The psychometric validation is the manuscript's genuine advance. Criterion validity (Spearman's ρ between LLM and discipline-matched human performance, pooled mean ρ=0.774), construct validity via inter-dimensional correlation matrices, item-stability reliability (Cronbach's α up to 0.895), and subjective-scoring reliability (ICC(2,k), Krippendorff's α, CSS–expert correlation) collectively address a real measurement gap that TCMBench, TCMD, and MTCMB never attempted.
+HCER0.9 and the confidence-gated deferral simulation (missed-error rate 62.3%→78.1% under Tent) convert an abstract calibration metric into an operational safety quantity — the paper's strongest contribution. Separating deployment setting (Fig. 1) from adaptation mechanism (Fig. 2) isolates pre-existing collapse from adaptation-induced collapse, precluding an implementation-artifact objection. The GITTA-Embed/GITTA-Input ablation and organ-level BTCV breakdown appropriately resist hiding heterogeneity behind macro scores.
 
-The human-model reversal finding — LLMs surpass humans on pure-text open-ended items but fall below discipline-matched human experts on multimodal items in LitQA, MRCD, and ClinNPT — is a substantive and diagnostically useful result, directly contradicting text-only evaluations that would credit these models with expert-surpassing competence.
+## 3. Weaknesses
 
-The Composite Subjective Score (0.8×MacroRecall + 0.2×BERTScore) is a sensible, reproducible answer to the open-ended-scoring reliability problem that plagues the field.
+No subgroup analysis by age, sex, or skin tone appears anywhere despite using HAM10000/PAD-UFES-20 and pediatric CXR data — a serious gap given the paper's central claim about where confidence fails. Results are reported over fixed seeds despite the paper's own evidence of adaptation instability (GraTa: Dice 0.869→0.742), conflating resampling CIs with adaptation-seed variance. Main-text figures lean on unexplained "representative" single-dataset panels. Temperature scaling is excluded by design, but the more realistic middle ground — a small labeled target-site calibration set — is never tested despite being flagged as the practical deployment scenario.
 
-### 3. Weaknesses
+## 4. Editorial Decision
 
-The undisclosed dataset overlap (above) is disqualifying pending resolution and cannot be waved through to review.
+Send for Review, contingent on the authors correcting the EATA-C attribution and confirming implementation fidelity. Reviewers should adjudicate whether the missing subgroup analysis is disqualifying given the datasets used, whether single-seed reporting is adequate given the instability findings, and whether GITTA is sufficiently distinct from EATA-C and the Gini/Tsallis-entropy family.
 
-No external validation cohort beyond the 50 discipline-matched postgraduate students; generalizability of the human anchor to practicing clinicians is unestablished.
+## 5. Suggested Reviewer Expertise
 
-The error-item analysis identifies "clinical syndrome differentiation" and "classical text exegesis" as dominant failure modes but offers no controlled ablation isolating architecture, training corpus, or reasoning-chain length as causal factors — a limitation the authors themselves concede.
+Reviewers should include expertise in fully test-time adaptation and confidence calibration under distribution shift (specifically LayerNorm-only/parameter-efficient online adaptation and entropy-versus-bounded-objective comparisons); segment-anything-style medical foundation models and their failure modes under domain transfer; calibration metrics and selective-prediction/deferral system design for clinical AI; and generative-model uncertainty quantification for vision-language medical QA. On the clinical side, reviewers should include a dermatologist or dermoscopy-AI specialist familiar with skin-tone representation in ISIC/HAM10000-derived datasets, and a gastroenterologist or radiologist experienced with confidence-gated triage workflows in endoscopy or chest imaging.
 
-### 4. Editorial Decision
+## 6. State-of-the-Art Literature Review (Past 3 Years)
 
-**Reject.** The undisclosed overlap with the authors' own prior arXiv publication is a disqualifying integrity flaw independent of the work's technical merits; it cannot be resolved through revision within a review cycle and misrepresents the novelty of the submission's core dataset.
+The field has moved rapidly toward exactly this problem in the last 12 months. Lou et al. (UAD-FM, *npj Digital Medicine* 8, 784, 2025) proposed an uncertainty-decomposed, causally-adapted foundation model for colorectal pathology pursuing nearly the same goal via epistemic/aleatoric decomposition rather than a bounded Gini objective; the manuscript cites it only as background and should engage with it as a direct competitor. Sheng et al. ("The Illusion of Progress?", NeurIPS Datasets & Benchmarks 2025) established that most TTA benchmarking suffers from inconsistent protocols and inflated claims — the manuscript's strict source-free protocol answers this critique but never says so explicitly. Two very recent segmentation-specific works are close prior art the authors should address: Chen et al. (ICCV 2025) perform input/embedding-level refinement of MedSAM without touching model parameters, conceptually adjacent to GITTA-Input; and an evidential active-TTA framework for medical SAMs (EviATTA, 2026) decomposes uncertainty via Dirichlet modeling for the same segment-anything backbones. The lit-review as written understates how crowded this space has become.
+
+## Further Literature (Past 3 Years, Similar Scope)
+
+1. **Lou, S. et al.** "Uncertainty-aware and causal test-time adaptive foundation model for robust colorectal cancer pathology diagnosis." *npj Digital Medicine* 8, 784 (2025). DOI: 10.1038/s41746-025-02149-1. **Cited** (ref. 20). Independent group (Harbin Medical University). Directly competing scope: uncertainty-decomposed, causally-intervened TTA for a medical foundation model, evaluated with ECE/Brier/NLL and a deferral simulation — methodologically the closest published analogue to GITTA, using causal do-interventions instead of a bounded Gini loss.
+
+2. **Sheng, L., Liang, J., He, R., Wang, Z. & Tan, T.** "The Illusion of Progress? A Critical Look at Test-Time Adaptation for Vision-Language Models." NeurIPS Datasets & Benchmarks Track (2025); arXiv:2506.24000. **Cited** (ref. 19). Independent group (USTC/CASIA). Establishes the general-domain reproducibility critique of TTA benchmarking that the manuscript's strict online, source-free protocol implicitly answers but never cites as justification.
+
+3. **Tan, M., Chen, G., Wu, J., Zhang, Y., Chen, Y., Zhao, P. & Niu, S.** "Uncertainty-Calibrated Test-Time Model Adaptation without Forgetting." arXiv:2403.11491 (v2, 2025). Preprint/journal-extended manuscript — **unreviewed**, not cited. Independent of manuscript (assuming no author overlap; unverifiable under double-blind). **This is the actual source of the EATA-C baseline** the manuscript implements and misattributes (see Integrity Alert). Directly on-scope: consistency-loss-based model-uncertainty reduction plus min-max entropy re-calibration for source-free TTA.
+
+4. **Chen, K., Luo, X., Qin, T., Liu, J., Liu, H., Lee, V.H.F., Yan, H. & Li, H.** "Test-time Adaptation for Foundation Medical Segmentation Model without Parametric Updates." ICCV 2025; arXiv:2504.02008. **Not cited.** Independent group (City University of Hong Kong / University of Hong Kong). Directly relevant to the GITTA-Input variant: performs image-embedding refinement of MedSAM at test time without updating backbone parameters, addressing the same LayerNorm-efficiency motivation from a different angle.
+
+5. **Chen, J., George, Y., Chong, W. & Cai, J.** "EviATTA: Evidential Active Test-Time Adaptation for Medical Segment Anything Models." arXiv:2603.14666 (2026). Preprint — **unreviewed, very recent**, not cited. Independent group (Monash University). Decomposes predictive uncertainty into distribution and data uncertainty via Dirichlet evidential modeling for the same SAM-Med2D/MedSAM-class backbones used in the manuscript's segmentation arm; a direct methodological alternative to the bounded-Gini approach.
+
+6. **Nielen, T., Ambekar, S., Kiechle, J., Lang, D.M. & Schnabel, J.A.** "Entropy Minimization without Model Collapse: Mitigating Prediction Bias in Medical Imaging." arXiv:2606.02339 (2026). Preprint — **unreviewed**, not cited. Independent group (TU Munich / Helmholtz Munich). Mechanistically complementary: attributes entropy-minimization collapse in medical-imaging TTA to prediction-class-bias-driven feature-cluster merging and proposes an importance-reweighting fix (DSBR) — a different causal account of the same failure mode the manuscript calls "calibration collapse."
+
+7. **Chen, G., Niu, S., Chen, D., Yang, J., Zhang, Z., Tan, M., Wu, P. & Shen, Z.** "ZeroSiam: An Efficient Siamese for Test-Time Entropy Optimization without Collapse." arXiv:2509.23183 (2025). Preprint — **unreviewed**, not cited. **Author overlap with entry 3** (Niu, Tan — same TTA-calibration research lineage). General-domain (not medical), but addresses entropy-minimization collapse via architectural asymmetry rather than a bounded loss — a useful contrast case for whether GITTA's loss-level fix is preferable to an architecture-level one.
+
+8. **Shakeri, F., Baklouti, G. et al.** "Test-Time Adaptation of Medical Vision-Language Models." MICCAI Workshop, Springer LNCS (2025). DOI: 10.1007/978-3-032-07845-2_18. **Not cited.** Independent group. Directly on-scope for the manuscript's VQA branch: the first structured benchmark of TTA for medical VLMs, using mutual-information maximization and KL-regularized zero-shot deviation — a substantive comparator the manuscript's medical-VQA GITTA surrogate should be benchmarked against.
+
+9. **Hekler, A., Kuhn, L. & Buettner, F.** "Beyond Overconfidence: Model Advances and Domain Shifts Redefine Calibration in Neural Networks." arXiv:2506.09593 (2025). Preprint — **unreviewed**, not cited. Independent group (Goethe University Frankfurt / DKFZ). Evaluates foundation-model calibration under distribution shift on biomedical imaging datasets (breast ultrasound, chest X-ray, dermoscopy, OCT) and finds foundation models can be *underconfident* in-distribution and *better*-calibrated under shift — a partial counter-finding to the manuscript's framing that deserves acknowledgment and discussion, not omission.
+
+10. **[Authors withheld in source].** "Ranked Entropy Minimization for Continual Test-Time Adaptation." arXiv:2505.16441 (2025). Preprint — **unreviewed**, not cited. General-domain (ImageNet-C), independent group. Reports the identical ECE-degradation pattern under Tent/SAR relative to source models that the manuscript's Finding 2 documents in medical settings, and proposes a masking/ranking-based alternative objective — a general-CV precedent the authors should cite to show the medical-domain result is a specific instance of a broader known effect, not a novel discovery.
+
+056749
+## Editorial Report: HEMO-ACT (Manuscript 056749) — Revised
+
+### 1–4. Assessment, Strengths, Weaknesses, Decision (condensed)
+
+This manuscript proposes HEMO-ACT, a Kalman-regularized CNN-GRU model predicting multi-horizon (0h/24h/48h) survival risk scores in 827 ICU patients with hematologic malignancies from a single Beijing center. It claims dynamic risk trajectories outperform static scores (SAPS II, HHM) that dominate this niche. The architecture combines established components reasonably, but the evaluation framework is a poor match to the clinical claim, and a near-contemporaneous competing paper occupying the same niche is neither cited nor engaged with. This does not clear the bar at this journal's standard.
+
+The 827-patient, 12-year, 6,128-patient-day cohort is genuinely large for this sub-domain, and the causal, EM-fitted Kalman imputation (fit on training data only, never conditioning on future values) correctly avoids a common time-series leakage failure. The multi-horizon shared-backbone design suits the stated bedside workflow, and the CNN-ablation result is an honest, if marginal, component-level finding.
+
+The metric mismatch is disqualifying: the introduction frames the problem in AUROC terms (citing SAPS II 0.676, HHM 0.81) yet Results report only R² and RMSE for an undefined "survival risk score," with no AUROC, sensitivity/specificity, or calibration reported anywhere, making the central comparative claim unverifiable. SHAP-ranked "top features" (oxygenation index, troponin I, BNP) have 65–90% raw missingness and are therefore mostly Kalman-imputed, so their dominance may reflect imputation smoothness rather than physiology; no sensitivity analysis on observed-only data is offered. No external validation is performed, and the current cohort's IRB approval number is identical to a 2024 publication by three overlapping authors describing an overlapping patient population, undisclosed here. Multiple pairwise model comparisons run at uncorrected α=0.05 with several barely-significant P-values (0.038, 0.031, 0.022), and in-text citations 24–33 are systematically misnumbered against the reference list, including a duplicated AdamW citation.
+
+**Reject.** The core claim cannot be assessed from the metrics reported, and this requires a new evaluation design, not a revision. Transfer to Communications Medicine or npj Digital Medicine is appropriate, contingent on AUROC/calibration reporting, disclosure of the cohort overlap with reference 10, and reference-list correction.
+
+---
 
 ### 5. Suggested Reviewer Expertise
 
-Multimodal LLM evaluation methodology; psychometric test theory (reliability/validity indices) applied to AI benchmarks; TCM clinical pattern differentiation and classical-text pedagogy; computer vision for medical/pharmacognostic image-video content; research integrity in dataset reuse.
-
-### 6. State-of-the-Art Literature Review
-
-TCM LLM benchmarking has moved rapidly: TCMBench and TCMD (2024) established exam-style objective assessment; TCMEval-SDT (Scientific Data, 2025) added expert-annotated syndrome-differentiation cases; MTCMB (arXiv:2506.01252) integrated 12 sub-datasets across knowledge, reasoning, and safety; TCM-Ladder (arXiv:2505.24063) was first to introduce image/video multimodality; a second TCM-Eval (arXiv:2511.07148) targets dynamic, extensible expert-level assessment. This submission's differentiator — pairing multimodality with formal reliability/validity analysis — is not yet claimed elsewhere and would be a genuine advance, contingent on resolving its relationship to the authors' own TCM-5CEval preprint.
+Reviewers should be sought with expertise in: (1) temporal deep learning architectures (CNN-recurrent hybrids, state-space models) applied to irregularly sampled, high-missingness multivariate EHR time series; (2) Kalman-filter and other model-based imputation methods for clinical time series, specifically their downstream effect on post-hoc interpretability; (3) SHAP and related attribution methods for sequential/temporal neural models, including known failure modes under heavy imputation; (4) benchmarking methodology for clinical prediction models, including discrimination/calibration reporting standards and multiple-comparison correction in model-comparison studies; and, on the clinical side, (5) critical care management of hematologic malignancy and allogeneic HSCT patients, including familiarity with existing ICU severity scores (SAPS II, APACHE II, HCT-CI) in this population.
 
 ---
 
-## Suggested Reviewers
+### 6. State-of-the-Art Literature Review (Past 3 Years)
 
-**Multimodal LLM evaluation:** Wenjing Yue, Jiacheng Xie, Shufeng Kong
+Dynamic, repeated-measurement ICU mortality prediction has advanced substantially since 2023, and the most relevant recent paper is one the manuscript does not cite: Britsch et al. developed and validated an interpretable machine learning algorithm for dynamic 48-hour mortality prediction, updated every 24 hours throughout the ICU stay, using electronic health records from 9,786 ICU patients treated between 2018 and 2022 at a German university hospital, with external validation on the MIMIC-IV database (Communications Medicine, October 2025). This is nearly the same clinical framing as HEMO-ACT (repeated daily risk updates, short-horizon deterioration prediction, interpretability via a tree-based rather than deep model) at roughly twelve times the cohort size and with genuine external validation — a direct comparator the authors needed to engage with and did not. In the HSCT-specific sub-domain, Zhou et al. showed that incorporating longitudinal post-transplant clinical measurements, rather than baseline-only features, improves both short- and long-term mortality risk prediction after allogeneic HCT, validated externally across two institutions (Blood Advances, 2024) — again a directly relevant, uncited precedent for the "dynamic beats static" argument HEMO-ACT is built around. Within the manuscript's own reference list, Boldingh et al. (Crit Care Explor, 2024) and Shickel et al.'s DeepSOFA (Sci Rep, 2019) are the closest acknowledged comparators, but neither is discussed in enough depth to establish what HEMO-ACT adds beyond architectural novelty. A 2025 systematic review of ICU mortality ML models further notes that gradient-boosted trees and logistic regression, not deep sequence models, remain the dominant and best-externally-validated approach in this literature — a pattern consistent with HEMO-ACT's own finding that a CNN-GRU variant beats XGBoost by only a modest margin (R² 0.257 vs. 0.191) on a cohort two orders of magnitude smaller than typical deep-learning training sets, raising a legitimate overfitting concern the manuscript does not address.
 
-**Psychometrics/measurement validity:** Zhe Wang, Yan Zhu, Ariel Levy
+---
 
-**TCM clinical/classical literacy:** Ping Yu, Kaitao Song, Junying Chen
+### 7. Suggested Reviewers' Names
 
-056083
+**Temporal modeling / imputation:** Simone Britsch; Tobias Becher; Yiwang Zhou; Benjamin Shickel.
+**Interpretability (SHAP/temporal attribution):** Jesse Smith; Cai Li; Roni Shouval.
+**Clinical (hematology-critical care/HSCT ICU):** Lisa F. Boldingh; Bruno L. Ferreyro; Djamel Mokart; Akshay Sharma.
+
+---
+
+### Further Literature (Past 3 Years, Similar Scope)
+
+1. **Britsch S, Britsch M, Lindner S, et al.** "An interpretable machine learning algorithm enables dynamic 48-hour mortality prediction during an ICU stay." *Communications Medicine* 5:426 (2025). DOI: 10.1038/s43856-025-01192-z. Peer-reviewed. Uncited by manuscript. No author overlap. LightGBM, n=9,786, updated every 24h, external validation on MIMIC-IV. The closest direct competitor to HEMO-ACT's central claim — same "dynamic beats static, updated daily" framing, general ICU rather than hematology-specific, but with external validation HEMO-ACT lacks.
+
+2. **Zhou Y, Smith J, Keerthi D, et al.** "Longitudinal clinical data improve survival prediction after hematopoietic cell transplantation using machine learning." *Blood Advances* 8(3):686–698 (2024). DOI: 10.1182/bloodadvances.2023011752. Peer-reviewed. Uncited. No author overlap. Random forest on serial post-transplant labs, externally validated across St. Jude and MSKCC cohorts. Hematology-specific precedent for "longitudinal beats baseline-only," using classical ML rather than a CNN-GRU sequence model.
+
+3. **Boldingh JHL, et al.** "Development and Validation of a Prediction Model for 1-Year Mortality in Patients With a Hematologic Malignancy Admitted to the ICU." *Critical Care Explorations* 6:e1093 (2024). DOI: 10.1097/CCE.0000000000001093. Peer-reviewed. **Already cited by manuscript (reference 21)** but underdeveloped in the Discussion; longer-horizon (1-year) static outcome versus HEMO-ACT's short-horizon dynamic outcome — a scope distinction the manuscript should make explicit rather than lumping together.
+
+4. **Mussetti A, Rius-Sansalvador B, Moreno V, et al.** "Artificial Intelligence Methods to Estimate Overall Mortality and Non-Relapse Mortality Following Allogeneic HCT in the Modern Era: An EBMT-TCWP Study." *Bone Marrow Transplantation* 59(2):232–238 (2024). DOI: 10.1038/s41409-023-02147-5. Peer-reviewed. Uncited. No author overlap. Multicenter EBMT registry AI model for post-HCT mortality; static, pre-transplant-weighted features rather than daily ICU trajectories, but directly relevant as a multicenter benchmark HEMO-ACT's single-center design lacks.
+
+5. **Asteris PG, Armaghani DJ, Gandomi AH, et al.** "Survival Prediction in Allogeneic Haematopoietic Stem Cell Transplant Recipients Using Pre- and Post-Transplant Factors and Computational Intelligence." *Journal of Cellular and Molecular Medicine* 29(16):e70672 (2025). DOI: 10.1111/jcmm.70672. Peer-reviewed. Uncited. No author overlap. n=564, soft-computing ensemble, 93.26% accuracy on survivorship classification using 7 parameters. Notably parsimonious relative to HEMO-ACT's 25-variable input; worth citing as a counterpoint on whether HEMO-ACT's feature complexity is necessary.
+
+6. **Zheng Z, Luo J, Zhu Y, et al.** "Development and Validation of a Dynamic Real-Time Risk Prediction Model for Intensive Care Units Patients Based on Longitudinal Irregular Data: Multicenter Retrospective Study." *Journal of Medical Internet Research* 27:e69293 (2025). DOI: 10.2196/69293. Peer-reviewed. Uncited. No author overlap. Time-aware bidirectional attention-LSTM, n=176,344 ICU stays across MIMIC-IV and eICU-CRD, hourly updates, external cross-validation and subgroup fairness analysis — the subgroup/fairness analysis HEMO-ACT's pediatric-inclusive cohort notably omits.
+
+7. **Choi H, Kim Y, Kang H, et al.** "Monitoring ICU Mortality Risk with A Long Short-Term Memory Recurrent Neural Network." *Scientific Reports* 14(1):17723 (2024). DOI: 10.1038/s41598-024-68663-6. Peer-reviewed. Uncited. No author overlap. Continuous (rather than fixed-horizon) LSTM-based mortality monitoring across the full ICU encounter; a methodological alternative to HEMO-ACT's fixed 0/24/48h heads worth discussing as a design choice, not just a baseline.
+
+8. **Mesinovic M, et al.** "Explainable machine learning for predicting ICU mortality in myocardial infarction patients using pseudo-dynamic data." *Scientific Reports* 15:27887 (2025). DOI: 10.1038/s41598-025-13299-3. Peer-reviewed. Uncited. No author overlap. XGBoost with time-resolved Shapley values, externally validated eICU→MIMIC-IV, AUROC 0.92 at 6h. Directly relevant methodological comparator for time-resolved SHAP practice — notably, this paper validates interpretability outputs against held-out external data, which HEMO-ACT's single-center SHAP analysis does not attempt.
+
+9. **Cifci MA, Öney B, Yildirim F, Yilmaz Başer H, Zontul M.** "Interpretable Adaptive Graph Fusion Network for Mortality and Complication Prediction in ICUs." *Diagnostics* 15(22):2825 (2025). DOI: 10.3390/diagnostics15222825. Peer-reviewed. Uncited. No author overlap. Combines a short-horizon convolutional encoder with a long-horizon recurrent module plus SHAP, architecturally the closest published analogue to HEMO-ACT's CNN-GRU-SHAP design, but trained on >200,000 eICU admissions with in-hospital mortality AUROC 0.96 — the scale gap underscores HEMO-ACT's overfitting risk on n=827.
+
+10. **[UNREVIEWED PREPRINT]** Anonymous authors. "Think as a Doctor: An Interpretable AI Approach for ICU Mortality Prediction" (ProtoDoctor). *arXiv:2510.11745* (October 2025). No peer review; flagged as such. No author overlap. Prototype-based intrinsic interpretability framework explicitly targeting the same "black-box distrust" motivation HEMO-ACT cites for using SHAP, but via architectural interpretability rather than post-hoc attribution — relevant as an alternative interpretability paradigm the Discussion should at least acknowledge, with the caveat that it remains unreviewed.
+
+056899
+## Editorial Integrity Alert (to Handling Editor)
+
+Two issues require resolution before this manuscript can proceed, independent of scientific merit.
+
+**Citation accuracy.** The manuscript attributes the concept of "technical capital in the computer-driven era" to Bourdieu (2005:75-80), citing *The Social Structures of the Economy*. That book is a study of the French housing market in Val-d'Oise and contains no treatment of technical capital or computing. Either the citation is mischaracterized or the page reference is wrong; this needs correction before the theoretical apparatus can be trusted.
+
+**Sampling-claim inconsistency.** The methods section claims purposive sampling "to hold the sample from rural and western regions" (l.897-898), yet every attributed quotation in the Results is sourced to "a doctor/specialist at a Grade A hospital" — the elite, urban, center-of-the-field institutions the paper's thesis argues dominate the periphery. No rural, primary-care, or patient-side voice appears anywhere in the evidence presented.
+
+---
+
 ## 1. Overall Assessment
 
-This manuscript uses the Haodf dataset (48,861 matched consultations, six disease groups) to show Chinese online consultations concentrate heavily in a few doctor-side cities (Beijing 34.1%, Gini 0.929), with disease-specific variation driven by physician visibility rather than patient geography. The central claim — telemedicine reinforces rather than flattens offline medical hierarchies — is not new: Xiang, Hong, Guo et al., *Nature Cities* (2026), already establish hub-dominated, core–periphery reinforcement in Chinese telemedicine at national network scale with a more sophisticated framework. This manuscript cites that paper but does not differentiate its contribution from it. Independent verification also found that IEEE DataPort's documentation for this exact dataset defines the sixth category as **Lung Cancer**, not "lung disease" as used throughout — a mislabeling that removes the most parsimonious explanation (oncology referral) for that category's concentration.
+The manuscript argues, via Bourdieu's concepts of capital, habitus, and field, that China's AI-driven digital medicine and remote healthcare is a state-directed process that redistributes symbolic legitimacy but not real capital, reproducing and in places widening urban-rural and center-periphery inequality. The evidentiary base is 48 semi-structured interviews with medical practitioners, analyzed thematically in NVivo.
+
+The theoretical application is fluent but the empirical foundation is thin. Every quantitative claim driving the argument — AI diagnostic accuracy falling from over 90% in eastern cities to 70% in the west, over 90% of AI research concentrated in developed areas, over 95% of specialists in Grade A urban institutions — is a single informant's unverified assertion, repeated in the Results and Discussion as established fact ("the data show," "this article reveals") rather than as reported perception. No technical audit, published dataset, or independent source is cited to corroborate any of these figures.
 
 ## 2. Strengths
 
-The city-linkage pipeline is transparent (90.0%/94.4% match rates) and correctly separates the full 161-city output from the 86 positive-volume cities used in concentration analysis. The Gini/HHI/effective-number-of-cities toolkit, applied per disease group, is well-triangulated. The paired logistic-regression and XGBoost–SHAP design, with grouped feature domains, gives a disciplined audit structure, appropriately labeled non-causal. Sensitivity checks — stricter Beijing/Shanghai core definition, and dropping the structurally dependent proxy indicator to show expected discrimination collapse — show genuine methodological self-awareness.
+The mapping of China's 2025 "Implementation Opinions on Promoting and Regulating the Application of 'AI + Healthcare'" (Table 1) onto Bourdieu's symbolic-capital argument is concrete and well-evidenced; naming the actual policy document and its stated 2027/2030 rollout targets grounds an otherwise abstract claim about state-conferred legitimacy.
+
+Table 2's catalog of named platforms — Ant Group's AI Health Steward AQ, Tencent's Smart Wearables + AI Medical Large Model, JD Internet Hospital, Alibaba's remote healthcare cloud-network — with deployment figures (hospitals connected, users served, compliance rates) supplies genuine empirical texture rarely present in theory-driven qualitative work.
+
+The DRG/DIP reimbursement-exclusion chain for geriatric care (no reimbursement → no geriatricians → no AI validation → no elderly-care AI) is a specific, non-trivial institutional mechanism, and is the paper's strongest original contribution.
 
 ## 3. Weaknesses
 
-The disease mislabeling is the most serious flaw. Novelty is undercut by the 2026 *Nature Cities* paper covering the same phenomenon at greater scale. The core-city matching model conditions on physician reputation/title as both covariate and dominant SHAP predictor (42.6%), risking mediator adjustment rather than confounding. The self-admittedly unvalidated cross-city proxy is reported with two-decimal odds ratios despite 59.6% of its own model discrimination being mechanically driven by the proxy variable.
+The accuracy-disparity and resource-concentration statistics are the paper's central empirical claims, yet none are triangulated against any technical source. Directly relevant validation work exists — for example a 2025 *npj Digital Medicine* simulated-patient study quantifying AI chatbot diagnostic disparities in China — and its absence from both the literature review and the discussion of these figures is a material omission.
+
+The sampling problem noted above is not cosmetic: it removes the only evidence that could substantiate the paper's claim about lived peripheral exclusion. A study about the periphery that quotes only the center cannot support its own thesis.
+
+Qualitative rigor is underspecified. One author conducted, coded, and interpreted all 48 interviews with no second coder, no inter-rater statistic, and no member-checking; there is no reflexivity statement addressing the author's positionality as a Cambridge sociologist of education (with a prior monograph applying Bourdieu to education choice) newly applying the same framework to clinical AI.
+
+The Bourdieu (2005) citation error compounds this: the "technical capital" construct that anchors the entire analytic apparatus rests on a citation that does not support it.
 
 ## 4. Editorial Decision
 
-**Reject.** The uncorrected clinical mislabeling and substantial anticipation by a more rigorous published study leave no viable path to review as submitted. A revision correcting the taxonomy and repositioning against Xiang et al. 2026 could be considered for transfer to *npj Digital Medicine* or *Communications Medicine*.
-
----
+**Reject.** The unverifiable central statistics, a sample that structurally cannot evidence the paper's own thesis, and a mischaracterized foundational citation are not resolvable through revision within a normal review cycle; they require new data collection and reconstruction of the theoretical grounding, not editing. Transfer recommendation: *Communications Medicine*, section on health policy and systems, contingent on the authors correcting the citation, adding rural/primary-tier informants, and substantiating or removing the disputed statistics.
 
 ## 5. Suggested Reviewer Expertise
 
-Reviewers should cover: spatial accessibility and concentration modeling in health systems (Gini/HHI-based, two-step floating catchment methods); network-analytic approaches to intercity service-flow data; explainable machine learning (XGBoost/SHAP) applied to health-services tabular data, including circularity and proxy-variable pitfalls; oncology or pulmonology referral-pathway epidemiology, to adjudicate the lung cancer/"lung disease" issue; and China's hierarchical medical system (fenji zhenliao) policy context.
+Bourdieusian/STS methodology applied to health systems (field, capital, habitus in clinical settings); algorithmic fairness and subgroup performance disparity in clinical AI; qualitative research rigor and trustworthiness criteria (coding reliability, saturation, reflexivity) in health services research; China health-system political economy and rural-urban resource governance; geriatric care financing and DRG/DIP reimbursement policy.
 
 ## 6. State-of-the-Art Literature Review (Past 3 Years)
 
-The defining recent contribution is Xiang, Hong, Guo et al., *Nature Cities* (2026), which maps China's intercity telemedicine system as a network and shows dominant hubs capturing disproportionate consultation share while simultaneously extending reach to smaller cities — the same core tension this manuscript documents, but derived from full network topology rather than city-rank shares. Wang, Chen, Liu & Tao, *ISPRS International Journal of Geo-Information* (2025), quantify spatial inequality in healthcare accessibility across the Beijing–Tianjin–Hebei region incorporating intercity patient mobility, directly relevant to this manuscript's unresolved patient-residence gap. Fu, Wang & Dong, *Scientific Reports* (2025), examine how China's hierarchical medical system shapes resource allocation, providing the offline baseline this manuscript's "re-encoding" argument depends on but does not directly test against. Niu & Silva, *Sustainable Development* (2026), apply an XGBoost–SHAP framework to urban health determinants at fine spatial resolution, a close methodological parallel worth engaging on interpretability limits. This manuscript sits adjacent to, rather than clearly ahead of, this literature; its narrower disease-specific and SHAP-based lens is a plausible angle of extension but is not yet argued as one.
+The empirical study of AI performance disparity in Chinese healthcare has moved past anecdote: a 2025 *npj Digital Medicine* simulated-patient study directly measured diagnostic accuracy and over-prescription tendencies across AI chatbots (ERNIE Bot, ChatGPT, DeepSeek) versus human physicians, building on an established standardized-patient audit tradition (Sylvia et al., Si et al.) documenting real quality-of-care gaps in rural Chinese clinics. The foundational text on algorithmic bias from unrepresentative training data, Obermeyer et al. (*Science*, 2019), demonstrating that a widely used US health algorithm systematically underserved Black patients due to biased training labels, is the direct technical antecedent to this manuscript's central claim about elite-hospital training data — yet is not cited. Recent reviews of AI deployment across Chinese tertiary hospitals (DeepSeek integration case series, 2025) document the platform landscape this manuscript describes but with operational rather than sociological framing. The manuscript's contribution is the Bourdieusian institutional lens itself, which is genuinely underused in this literature; its failure is not engaging the quantitative disparity literature that could have substantiated rather than merely asserted its claims.
 
-## 7. Suggested Reviewer Names
+## 7. Suggested Reviewers' Names
 
-**Network/spatial telemedicine analysis:** B. Xiang, M. Hong, F. Guo (*Nature Cities*, 2026, intercity telemedicine system).
+STS/Bourdieusian health methodology: Alex Broom; Simon Carmel; Davina Allen.
+Algorithmic fairness in clinical AI: Ziad Obermeyer; Marzyeh Ghassemi; Irene Chen.
+China health-system political economy: Winnie Yip; Yang Zhou; Karen Eggleston.
 
-**Health geography / accessibility modeling:** Y. Wang, L. Chen, B. Liu, Z. Tao (*ISPRS Int. J. Geo-Information*, 2025, spatial inequality in Beijing–Tianjin–Hebei healthcare accessibility).
+Would you like this condensed to 300-400 words for sections 1-4 with Further Literature appended, per your usual second pass?
 
-**Chinese hierarchical medical system / health policy:** L. Fu, R. Wang, Y. Dong (*Scientific Reports*, 2025, hierarchical medical system and resource allocation).
+057058
+Good — 312 words, tight against the 300 target. Here is the revised report.
 
-**Explainable ML in health/urban systems:** H. Niu (Renmin University of China; *Sustainable Development*, 2026, XGBoost–SHAP urban health determinants).
+---
+
+## Editorial Report — Manuscript 057058
+
+**"Auditable medical reasoning with knowledge-grounded large language models" (REMEDY)**
+
+---
+
+**1. Overall Assessment**
+
+REMEDY grounds LLM medical QA in a UMLS-derived knowledge graph via two channels: a Basic Channel matching LLM-generated relation plans to KG paths scored by a RotatE embedding model, and an Enhanced Channel that iteratively explores the graph when matching fails, producing per-path confidence scores. Evaluated across five QA benchmarks, six baselines, four open-source backbones, and five closed-source LLMs, REMEDY shows consistent gains and strong robustness to KG edge removal. The clinical-auditability claim, however, is tested only on multiple-choice benchmarks, with no subgroup analysis and weak separation between random-path and candidate-path confidence scores — the two issues most likely to drive the decision below.
+
+**2. Strengths**
+
+The dual-channel fallback is architecturally meaningful: unlike RoG's fixed pipeline or ToG's undifferentiated beam search, REMEDY degrades gracefully under KG sparsity, losing only 5 accuracy points after 80% edge removal versus 13–21 points for KG-SFT and KAPING. The cross-backbone analysis uses matched optimizer settings to isolate method effects from training confounds, and the reasoning-depth stratification offers a credible mechanistic account of when each channel activates.
+
+**3. Weaknesses**
+
+Evaluation never leaves structured exam-style QA or Freebase-based open-domain QA; the Discussion names the resulting "evaluation illusion" without addressing it, and no free-text clinical note or subgroup breakdown by age, sex, ethnicity, or specialty appears anywhere. The auditability claim rests on a narrow score gap between random paths (0.45) and candidate paths (0.49), with no calibration metric reported. Reproducibility is weakened by sourcing the MMLU-Pro, MedMCQA, and PubMedQA splits from MedReason's repository, an unreviewed preprint, and by withholding the constructed 92,324-entity KG itself.
+
+**4. Editorial Decision**
+
+**Reject.** A system framed around clinical decision support and auditability cannot rest its evidentiary claims on exam-style accuracy with no subgroup analysis and no calibration validation of its own confidence score; this is a design-level gap, not a revisable reporting omission. Transfer to **npj Digital Medicine** is recommended, where the technical contribution can be judged without this venue's clinical-translational bar.
+
+**5. Suggested Reviewer Expertise**
+
+Reviewers should cover: knowledge graph embedding methods (RotatE and translational/rotational KGE models) for biomedical plausibility scoring; planning-retrieval-reasoning and iterative graph-search pipelines for LLM-KGQA (RoG/ToG-style methods); LoRA-based fine-tuning and evaluation methodology for medical reasoning benchmarks, including calibration assessment; and clinical informatics expertise in evaluating AI diagnostic-reasoning tools against real (non-multiple-choice) clinical text, ideally with internal medicine or nephrology background given the electrolyte-disorder case study in Fig. 5.
+
+**6. State-of-the-Art Literature Review (Past 3 Years)**
+
+The field has moved from static KG-injection (KAPING, StructGPT) toward iterative, LLM-guided graph traversal (ToG, ICLR 2024; RoG, ICLR 2024) and, more recently, toward KG-driven fine-tuning (KG-SFT, ICLR 2025, average 8.7-point gain in low-data settings) and reasoning-dataset construction (MedReason, arXiv 2025, still unreviewed). A directly relevant and uncited 2024/2025 contribution is KARE (Jiang et al., ICLR 2025), which integrates hierarchical KG-community retrieval with LLM reasoning for interpretable clinical mortality and readmission prediction — conceptually adjacent to REMEDY's confidence-scored path retrieval but targeting real EHR outcome prediction rather than exam QA, and its omission from the competitive landscape is a real gap. REMEDY's dual-channel fallback is a legitimate advance over ToG's undifferentiated beam search, but its clinical-auditability framing has not engaged the EHR-grounded work (DR.KNOWS, JMIR AI 2025; KARE) that actually tests interpretability against clinical outcomes rather than multiple-choice accuracy.
+
+**7. Suggested Reviewer Names**
+
+Linhao Luo (RoG, ICLR 2024) — path-planning KGQA; Hanzhu Chen (KG-SFT, ICLR 2025) — KG-driven fine-tuning; Pengcheng Jiang (KARE, ICLR 2025) — KG-community retrieval for clinical prediction; Yanjun Gao (DR.KNOWS, JMIR AI 2025) — clinical informatics and EHR-grounded diagnostic reasoning evaluation.
+
+---
+
+## Further Literature (Past 3 Years, Similar Scope)
+
+**1.** Jiang, P., Xiao, C., Jiang, M., Bhatia, P., Kass-Hout, T., Sun, J., Han, J. "Reasoning-Enhanced Healthcare Predictions with Knowledge Graph Community Retrieval." *ICLR 2025*. DOI: 10.48550/arXiv.2410.04585. **Uncited by manuscript.** No author overlap detectable (REMEDY's manuscript is blinded with no author list; independence cannot be fully confirmed but no institutional signal suggests overlap). KARE integrates hierarchical KG-community retrieval with LLM reasoning for clinical mortality/readmission prediction — the closest peer-reviewed prior work to REMEDY's core premise of combining KGE-style retrieval with LLM reasoning for auditable clinical output, but validated against real EHR outcomes (MIMIC-III/IV) rather than exam QA, directly exposing REMEDY's evaluation gap.
+
+**2.** Luo, L., Zhao, Z., Gong, C., Haffari, G., Pan, S. "Graph-Constrained Reasoning: Faithful Reasoning on Knowledge Graphs with Large Language Models." *ICML 2025*. DOI: 10.48550/arXiv.2410.13080. **Uncited by manuscript.** Same lead author as RoG (which REMEDY does cite and benchmark against, ref. 26); no overlap with REMEDY's own (unknown) authorship. GCR constrains LLM decoding directly with a KG-trie rather than post-hoc path scoring, achieving zero reasoning hallucination and strong zero-shot transfer to unseen KGs — a more recent and architecturally distinct alternative to REMEDY's two-channel scoring approach that the manuscript should have positioned itself against.
+
+**3.** Ma, S., Xu, C., Jiang, X., Li, M., Qu, H., Yang, C., Mao, J., Guo, J. "Think-on-Graph 2.0: Deep and Faithful Large Language Model Reasoning with Knowledge-Guided Retrieval Augmented Generation." *ICLR 2025*. DOI: 10.48550/arXiv.2407.10805. **Uncited by manuscript; direct successor to the ToG baseline REMEDY does benchmark (ref. 20).** No detectable author overlap. ToG-2 hybridizes structured KG traversal with unstructured document retrieval in a tight coupling loop; REMEDY compares only against the older, weaker ToG-1, which inflates its reported margin of improvement over the true current state of the art.
+
+**4.** Wu, J., Zhu, J., Qi, Y., Chen, J., Xu, M., Menolascina, F., Grau, V. "Medical Graph RAG: Towards Safe Medical Large Language Model via Graph Retrieval-Augmented Generation." *ACL 2025* (originally arXiv:2408.04187, Aug 2024). **Uncited by manuscript.** No author overlap. MedGraphRAG builds a triple-linked medical KG with source-document grounding specifically to produce citable, evidence-traceable clinical responses — directly competing with REMEDY's "auditable evidence path" framing but validated with human evaluation of response safety, a dimension entirely absent from REMEDY's evaluation.
+
+**5.** Xiong, G. (or Xu, X. in some citation variants), et al. "MedRAG: Enhancing Retrieval-Augmented Generation with Knowledge Graph-Elicited Reasoning for Healthcare Copilot." *Proceedings of the ACM Web Conference (WWW) 2025*. DOI: 10.1145/3696410.3714782. **Uncited by manuscript.** No author overlap. MedRAG uses KG-elicited diagnostic reasoning chains for a clinical decision-support copilot rather than static exam benchmarks, offering a template for the kind of interactive, clinician-facing validation REMEDY's Discussion says is needed but does not attempt.
+
+**6.** Mavromatis, C., Karypis, G. "GNN-RAG: Graph Neural Retrieval for Efficient Large Language Model Reasoning on Knowledge Graphs." *Findings of ACL 2025*. DOI: 10.18653/v1/2025.findings-acl.856. **Uncited by manuscript, despite being evaluated on the identical WebQSP and CWQ benchmarks REMEDY reports in Fig. 4f.** No author overlap. GNN-RAG uses a GNN rather than an LLM planner to retrieve reasoning paths, reporting 8.9–15.5 point F1 gains on multi-hop questions with 9× fewer KG tokens than long-context baselines — a directly comparable, higher-efficiency alternative that REMEDY's open-domain generalization claim (Section 2.4) should have benchmarked against rather than only RoG and an LLM-only baseline.
