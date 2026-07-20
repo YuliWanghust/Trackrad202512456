@@ -54,3 +54,217 @@ The two reports converge on the same failure mode from different angles — Reis
 **Counterargument I'd push back on myself with:** the strongest case for outright Reject is that the MRMC-set-equals-test-set issue (R1) plus the reader pool being entirely Vietnamese radiologists validating a device deployed in Western markets is a *design* flaw, not a *reporting* flaw — you can't fix a non-independent test set or a non-representative reader cohort by adding a table in revision; it requires new data collection. If Elena/the handling editor weighs that as disqualifying rather than as a limitation to be disclosed, Reject is defensible and arguably the more rigorous call.
 
 **Blind spot worth flagging:** none of the three formal reviews mention author conflict of interest, but it's material here — most authors are apparently affiliated with the company selling the AI module, and there's no independent data-access or reanalysis provision. If you're drafting the rationale letter, I'd add a COI/independent-verification requirement as a condition of revision even though the reviewers didn't ask for it — a Nat Comms decision letter that stays silent on this while the reviewers debate p-values would look like an omission later.
+
+058611
+# Editorial Report: "An Intelligent Post-Cataract Surgery Follow-Up System Integrating Active Learning and Uncertainty Estimation" (CATALYST)
+
+## 1. Overall Assessment
+
+The manuscript presents CATALYST, a ResNet50-based system that classifies ten postoperative states (nine complications plus normal status) from slit-lamp images, combining pool-based active learning with a Dirichlet-based evidential uncertainty module to flag low-confidence predictions for ophthalmologist review. The central claim is that this dual-uncertainty framework improves both accuracy and cross-center generalizability relative to a deterministic baseline, evidenced by a rise from 72.45%/59.08% (internal/external) baseline accuracy to 80.08%/79.08% after both modules and threshold optimization.
+
+The clinical problem is real and the multicenter validation is genuinely more rigorous than most single-site cataract AI papers. However, the methodological core is largely borrowed rather than new: the uncertainty module reuses the exact Dirichlet-evidential framework and L_TUN loss of Wang et al.'s UIOS system (ref. 24), which the authors themselves use as their principal comparator, and the active learning-plus-evidential-uncertainty combination itself is not novel at the framework level. This raises the central question the decision below turns on: is the contribution a genuine methodological advance or a competent domain transfer of an existing technique to a new clinical task?
+
+## 2. Strengths
+
+The external validation design is a real strength. Testing on 1,465 images from three institutions never seen during development, and showing that the ablated baseline degrades sharply out-of-domain (72.45%→59.08% accuracy) while CATALYST holds stable (80.08%→79.08%), is the kind of evidence that AI-in-ophthalmology papers frequently omit.
+
+The ablation strategy is thorough. Isolating active learning (ResNet50_AL) and uncertainty estimation (ResNet50_UE) individually before combining them, and repeating the entire ablation across DenseNet121 and ViT-B backbones with p<0.001 significance testing, demonstrates the gains are attributable to the modules rather than to a particular architecture.
+
+The parameter search for active learning is transparent and reproducible: five sampling ratios and four uncertainty-sampling strategies (largest margin, smallest margin, least confidence, maximum entropy) were compared against random sampling, with the largest-margin strategy and 90% sampling ratio selected on principled, stated grounds rather than post hoc.
+
+## 3. Weaknesses
+
+The claimed methodological novelty does not hold up under prior-art scrutiny. The Dirichlet evidential uncertainty module is a direct application of Sensoy-style evidential deep learning as operationalized in Wang et al.'s UIOS (Nat. Biomed. Eng. lineage), and the combination of evidential uncertainty with active learning was already established by Hemmer et al.'s DEAL (2022) and extended to medical imaging with explicit domain-shift handling by Chen et al.'s federated evidential active learning work (CVPR 2024) — neither is cited or differentiated. The manuscript's contribution is a domain application, and it should be framed and evaluated as such.
+
+The most clinically consequential class — normal postoperative status — is also the weakest-performing one (92.34%→84.07% external OvR accuracy after thresholding), meaning the system is least reliable exactly where a false negative (missed complication) or false positive (unnecessary alarm on a normal eye) carries the most workflow impact. This is not discussed.
+
+Class composition does not reflect real-world prevalence: endophthalmitis, a complication with a true incidence near 0.1%, is represented as a full model class alongside common findings, yet no prevalence-adjusted PPV/NPV or calibration analysis under realistic base rates is reported, which is essential before any deployment claim.
+
+The cohort is drawn entirely from four institutions within one country and one ethnicity, a limitation the authors acknowledge but do not mitigate, and STARD-AI is cited as the reporting standard without a corresponding checklist provided in the main text or supplement description.
+
+## 4. Editorial Decision
+
+**Reject**, with recommendation to transfer to *npj Digital Medicine*. The multicenter validation and ablation rigor are solid engineering, but the manuscript overstates methodological novelty relative to UIOS and DEAL/federated evidential active learning, and the weakest subgroup is the clinically pivotal "normal" class — together these are not resolvable through revision without reframing the paper's central contribution claim, which places it below the bar for this venue.
+
+## 5. Suggested Reviewer Expertise
+
+Reviewers should have expertise in evidential deep learning and Dirichlet-based uncertainty quantification for image classification; pool-based and evidential active learning under domain shift; multi-class CNN/ViT architectures for ophthalmic image classification; and calibration/prevalence-adjusted performance evaluation for clinical deployment. On the clinical side, expertise in postoperative cataract complication management and slit-lamp-based anterior segment diagnosis is needed.
+
+## 6. State-of-the-Art Literature Review (Past 3 Years)
+
+Evidential uncertainty in ophthalmic AI has advanced through Wang et al.'s UIOS (open-set retinal anomaly identification with Dirichlet uncertainty scoring) and its extension FMUE (foundation-model uncertainty estimation for OCT), both from the same methodological lineage CATALYST draws on without full attribution. In parallel, evidential active learning has matured independently of ophthalmology: Hemmer et al.'s DEAL established the general combination of evidential deep learning with active sample selection, and Chen et al.'s CVPR 2024 federated evidential active learning work explicitly targeted medical image domain shift — the same problem CATALYST reports solving, but with a federated and multi-institutional design the present manuscript does not engage. Contemporaneously, the SLID dataset (Xu et al., 2026) offers a multi-lesion anterior-segment slit-lamp benchmark that overlaps in imaging modality and disease scope. CATALYST's contribution sits at the intersection of these threads but does not clearly advance any of them individually; its value is the clinical application (postoperative cataract follow-up) rather than the underlying uncertainty or active-learning machinery.
+
+## 7. Suggested Reviewers' Names
+
+**Technical:** Meng Wang (UIOS, Dirichlet evidential uncertainty for retinal anomaly identification); Yong Xia (federated evidential active learning under domain shift, CVPR 2024); Patrick Hemmer (DEAL: deep evidential active learning for image classification).
+
+**Clinical:** Sarah Khavandi (AI-assisted postoperative cataract follow-up, BMJ Open Ophthalmology 2024); Erping Long (CC-Guardian, complication prediction and telemedicine follow-up in cataract patients).
+
+058013
+# Editorial Report: "Unequal Care, Unequal Outcomes: Identifying Populations Most Responsive to Stroke Care Equity"
+
+---
+
+## Integrity Alert (Addressed to Handling Editor — Separate from Main Review)
+
+Independent search identified two closely related 2025 publications by an overlapping author core (Ruize Guo, Jingkun Li, Mengyang Liu, Meina Liu — four of six authors here) that are **not cited or disclosed** in this manuscript. "Quality of care for acute ischemic stroke in China during the COVID-19 pandemic" (*BMC Public Health* 2025, DOI 10.1186/s12889-025-23910-x) uses the same National Medical Quality Database, the same AIS cohort definition, a substantially overlapping study window (January 2019–May 2022 vs. the present January 2020–March 2024), and explicitly compares care-quality indicators and mortality **by age and sex** — two of this manuscript's four "novel" dimensions. "Diminishing returns: how treatment delays undermine the mortality benefits of high-quality stroke care" (*BMJ Quality & Safety*, 2025, DOI 10.1136/bmjqs-2025-019307; five of six authors here) examines how **geographic location** modifies stroke-care quality and mortality benefit on what is almost certainly the same registry infrastructure. Neither paper appears in the reference list or is acknowledged as related work distinguishing scope or cohort. This is a disclosure failure with salami-slicing characteristics that the handling editor should raise with the authors before any further processing.
+
+---
+
+## 1. Overall Assessment
+
+The manuscript uses China's National Medical Quality Database (2.88 million AIS admissions, 2020–2024) to quantify disparities in stroke-care quality and outcomes across sex, age, region, and dementia status, and to decompose outcome disparities into direct and treatment-quality-mediated pathways using causal mediation analysis, further contrasting pandemic versus post-pandemic periods. The central claim — that regional disparity is largely explained by treatment-quality differences while age, sex, and dementia disparities are driven by direct pathways — is a genuine analytic contribution if the numbers hold up.
+
+They do not clearly hold up. Beyond the undisclosed-overlap concern above, the mediation-proportion estimate for region (268.462%, 95% CI 167.730–369.195%) is not a physically interpretable proportion; it is an artifact of decomposing a near-null total effect (OR=0.962) into oppositely signed direct (OR=1.065) and indirect (OR=0.904) components, a classic inconsistent-mediation scenario the manuscript never names or caveats.
+
+## 2. Strengths
+
+The scale and national representativeness of the cohort (2,875,427 patients across tertiary, secondary, public, and private hospitals) substantially exceeds prior single-region Chinese stroke-equity studies and supports the multilevel modeling approach used to account for hospital clustering.
+
+The four-dimension, simultaneous equity framework — sex, age, region, dementia — addressed together with dimension-specific propensity-score matching (all achieving SMD<0.100) is methodologically more rigorous than the single-dimension designs (Eriksson et al., Stroke 2021; Xu et al., JAHA 2025) that dominate this literature.
+
+Layering causal mediation analysis onto the disparity framework, decomposing total effects into natural direct and indirect (treatment-quality-mediated) effects, is a legitimate methodological advance over purely descriptive rate-comparison studies, when correctly interpreted.
+
+## 3. Weaknesses
+
+The mediation-proportion metric is uninterpretable wherever direct and indirect effects diverge in sign relative to a near-null total effect — this occurs for region (268%) and produces a nonsensical negative value for age (-1.232%). VanderWeele has repeatedly cautioned against reporting "percent mediated" under inconsistent mediation; the manuscript reports these figures without qualification, which materially undermines its central causal claim.
+
+Dementia prevalence is 1.77%, roughly five- to eight-fold below published pre-stroke dementia prevalence in comparable Chinese and international stroke cohorts (including the authors' own cited reference 19, ~7–15%). A binary "pre-stroke diagnosis" flag drawn from administrative records almost certainly undercaptures true prevalence, which would bias the dementia-dimension estimates toward the null and calls the "no significant difference" findings into question.
+
+The protective effect of rural-hospital care (OR=0.962 for poor outcome, OR=0.561 for death) is attributed post hoc to higher thrombolysis rates offsetting other quality deficits, but referral-pattern confounding — sicker patients being transferred to urban tertiary centers — is an equally plausible explanation that PSM on measured covariates cannot rule out, and is not tested via any negative-control or falsification analysis.
+
+With N=2.88 million, several "significant" differences (e.g., 0.073% sex difference in composite score, P=0.019) are clinically negligible; the manuscript should report standardized effect sizes throughout rather than leaning on significance thresholds that are near-automatic at this sample size.
+
+## 4. Editorial Decision
+
+**Reject.** The undisclosed overlap with two 2025 publications by an overlapping author group on the same database and two of the four disparity dimensions is a non-revisable integrity issue in this submission's current form, and it compounds a substantive, unresolved statistical flaw (uninterpretable mediation proportions exceeding 100%) that undermines the paper's central causal claim. This is not a "revise and clarify" situation.
+
+## 5. Suggested Reviewer Expertise
+
+Reviewers should have expertise in causal mediation analysis under non-collapsibility on the odds-ratio scale, particularly with inconsistent mediation; multilevel/hierarchical modeling of large-scale national administrative registries; propensity-score methods for multi-dimensional confounding adjustment; and health-services epidemiology of rural-urban stroke-care delivery in China. Clinical expertise should cover acute ischemic stroke management protocols, geriatric stroke care in the presence of pre-existing cognitive impairment, and Chinese stroke-center quality-improvement infrastructure.
+
+## 6. State-of-the-Art Literature Review (Past 3 Years)
+
+Single-dimension disparity work remains the norm: Xu et al. (JAHA, 2025) and Eriksson et al. (Stroke, 2021) address sex; Zhu et al. (*International Journal of Stroke*, 2025) and Hammond et al. (Stroke, 2020) address rural-urban gaps in China and the US respectively; Wilcock et al. (JAMA Neurology, 2020) tracks rural-urban Medicare trends longitudinally. None combine four dimensions with formal mediation decomposition, which is genuinely where this manuscript could advance the field — if the mediation estimates were defensible and the overlap with the authors' own 2025 BMC Public Health and BMJ Quality & Safety papers were disclosed and clearly differentiated rather than silently reused.
+
+## 7. Suggested Reviewers
+
+**Causal mediation/biostatistics:** Abdel Douiri (King's College London); Marie Eriksson (Umeå University).
+**Rural-urban health services research:** Karen Joynt Maddox (Washington University in St. Louis); Roland Faigle (Johns Hopkins).
+**Clinical stroke equity/dementia-stroke intersection:** Amytis Towfighi (USC/Keck); Elin Zupanic (Karolinska Institutet).
+
+057814:
+# Editorial Integrity Alert — For Handling Editor Only
+
+Two issues surfaced during independent verification and should be resolved before further processing.
+
+**Citation/venue error.** Reference 15 (Bo, Y. et al., cited as *Hepatol Int* 2025;84(6):e206–e208) matches, by title, a Letter to the Editor — "Development and validation of a prognostic model for MASLD identifying hypertension as a pivotal factor: A population-based study" — published in *Journal of Hepatology*, not *Hepatology International*. These are distinct journals with easily confused abbreviations (J Hepatol vs. Hepatol Int). The page range (e206–e208) also confirms this is a short correspondence rather than a full original article, raising a question the authors must answer: did the source letter contain sufficient methodological detail (complete covariate list, stepwise-selection criteria, imputation rules) to support a genuine independent replication, or were gaps filled by assumption?
+
+**Unacknowledged directly competing prior art.** The manuscript's comparison section cites KNIME, Galaxy, LinkR, OpenAI Codex/Claude Code, and Polly Co-Scientist, but omits AI-HOPE (Yang & Velazquez-Villarreal, *Bioinformatics* 2025;41(7):btaf359; medRxiv preprint Nov 2024) and its extensions AI-HOPE-WNT (*Frontiers in AI*, 2025) and AI-HOPE-TGFbeta (*AI* journal, MDPI, 2025). These describe an LLM-driven conversational agent that translates natural-language queries into executable code for automated Kaplan-Meier estimation, Cox/hazard-ratio analysis, and odds-ratio testing — with AI-HOPE-TGFbeta explicitly incorporating RAG grounding — published 6–14 months before this submission. No author overlap was found. This is not a self-plagiarism concern but a material novelty-misrepresentation risk: the architectural claim underpinning this manuscript's contribution is substantially anticipated.
+
+---
+
+# Editorial Report
+
+**1. Overall Assessment.** The manuscript describes a conversational, zero-code system that translates clinician natural-language requests into executable R scripts, orchestrated via n8n, grounded by RAG over a Pinecone knowledge base, and executed locally to preserve patient-level privacy. Validation consists of replicating one published MASLD Cox prognostic model on NHANES III data, with hazard ratios and AUCs approximating the original.
+
+This is fundamentally a workflow-engineering demonstration rather than a methodological or clinical advance, and its central architectural idea — natural language to auto-generated code to automated survival/regression output — is not new; AI-HOPE and its variants implement the same pattern. Combined with a validation design limited to a single replicated study, this is a difficult case for acceptance at this bar.
+
+**2. Strengths.** The separation of LLM reasoning from patient-level computation is concretely engineered, not merely asserted: the structure-extraction node passes only column-level metadata (types, missingness, distributional summaries) to the external API, never row-level records, which is a real privacy-by-architecture contribution.
+
+The quantitative fidelity check against the source model — hazard-ratio differences of 0.003–0.183, AUC differences below 0.034 — is a genuine, falsifiable reproducibility test rather than a qualitative demo, which is uncommon rigor for proof-of-concept tool papers.
+
+The four-tier layered architecture explicitly targets LLM code hallucination through three named mechanisms (schema profiling, RAG grounding, mandatory local execution), giving reviewers something specific to interrogate rather than a generic hallucination disclaimer.
+
+**3. Weaknesses.** The AI-HOPE omission (above) undercuts the paper's novelty claim at its core; the Discussion's "Comparison with Existing Approaches" section cannot be evaluated as complete without engaging this precedent.
+
+Validation rests on one replicated study in one disease area from a cohort (NHANES III) with which several co-authors have hepatology-related affiliations; there is no external cohort, no second clinical domain, and prospective usability testing is explicitly deferred to future work — "validated" in the framing overstates what one replication supports.
+
+The stepwise-selected model diverged from the original (BMI and platelet count substituted for sex and alkaline phosphatase), attributed to "differences in the initial candidate variable pools" without a sensitivity analysis ruling out a deeper flaw in variable handling or missing-data logic.
+
+Non-determinism is self-reported: one of four analytical tasks required manual re-submission to succeed, yet the abstract markets "100% script-level auditability" and "reproducible R code." A 3-of-4 first-attempt success rate on an n=1 case study is not evidence of reliability, and no automated error-correction loop exists.
+
+**4. Editorial Decision.** Reject. Unacknowledged directly competing prior art, a single-study validation design, and a confirmed citation/venue error together fall below the bar for external review at this stage. Recommend the authors substantively differentiate from AI-HOPE/AI-HOPE-WNT/AI-HOPE-TGFbeta, correct the reference, and either broaden validation across domains or reframe the claims to match a single-domain feasibility study, then consider a transfer venue.
+
+**5. Suggested Reviewer Expertise.** Reviewers should have hands-on experience with LLM agent architectures for automated code generation and execution in biomedical settings; retrieval-augmented generation for hallucination mitigation in scientific/statistical code; workflow orchestration engines (n8n or comparable) for reproducible pipelines; survival analysis and Cox proportional-hazards model validation methodology. On the clinical side, reviewers should have expertise in MASLD epidemiology and NHANES-based prognostic modeling.
+
+**6. State-of-the-Art Literature Review (Past 3 Years).** The dominant recent direction in this space is LLM agents that convert natural language into executable biomedical analysis pipelines: AI-HOPE (*Bioinformatics*, 2025) and its WNT/TGF-β pathway extensions are the closest direct precedent, automating Kaplan-Meier and hazard-ratio analyses from natural-language queries against harmonized clinical-genomic data. Tayebi Arasteh et al. ("Large language models streamline automated machine learning for clinical studies," *Nat Commun* 2024) demonstrated LLM-automated ML pipeline construction for clinical prediction tasks in the same journal this manuscript targets. Broader multi-agent biomedical systems — Biomni, BioMedAgent, CellVoyager (*Nat Methods*, 2026), and DrBioRight 2.0 (*Nat Commun*, 2025) — extend agentic execution to omics and cancer proteomics. Against this landscape, the manuscript's contribution narrows to local-execution privacy architecture and RAG-constrained R code generation specifically for tabular clinical biostatistics; it does not advance beyond AI-HOPE's core mechanism and should explicitly stake out that narrower claim.
+
+**7. Suggested Reviewers.**
+*Technical:* Enrique Velazquez-Villarreal (AI-HOPE, *Bioinformatics* 2025); Ei-Wen Yang (AI-HOPE co-developer, same article); Soroosh Tayebi Arasteh (automated ML for clinical studies, *Nat Commun* 2024); a co-author of BioMedAgent (BioMed-AQA benchmark, 2025/2026) for LLM biomedical-agent evaluation methodology.
+*Clinical:* a MASLD/NHANES prognostic-modeling biostatistician familiar with the ref. 15 letter's cohort methodology, to adjudicate whether the replication claim is methodologically sound.
+
+056208
+# Editorial Report
+
+**Manuscript:** "Efficacy inference in early-phase non-controlled clinical trials via Bayesian biomarker deconvolution"
+**Authors:** Humphries et al. (University of Edinburgh)
+
+---
+
+## EDITORIAL INTEGRITY ALERT (for handling editor only)
+
+1. **Undisclosed preprint.** An essentially identical manuscript — same title, same author order, same abstract, same competing-interest statement, same Zenodo code DOI (10.5281/zenodo.20918409) — is posted on medRxiv (doi.org/10.64898/2026.06.26.26356652), publicly available under CC-BY 4.0 since 29 June 2026. This submission discloses no preprint anywhere. Authors should be asked to confirm and disclose before review proceeds.
+2. **Financial interest tied to the primary validation benchmark.** SJF is founder/director of Resolution Therapeutics; AMK is a paid consultant to Resolution Therapeutics; CH, JWD, SJF are investigators on the MAIL trial. The manuscript's headline power-analysis result (Fig. 6, the 2.76× MDE improvement) is benchmarked directly against the MAIL trial's own published protocol, using a clearance-accelerating mechanism that matches the macrophage therapy these authors are financially and professionally invested in. This is disclosed in the competing-interests section but not flagged where the benchmark is introduced in the main text.
+3. **Closely related concurrent work, same author group, overlapping cohort infrastructure.** Humphries, Kilpatrick, Scullion, Forbes, Dear (*Clin Pharmacol Ther*, 2026) builds a parallel prognostic-enrichment ML tool on an overlapping APAP-DILI population (MAPP2 biobank + MAIL screening cohort) toward the same trial-efficiency goal. Cited once, in passing; not discussed as related work.
+4. No evidence of duplicate publication or improper cohort reuse was found between the 195-patient registry used here and the group's other NHS Lothian outputs (SNAP, HiSNAP) — these appear to be distinct cohorts. Spot-checked citations (FDA Jan 2026 guidance, MAIL protocol, Link et al. fomepizole series, Golubev 2010) are accurately represented.
+
+---
+
+## 1. Overall Assessment
+
+The manuscript develops a Bayesian EMG deconvolution framework that separates injury from clearance kinetics in serial ALT trajectories, paired with sparse-data functional PCA and leave-one-out regression to build a within-patient counterfactual score anchored on a 195-patient historic registry. The problem — biomarker-slope confounding by ongoing injury versus clearance in small, uncontrolled acute-injury trials — is real and unaddressed elsewhere. The pipeline is a genuine synthesis, not a repackaging, but every quantitative validation is mechanism-matched and self-benchmarked, and the manuscript omits a material disclosure (see Integrity Alert above).
+
+## 2. Strengths
+
+The preclinical anchor (44 mice, histology-validated ALT-AUC/necrosis R²=0.91) grounds the model's core assumption in tissue-level ground truth. The EMG–fPCA–LOO pipeline yields a concrete, falsifiable claim (67.5%→24.5% minimum detectable effect) rather than a vague efficiency assertion. Applied unmodified to an independent fomepizole case series, it recovers a mechanistically predicted, stage-dependent signature — evidence the parameters carry real biology. The limitations section is candid about observation bias and the mechanism-matched nature of the authors' own validation.
+
+## 3. Weaknesses
+
+Every detection-performance claim is circular: both the semi-synthetic test and the power analysis impose the exact clearance-acceleration effect PC1adj is built to detect, benchmarked against the authors' own trial protocol. No adversarial or null scenario is tested. The 195-patient cohort is single-centre, retrospective, spans 16 years of likely regimen drift, and its use as a historic anchor rests on an asserted, untested exchangeability assumption. Informative observation bias is named but not corrected. The dataset cannot be shared, limiting independent reproducibility.
+
+## 4. Editorial Decision
+
+**Send for Review**, conditional on disclosure of the pre-existing medRxiv posting. Reviewers should adjudicate whether self-benchmarked, mechanism-matched validation supports claims of general applicability, whether the exchangeability assumption needs a temporal-drift check, and whether the Resolution Therapeutics/MAIL financial relationship warrants main-text disclosure.
+
+## 5. Suggested Reviewer Expertise
+
+Reviewers should cover Bayesian nonlinear PK/PD modelling of convolution-type release-and-clearance processes; functional data analysis for sparse, irregularly-timed biomarkers, specifically informative-observation-time methods; Bayesian historical/external-control borrowing for early-phase trial design and its current regulatory treatment (FDA/ICH/EMA); and clinical hepatology/toxicology with direct experience in paracetamol-induced acute liver injury and phase 1 trial conduct in this population.
+
+## 6. State-of-the-Art Literature Review (Past 3 Years)
+
+Bayesian external/historical-control borrowing for early-phase and hybrid trials has accelerated since the FDA's January 2026 draft guidance (confirmed, Docket FDA-2025-D-3217), with 2024–2026 work on dynamic power priors for historical borrowing (Lu et al., *Pharm Stat* 2025) and parallel ICH (2025) and EMA (July 2025 consultation) guidance on external control arms. This manuscript's within-patient counterfactual is a distinct, PK/PD-motivated route to the same borrowing problem but does not engage with this contemporaneous literature. Functional PCA for sparse, informatively-sampled biomarkers has also advanced directly on point (Sang, Kong & Yang, *Biometrika* 2025, on informative observation times; Ségalas et al., *Stat Med* 2024) — precisely the manuscript's own acknowledged limitation — without citation. Within the narrower APAP-DILI niche, the same authors' concurrent paper (Humphries, Kilpatrick, Scullion et al., *Clin Pharmacol Ther* 2026) pursues the same trial-efficiency goal via single-timepoint ML on an overlapping population; the two should be explicitly cross-referenced and differentiated, not left as one passing citation.
+
+## Suggested Reviewers' Names
+
+**Bayesian PK/PD deconvolution:** Kert Viele (Berry Consultants); Yuan Ji (University of Chicago). Both senior — the biomarker-deconvolution literature is thin at junior levels; pair with a functional-data-analysis reviewer below for balance.
+
+**Functional data analysis, sparse/informative sampling:** Peijun Sang (University of Waterloo); Corentin Ségalas (Univ. Bordeaux/INSERM); Cécile Proust-Lima (INSERM Bordeaux).
+
+**Bayesian historical/external-control borrowing:** Zhaohua Lu (Daiichi Sankyo); Philip He (Daiichi Sankyo).
+
+**Clinical hepatology/toxicology, paracetamol overdose:** Geoffrey Isbister (SARPO trial); David M. Wood (King's College London); Ruben Thanacoody (Newcastle, HiSNAP trial). None have co-authored with the manuscript's authors on the trials reviewed here.
+
+---
+
+## Further Literature (Past 3 Years, Similar Scope)
+
+1. **Lu Z, Toso J, Ayele G, He P.** A Bayesian Hybrid Design With Borrowing From Historical Study. *Pharmaceutical Statistics* 2025;24(6):e2466. DOI: 10.1002/pst.2466. Peer-reviewed. Not cited by manuscript; no author overlap. Dynamic power-prior framework for historical borrowing in single-arm/hybrid early-phase trials — a directly competing solution to the historic-control anchoring problem, using borrowing-weight control rather than within-patient EMG counterfactual deconvolution.
+
+2. **Sang P, Kong D, Yang S.** Functional principal component analysis with informative observation times. *Biometrika* 2025;112(1):asae055. DOI: 10.1093/biomet/asae055. Peer-reviewed. Not cited; no overlap. Addresses directly the informative-observation-bias limitation the manuscript names but does not correct in its PACE-fPCA step.
+
+3. **Ségalas C, Helmer C, Genuer R, Proust-Lima C.** Functional Principal Component Analysis as an Alternative to Mixed-Effect Models for Describing Sparse Repeated Measures in Presence of Missing Data. *Statistics in Medicine* 2024;43(26):4899–4912. DOI: 10.1002/sim.10214. Peer-reviewed. Not cited; no overlap. Benchmarks FPCA against mixed-effects models for sparse, error-prone repeated clinical measures — bears directly on the manuscript's choice of PACE-fPCA over parametric alternatives.
+
+4. **Humphries C, Kilpatrick AM, Scullion KM, Aird R, Bruce L, Candela ME, Man TY, Forbes SJ, Dear JW.** Prediction of Acute Liver Injury Trajectory in Patients Following Acetaminophen Overdose: A Multibiomarker Machine Learning Proof-of-Concept Study. *Clinical Pharmacology & Therapeutics* 2026. DOI: 10.1002/cpt.70320. Peer-reviewed. Cited once (ref. 16), methods context only. **Author overlap: same group** (Humphries, Kilpatrick, Forbes, Dear on both) on an overlapping APAP-DILI population (MAPP2 biobank/MAIL cohort). Parallel trial-efficiency solution via single-timepoint multibiomarker ML rather than serial-trajectory deconvolution; should be cross-referenced and differentiated, not left as a single passing citation.
+
+5. **Ross JL, Sabbaghi A, Zhuang R, Bertolini D, et al.** Enhancing Longitudinal Clinical Trial Efficiency with Digital Twins and Prognostic Covariate-Adjusted Mixed Models for Repeated Measures (PROCOVA-MMRM). arXiv:2404.17576, 2024. **Unreviewed preprint** (still preprint-only as of late 2025 per citing literature). Not cited; no overlap. Individualized AI-generated counterfactual ("digital twin") predictions used as a covariate to improve longitudinal repeated-measures trial efficiency — the closest existing conceptual analogue to this manuscript's per-patient counterfactual scoring, but for RCT covariate adjustment rather than uncontrolled single-arm anchoring.
+
+6. **Ji Y.** Regulatory Expectations for Bayesian Methods in Drug and Biologic Clinical Trials: A Practical Perspective on FDA's 2026 Draft Guidance. arXiv:2601.14701, 2026. **Unreviewed preprint.** Not cited; no overlap. Synthesizes the FDA guidance's requirements (pre-specified success criteria, simulation-based operating characteristics, prior justification) against which this manuscript's Bayesian framework is never explicitly positioned, despite citing the guidance itself (ref. 1).
+
+7. **Murasaki W, Ohigashi T, Ishii R, Maruo K, Gosho M.** Modification and extension of the Bayesian clinical trial design using external data for single-arm and hybrid-controlled trials. arXiv:2607.12521, 2026. **Unreviewed preprint.** Not cited; no overlap. Addresses the same core problem — designing single-arm/hybrid early-phase trials using external/historical data under controlled type I error — via prior-specification modification rather than biomarker deconvolution; illustrates that the manuscript's approach is one of several live, competing solutions to this design problem that it does not engage with.
+
+8. **U.S. Food and Drug Administration, Center for Biologics Evaluation and Research, Office of Therapeutic Products.** Innovative Designs for Clinical Trials of Cellular and Gene Therapy Products in Small Populations. Draft Guidance for Industry, September 2025. Docket FDA-2025-D-3403. **Regulatory guidance, not peer-reviewed.** Not cited; no overlap. Explicitly endorses "participant as own control" single-arm designs, disease-progression modelling, and externally-controlled studies for cell and gene therapy trials in small populations — the regulatory category the MAIL macrophage trial itself falls under, and a more directly applicable, more recent regulatory anchor than the general Bayesian-methodology guidance (ref. 1) the manuscript cites instead.
+
+9. **Zhu K, Izem R, Yang P, Yuan Y, Pang H, van der Laan M, Nie L, Emir B, Mishra-Kalyani P, Lee H, Yang S.** Externally Controlled Trials: A Review of Design and Borrowing Through a Causal Lens. arXiv:2605.03282, 2026. **Unreviewed preprint.** Not cited; no overlap. A six-step causal-inference roadmap unifying single-arm and hybrid external-control methodology, covariate shift, and outcome drift — the closest available synthesis of the exact methodological space this manuscript operates in, and the natural benchmark against which its within-patient counterfactual approach should be positioned.
+
+10. **Sherman MS, Goessling W.** Discovery of biophysical rate laws from the electronic health record enables real-time liver injury estimation from transaminase dynamics. *Cell Reports Medicine* 2024;5(11):101828. Peer-reviewed. **Already cited (ref. 12), but under-engaged**: bundled into a five-reference citation cluster in the Introduction rather than discussed as a direct methodological comparator. This paper derives biophysical rate laws for transaminase dynamics from EHR data for real-time injury estimation — conceptually the nearest existing published precedent to the manuscript's own EMG kinetic decomposition of ALT, and worth explicit differentiation rather than a bundled citation.
