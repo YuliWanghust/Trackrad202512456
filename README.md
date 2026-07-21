@@ -268,3 +268,190 @@ Bayesian external/historical-control borrowing for early-phase and hybrid trials
 9. **Zhu K, Izem R, Yang P, Yuan Y, Pang H, van der Laan M, Nie L, Emir B, Mishra-Kalyani P, Lee H, Yang S.** Externally Controlled Trials: A Review of Design and Borrowing Through a Causal Lens. arXiv:2605.03282, 2026. **Unreviewed preprint.** Not cited; no overlap. A six-step causal-inference roadmap unifying single-arm and hybrid external-control methodology, covariate shift, and outcome drift — the closest available synthesis of the exact methodological space this manuscript operates in, and the natural benchmark against which its within-patient counterfactual approach should be positioned.
 
 10. **Sherman MS, Goessling W.** Discovery of biophysical rate laws from the electronic health record enables real-time liver injury estimation from transaminase dynamics. *Cell Reports Medicine* 2024;5(11):101828. Peer-reviewed. **Already cited (ref. 12), but under-engaged**: bundled into a five-reference citation cluster in the Introduction rather than discussed as a direct methodological comparator. This paper derives biophysical rate laws for transaminase dynamics from EHR data for real-time injury estimation — conceptually the nearest existing published precedent to the manuscript's own EMG kinetic decomposition of ALT, and worth explicit differentiation rather than a bundled citation.
+
+059325
+# Editorial Report: "A smartphone-integrated defibrillator with AI guidance for out-of-hospital cardiac arrest"
+
+---
+
+**Editorial Integrity Alert (For Handling Editor)**
+
+Four issues require resolution before this manuscript proceeds further. First, reference 25, cited as the basis of the rhythm-classification algorithm ("Zheng Y, et al., J Am Heart Assoc. 2021;10(6):e019529"), does not match any retrievable publication. The actual paper matching this title and description is Hajeb-M, Cascella, Valentine, and Chon, JAHA 2021;10(6):**e019065**. Both authorship and article identifier are wrong. Second, the defibrillation circuit specification is physically inconsistent with the stated waveform: two 100 F/125 V supercapacitors in series driving a 3 ms/3 ms biphasic pulse into a 25–150 Ω load implies an RC time constant on the order of 10³–10⁴ seconds, roughly six orders of magnitude longer than the reported pulse duration. Either the units are wrong by a factor of ~10⁶ (μF intended) or the reported engineering-validation data (energy accuracy, charge time, IEC 60601-2-4 compliance) were not generated from the circuit as described. This should be resolved with raw data before any further review. Third, the manuscript does not cite or differentiate itself from Altrix Medical's NSF SBIR-funded "Smartphone-based Automated External Defibrillator" program (Award #1842149, Phase I 2018, Phase II ongoing), which pursues an essentially identical concept — a phone-case-integrated AED with GPS/EMS alerting — predating this submission by years. This is a material omission bearing directly on the novelty claim. Fourth, the corresponding author's stated credential, "Academician of the Russian Academy of Natural Sciences," appears consistently across this author's other publications and is not fabricated for this submission; it denotes membership in a private organization distinct from the state Russian Academy of Sciences and carries limited independent scientific weight — noted for the handling editor's awareness, not as a standalone integrity violation.
+
+---
+
+**1. Overall Assessment**
+
+This manuscript proposes a smartphone-case-integrated AED combining a GaN/supercapacitor defibrillation module, a CNN-based shockable-rhythm classifier, and a MobileNetV2 vision model for real-time CPR feedback, targeting the retrieval-delay barrier to bystander defibrillation. In a 40-person usability trial, the device reduced median time-to-first-shock from 212 s to 92 s versus a conventional AED. The central engineering claim — that medical-grade defibrillation hardware fits a sub-250 g phone case — is undermined by the capacitor specification described above, which is not a minor rounding issue but a fundamental circuit-physics inconsistency. Combined with a miscited foundational algorithm reference and no delivery of a real shock to any living subject, the paper's most consequential claims rest on data whose provenance cannot presently be trusted.
+
+**2. Strengths**
+
+The human-factors design is genuinely rigorous: a blinded stopwatch reviewer decomposed the rescue sequence into six discrete phases (device access, power-on, electrode placement, rhythm analysis, charging, shock delivery), each independently compared by Mann-Whitney U test. This isolates which specific workflow elements drive the aggregate time saving rather than reporting only a pooled effect, and it honestly reports the one phase (charging, 27 s vs. 8 s) where the smartphone device underperforms.
+
+The rhythm-classification validation spans two independent tiers — a porcine VF model (n = 8) and a 1,247-recording clinical pre-hospital ECG dataset with expert-over-reader consensus, 95% confidence intervals, and a full confusion matrix (AUC 0.989) — which is more rigorous than typical single-dataset AED algorithm papers and benchmarks appropriately against AHA sensitivity/specificity targets.
+
+**3. Weaknesses**
+
+The capacitor/waveform inconsistency described in the integrity alert is disqualifying on its own: it is not possible to evaluate "engineering validation" (energy accuracy 98.3 ± 1.5%, IEC 60601-2-4 compliance) for a circuit whose stated components cannot physically produce the stated waveform.
+
+The device has never delivered a real shock to tissue, human or animal; "medical-grade defibrillation" is asserted, not demonstrated, and the usability trial used a simulated shock-button press as the endpoint, which validates none of the high-voltage subsystem.
+
+The novelty claim is overstated. Altrix Medical's federally funded, multi-year smartphone-AED program pursues the identical concept and is not engaged anywhere in the 43 references, leaving the paper's central positioning claim ("here we present") unsupported against the closest prior art.
+
+Generalizability is unaddressed: the usability trial (n = 40) occurred in a single quiet office with pre-connected pads, and the AI CPR-feedback validation on live subjects (n = 12) did not vary lighting, clothing, or body habitus — limitations the authors acknowledge but which remain disqualifying for population-level claims at this stage.
+
+**4. Editorial Decision**
+
+**Reject.** The physically inconsistent capacitor specification, the miscited foundational rhythm-analysis reference, the absence of any real shock delivery, and the unacknowledged multi-year Altrix Medical precedent collectively preclude sending this for external review in its current form. Authors should be invited to resubmit only after correcting the capacitor/waveform specification with verifiable raw data, correcting the citation, and directly engaging the closest prior art.
+
+**5. Suggested Reviewer Expertise**
+
+Reviewers should cover: deep-learning ECG rhythm classification for AED shock advisory during CPR artifact; high-voltage capacitor and flyback-converter design for defibrillation circuits and IEC 60601-2-4 compliance; human-factors/usability engineering for emergency medical devices; smartphone-based volunteer-responder and citizen-defibrillation systems; and emergency medicine/OHCA resuscitation science.
+
+**6. State-of-the-Art Literature Review (Past 3 Years)**
+
+The AED shock-advisory field has moved toward CPR-artifact-tolerant rhythm analysis without requiring compression pauses — exemplified by the Analyze-Whilst-Compressing algorithm validated in the DEFI 2022 study, evaluating clinical performance of an AED shock advisory system with an integrated algorithm for ECG rhythm analysis during ongoing out-of-hospital CPR, and by Hajeb-M et al.'s deep neural network for continuous shock advisory during compressions. Parallel work on device miniaturization includes CellAED, marketed as the world's first personal defibrillator designed to be kept close for use in sudden cardiac arrest, Corscience's compact AED program, and — most directly relevant and unaddressed by the authors — Altrix Medical's NSF-funded smartphone-case AED, which aims to develop miniaturized high-voltage components, firmware, and GPS-to-EMS functionality within a hand-held smartphone-case AED form factor. On the community-response side, Andelius et al. and the Danish HeartRunner program, together with China's 5-minute social rescue circle implementation in Shenzhen, which quantified the impact of a community rescue-circle intervention integrating OHCA cases, CPR-trained residents, and AED deployments, represent the current benchmark for networked bystander response. This manuscript advances device miniaturization incrementally but does not clearly outperform the DEFI 2022 algorithm's reported metrics, and its "always-carried" positioning is not new relative to Altrix Medical's multi-year program.
+
+**7. Suggested Reviewer Names**
+
+*Rhythm analysis / AED shock-advisory algorithms:* Shirin Hajeb-M (University of Connecticut; first author, deep neural network AED shock-advisory system, JAHA 2021); Vessela Krasteva (Bulgarian Academy of Sciences; co-author, DEFI 2022 Analyze-Whilst-Compressing algorithm, Sensors 2023) — noted as more senior; a more junior co-author from the same Schiller Médical/Paris Fire Brigade collaboration (e.g., Sarah Ménétré) may be preferable if available.
+
+*Volunteer-responder / citizen-defibrillation systems:* Linn Andelius (Copenhagen Emergency Medical Services/University of Copenhagen; first author, smartphone activation of citizen responders, JACC 2020 and European Heart Journal – Acute Cardiovascular Care 2023).
+
+*High-voltage power electronics for medical devices:* no junior-faculty candidate with directly comparable published work on GaN-based defibrillator capacitor charging could be confidently identified; recommend sourcing via IEEE APEC/ISPSD early-career track or the power-electronics reviewer pool rather than naming here.
+
+059463
+**Editorial Report — Manuscript 059463**
+**Title:** Interpretable multi-objective reinforcement learning optimizes dexmedetomidine dosing policy across postoperative cohorts
+**Corresponding authors:** Bin Yi, Di Wu (Southwest Hospital, Army Medical University)
+
+---
+
+### Prefatory Editorial Integrity Alert (for handling editor)
+
+Independent verification found no undisclosed preprint of this manuscript, no evidence of cohort reuse with other publications from this author group, and no fabricated or misrepresented citations among the spot-checked references (Lee et al., *NPJ Digit Med* 7, 325, 2024; Bing et al., *NPJ Digit Med*, 2026; Kalimouttou et al., *JAMA* 333, 2025 — all independently confirmed as described). The cited code repository (github.com/Mutopia-H/dex_rl) could not be located via independent search; the editor should ask the authors to confirm public accessibility before further processing. Competing interests are declared as none and funding sources are disclosed. No further integrity concerns were identified.
+
+---
+
+### 1. Overall Assessment
+
+The manuscript develops and externally validates an offline reinforcement-learning policy (CQL) for postoperative ICU dexmedetomidine dosing across three cohorts (MIMIC-IV, eICU, a Chinese hospital; n=7,274), using a dense multi-objective reward and dual off-policy evaluation (FQE, truncated WIS).
+
+The work is careful but incremental. CQL is a five-year-old algorithm, and RL-guided dexmedetomidine dosing was already established by Lee et al. (*NPJ Digit Med*, 2024); the advance is reward densification and a postoperative-specific cohort. More consequential: the primary endpoint (30-day ICU-free days) reached significance in only two of three cohorts, with a near-null result in the authors' own cohort (SWH, +0.13 days, P=0.104).
+
+### 2. Strengths
+
+Three-cohort external validation spanning a US academic center, over 200 US community ICUs, and a Chinese hospital (n=7,274) directly addresses the single-site generalizability failures common in this literature.
+
+The dense four-component reward (sedation, systemic status, safety, respiratory support) plus terminal ICU-free-days reward improves on Lee et al.'s sparse binary delirium reward, enabling component-level attribution of benefit.
+
+Dual off-policy evaluation with bootstrap confidence intervals, Bonferroni correction, and ESS-based exclusion of underpowered WIS components reflects appropriate caution against overoptimism common in offline clinical RL.
+
+SHAP interpretability with individual-trajectory comparisons, consistent with clinical plausibility (early low-dose initiation with hemodynamically responsive de-escalation in high-SOFA patients), supports face-validity beyond a black-box claim.
+
+### 3. Weaknesses
+
+The flagship endpoint is non-significant in SWH, the authors' own institution and largest external set; a null result in one's own data undercuts generalizability more than an external failure would, and the abstract's framing somewhat obscures this.
+
+Composite reward weights were fixed a priori by clinical consensus, with no inter-rater agreement or sensitivity analysis reported; offline RL policies are highly reward-sensitive, and this is uninterrogated.
+
+The comparator set omits Implicit Q-Learning and model-based offline RL, now standard in 2024-2026 clinical RL work, weakening the claim that CQL is optimal.
+
+The evaluation is entirely retrospective; OPE validity rests on an unverifiable overlap assumption, and absolute complication rates (hypotension, bradycardia) are not reported alongside WIS reward deltas, limiting interpretability of the safety claim.
+
+### 4. Editorial Decision
+
+Reject, with transfer to npj Digital Medicine. This is a sound but incremental extension of an already-published paradigm whose primary endpoint fails to generalize significantly to the authors' own cohort, short of the substantial advance required here. Counterargument: three-cohort international validation and dense-reward interpretability are uncommon strengths that npj Digital Medicine, publisher of the entire comparator literature cited, would value without the higher generalizability bar.
+
+### 5. Suggested Reviewer Expertise
+
+Reviewers should have expertise in offline reinforcement learning and conservative Q-learning, off-policy evaluation and its overlap-assumption limitations, and SHAP-based interpretability for RL policies; clinically, expertise in perioperative/ICU sedation management and dexmedetomidine pharmacology.
+
+### 6. State-of-the-Art Literature Review (Past 3 Years)
+
+Clinical RL has moved from single-site proof-of-concept toward multi-cohort, prospectively-tested systems: Kalimouttou et al. (*JAMA*, 2025) validated RL-guided vasopressin initiation in septic shock; Bing et al. (*NPJ Digit Med*, 2026) reported a prospective multicenter RCT of RL-controlled automated anesthesia delivery with non-inferior safety, the field's clearest translational benchmark; Desman et al. (*NPJ Digit Med*, 2025) extended distributional RL to glucose control. Nauka et al. (*NPJ Digit Med*, 2025) interrogated RL transportability failures across ICU sites, work this manuscript should have engaged with given its own null result. This manuscript advances reward design but does not clear the bar Bing et al. sets: prospective validation, not further offline replication.
+
+### Suggested Reviewers' Names
+
+1. **Peter C. Nauka** — postdoctoral researcher, University of Pittsburgh; authored the RL transportability critique directly relevant to this manuscript's cross-cohort inconsistency (*NPJ Digit Med*, 2025).
+2. **Arne Peine** — physician-scientist, RWTH Aachen; developed and validated an RL algorithm for mechanical ventilation optimization in critical care (*NPJ Digit Med* 4, 32, 2021).
+3. **Aymen Kalimouttou** — postdoctoral researcher, Stanford University; led the OVISS RL vasopressin-initiation trial in septic shock (*JAMA* 333, 1688, 2025).
+4. **Jonathan M. Desman** — clinical research fellow, Yale University; developed a distributional RL model for glucose control after cardiac surgery (*NPJ Digit Med* 8, 313, 2025).
+
+059464
+# Editorial Report — Manuscript 059464
+## "Quantum Entangled Generative Reinforcement Intelligence Framework for Adaptive Drug Discovery and Molecular Treatment Optimizations"
+
+---
+
+## Prefatory Editorial Integrity Alert (Handling Editor Only)
+
+Independent verification flags this manuscript for research-integrity screening before any peer-review assignment. Reference [3] (Philippidis, *GEN Edge*, 2023) is a journalistic Q&A with Schrödinger's CEO and R&D president, not an empirical study. Reference [8] (Martinelli, *Intelligence-Based Medicine*, 2023) is a narrative review of metabolomics machine learning, not a benchmarking paper. Neither source reports quantitative binding-affinity, ADMET, convergence, or clinical-validation metrics, yet Tables 1–6 attribute specific percentage figures to "Philippidis," "Martinelli," and "Turzo" as if these were reproduced experimental baselines. These comparator numbers are fabricated or misattributed. Separately, references [17]–[21] concern hybrid/electric-vehicle energy-management systems by "Ghode and Digalwar," topically unrelated to drug discovery and sharing the corresponding author's surname — undisclosed self-citation padding. The manuscript lists code availability as "not applicable" and data as privately held (Declarations), despite describing training on five fully public repositories (ChEMBL, DrugBank, PubChem, BindingDB, ADMET). This is an internal contradiction. Recommend routing to integrity review rather than standard peer review.
+
+---
+
+### 1. Overall Assessment
+
+The manuscript proposes QEGRI, a five-module pipeline (QEMSE-Net, RGPD-Engine, CBRIT, AQPRO, MTFS Validator) claimed to unify quantum-inspired molecular embedding, diffusion-based pharmacophore generation, causal pathway modeling, reinforcement-based dosing, and multimodal clinical validation.
+
+The central claim is architectural integration, not a demonstrated algorithmic contribution, and the evidence does not survive scrutiny. Equation 1's Hamiltonian H and "protein priors" are never defined; no qubit encoding, quantum circuit, or simulator backend is specified, so "quantum entangled" is decorative language rather than an operational method. Combined with the fabricated benchmark comparisons documented above, this is sufficient on its own for rejection.
+
+### 2. Strengths
+
+The framing correctly identifies a real gap: existing drug-discovery pipelines do treat molecular generation, biochemical reasoning, and toxicity/clinical validation as separate, poorly integrated stages, and multimodal fusion of genomic, imaging, and clinical data is a legitimate open problem in the field.
+
+The choice of evaluation resources — ChEMBL, DrugBank, PubChem, BindingDB, ADMET — is appropriate in principle; these are standard, community-recognized benchmarks for bioactivity and ADMET/Tox prediction, even though their actual use here cannot be verified.
+
+### 3. Weaknesses
+
+The comparative results (Tables 1–6, Figure 2) are not traceable to their cited sources, as detailed in the Integrity Alert; this alone invalidates every quantitative claim of superiority in the paper.
+
+No statistical rigor is reported anywhere: no confidence intervals, no variance across seeds or folds, no significance testing, and no description of train/test splits, despite 24 metrics improving monotonically and implausibly uniformly from Philippidis to Martinelli to Turzo to "Proposed Model" in every single table.
+
+The mathematical formalism (Eqs. 1–8) is non-operational. Terms such as Φ(t), Γ_k, and the "counterfactual" Y_t^cf in Eq. 6 are introduced without definition, units, or an algorithmic procedure for computing them, so the equations cannot be implemented or reproduced from the text.
+
+The manuscript claims "clinical stability," "personalized treatment," and "clinical decision reliability" (Table 5–6) while stating ethics approval is "not applicable," with no patient cohort, IRB record, or real clinical data described anywhere in the paper.
+
+### 4. Editorial Decision
+
+**Reject**, with no transfer recommendation. Fabricated or misattributed comparative benchmarks are a data-integrity failure that disqualifies the paper from any venue, not a fixable weakness; combined with an undefined core method and clinical claims made without patient data or ethics approval, there is no revision path. Recommend the handling editor escalate to the journal's research-integrity process rather than issue a standard rejection letter.
+
+### 5. Suggested Reviewer Expertise
+
+Reviewers should cover: quantum-inspired and quantum machine learning methods for molecular representation (variational quantum circuits, Hamiltonian embeddings); diffusion and flow-matching generative models for de novo molecule and pharmacophore design; causal graph neural networks for biochemical pathway inference; reinforcement learning for treatment-policy and dosing optimization; and, on the clinical side, pharmacology/clinical pharmacokinetics with experience evaluating AI-driven personalized-dosing claims.
+
+### 6. State-of-the-Art Literature Review (Past 3 Years)
+
+Generative chemistry has moved decisively to 3D structure- and diffusion-based design: geometry-complete diffusion models (Morehead & Cheng, *Communications Chemistry*, 2024), discrete diffusion generalists such as GenMol, and flow-matching foundation models like FLOWR.root now jointly generate ligands and predict affinity, evaluated against BindingDB and ChEMBL with explicit validity, novelty, and Tanimoto-similarity metrics. In oncology-specific generation, G2D-Diff (*Nature Communications*, 2025) conditions molecule generation directly on genotype and drug-response distributions. On the quantum side, a 2025 *Chemical Reviews* survey of quantum machine learning in drug discovery lays out data encoding, variational circuits, and hybrid quantum-classical pipelines as the field's actual technical vocabulary — vocabulary this manuscript's Eq. 1 does not engage with. The manuscript cites none of this literature, instead comparing against a magazine interview and a metabolomics review; it neither advances nor meaningfully engages the current state of the art in generative molecular design or quantum-enhanced drug discovery.
+
+### 7. Suggested Reviewers' Names
+
+For quantum molecular representation learning: Elham Torabian (University of British Columbia; quantum-circuit molecular representations for QML, 2025) is a directly comparable, verifiable junior researcher. For diffusion-based molecule generation: Alex Morehead (postdoctoral researcher; geometry-complete diffusion for 3D molecule generation, *Communications Chemistry*, 2024) is directly comparable. For causal pathway modeling and RL-based dosing/treatment policy, I could not independently verify a current junior-faculty candidate with a directly matching publication within this search; recommend the handling editor draw on the journal's existing reviewer database for these two sub-areas rather than accept an unverified suggestion here.
+
+---
+
+## Further Literature
+
+1. Torabian, E., Krems, R.V. (2025). Molecular representations of quantum circuits for quantum machine learning. *arXiv:2503.05955*. **Unreviewed preprint.** No author overlap. Methodologically relevant: direct precedent for quantum-circuit-to-molecule mapping the manuscript's Eq. 1 gestures at without defining.
+
+2. Sajjan, M. et al. (2025). Quantum Machine Learning in Drug Discovery: Applications in Academia and Pharmaceutical Industries. *Chemical Reviews*, 125(12), 5436–5460. https://doi.org/10.1021/acs.chemrev.4c00678. Peer-reviewed. No author/cohort overlap. Establishes the field's actual technical baseline (variational circuits, hybrid quantum-classical models) absent from the manuscript.
+
+3. Morehead, A., Cheng, J. (2024). Geometry-complete diffusion for 3D molecule generation and optimization. *Communications Chemistry*, 7(1), 150. Peer-reviewed. No overlap. Directly comparable generative architecture the manuscript should benchmark against but does not.
+
+4. Lee, S. et al. (2025). A genotype-to-drug diffusion model (G2D-Diff) for generation of tailored anti-cancer small molecules. *Nature Communications*. Peer-reviewed. No overlap. Demonstrates rigorous ChEMBL/NCI60-grounded evaluation with explicit distributional metrics, a standard this manuscript's tables do not meet.
+
+5. Reidenbach, D. et al. (2025). FLOWR.root: A flow matching based foundation model for joint 3D ligand generation and affinity prediction. *arXiv:2510.02578*. **Unreviewed preprint.** No overlap. Competing joint generation-plus-affinity architecture relevant to RGPD-Engine's claims.
+
+6. Duong, H.P.Y. et al. (2024). Quantum Machine Learning for Drug Discovery: Taxonomy, Research Challenges, and the Road Ahead. **Unreviewed preprint/in-press.** No overlap. Provides the taxonomic framing the manuscript's "quantum entangled" claims should be situated against but are not.
+
+7. Diffusion Models at the Drug Discovery Frontier: A Review on Generating Small Molecules versus Therapeutic Peptides (2025). *MDPI*. Peer-reviewed. No overlap. Documents known BindingDB/ChEMBL data-scarcity limitations the manuscript's tables do not acknowledge.
+
+8. Martinelli, D.D. (2023). Machine learning for metabolomics research in drug discovery. *Intelligence-Based Medicine*. Peer-reviewed. **Already cited by manuscript as [8], but misattributed as a quantitative benchmarking source in Tables 1–6; it contains no such data.** Flagged in Integrity Alert.
+
+9. Philippidis, A. (2023). Schrödinger's Equation: Physics + Machine Learning = Drug Discovery. *GEN Edge*. Trade/journalistic piece, not peer-reviewed research. **Already cited by manuscript as [3], same misattribution issue.** Flagged in Integrity Alert.
+
+10. Zhou, Y. et al. (2024–2025). Quantum-machine-assisted Drug Discovery. *arXiv:2408.13479*. **Unreviewed preprint.** No overlap. Actual experimental quantum-machine pipeline for drug discovery, offering a real methodological contrast to the manuscript's undefined Hamiltonian formalism.
+
+---
+
+*Report prepared per Nature Communications Digital Health editorial standard, calibrated to The Lancet Digital Health bar for clinical/methodological significance.*
