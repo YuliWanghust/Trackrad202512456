@@ -1,209 +1,5 @@
 # Trackrad202512456
 
-044278
-### Reviewer 1 summary
-
-The reviewer considers the large-scale, real-world deployment potentially important but identifies major threats to validity. The comparison between RAG, Workflow-LLM, and HEALER uses different time periods and patient cohorts, so improvements cannot be attributed causally to HEALER. The reviewer also questions the representativeness of the 1,268 manually evaluated consultations, the limited analysis of 24 mandatory escalation failures, the absence of clinical outcomes, the use of an LLM judge, incomplete statistical reporting, insufficient multi-site ethics documentation, conflicts of interest, and limited reproducibility. 
-
-### Reviewer 2 summary
-
-The reviewer views the manuscript as a distinctive multi-centre deployment study but finds substantial methodological and reporting omissions. Key details are missing on the RAG system, hierarchical agent architecture, models, prompts, deployment costs, data cleaning, physician evaluation, statistical tests, sentiment analysis, and escalation-event sampling. The reviewer also requests stronger controls for temporal confounding, more detailed safety analyses, clearer terminology, and fuller implementation information.
-
-### Reviewer 3 summary
-
-The reviewer highlights the scale and operational relevance of HEALER but recommends substantial revision. Main concerns include causal overstatement, selection bias in the evaluation subset, inadequate confounder adjustment, failure to distinguish operational outcomes from clinical outcomes, limited generalizability, insufficient external validation, LLM-evaluation bias, unclear reproducibility, incomplete implementation reporting, and weak statistical transparency.
-
-### Overall assessment
-
-The reviewers agree that the manuscript has potential significance because of its deployment across 134 hospitals and more than 80,000 interactions. However, the evidence currently supports an observational operational evaluation, not claims of causal improvement, clinical benefit, or established safety. The most serious issues are confounding across deployment periods, unclear sampling, insufficient analysis of escalation failures, and incomplete ethical and methodological reporting.
-
-### Decision
-
-**Major Revision.** The study is potentially publishable because of its scale and real-world setting, but the current analysis and reporting are insufficient for acceptance. Rejection would be appropriate if the authors cannot resolve the sampling, governance, safety, and confounding concerns.
-
-### Revision recommendations
-
-* Provide a STROBE-style participant and consultation flow diagram.
-* Explain how the 1,268 consultations were selected and assess representativeness.
-* Adjust for temporal, departmental, demographic, and case-complexity confounding.
-* Remove or substantially moderate causal claims.
-* Expand analysis of mandatory and discretionary escalation failures.
-* Report possible patient harm and adverse outcomes, where available.
-* Separate workflow outcomes from clinical outcomes.
-* Validate the LLM-based evaluator against independent human ratings.
-* Report models, prompts, agent orchestration, retrieval logic, tools, latency, and costs.
-* Clarify statistical tests, confidence intervals, and multiple-comparison correction.
-* Document ethics approval, consent, AI disclosure, privacy, and governance across all hospitals.
-* Clarify conflicts of interest, proprietary components, data availability, and reproducibility.
-
-061079
-# Editorial Report: BEGINN: BSPM-EGM Inference using Neural Networks for Non-Invasive Atrial Signal Reconstruction in Regular Rhythms
-
----
-
-## Editorial Integrity Alert (Handling Editor Only)
-
-Two items require resolution before this manuscript proceeds to external review.
-
-First, reference 26 (Gutiérrez-Fernández et al., *Frontiers in Physiology*, 2026), cited as "the most recent and methodologically comparable deep learning approach" with CC = 0.37–0.42, shares three co-authors (Fambuena-Santos, Guillem, Climent) with the submitted manuscript and originates from the same institute (ITACA, Universitat Politècnica de València). The verified figures are accurate, but the manuscript frames this as an independent external benchmark without disclosing the authorship overlap. This is a disclosure issue, not fabrication, and is resolvable by revision.
-
-Second, the simulation database's 42 atrial/torso geometries used to build the training statistical shape model and the clinical validation cohort's 42 patients are described using identical language and count. The manuscript does not clarify whether these are the same or a disjoint population. If the clinical cohort contributed to or overlaps with the SSM training geometries, this constitutes an undisclosed train–test relationship (indirect, via anatomy rather than raw signal) that would need explicit resolution — potentially reverting the decision toward rejection. Authors must clarify this in any revision.
-
----
-
-## 1. Overall Assessment
-
-BEGINN is a geometry-free 3D CNN–LSTM autoencoder reconstructing atrial electrograms from body surface potentials, targeting classical Tikhonov ECGI's two core weaknesses: over-smoothing and geometric sensitivity. Trained on 16,800 simulations from 42 anatomies, it is validated in silico and in a 60-recording, 42-patient, three-hospital clinical cohort.
-
-The in silico case is strong: BEGINN is invariant to a geometric perturbation that collapses classical ECGI's correlation from 0.73 to 0.42. But the clinical validation, which should carry the paper, shows non-inferiority, not superiority — McNemar's test found no significant localization difference (cavity 88.3% vs. 93.3%, p = 0.55; neighboring 85% vs. 88.3%, p = 0.79), with classical ECGI numerically ahead on both. The superiority narrative instead rests on unvalidated secondary morphology metrics.
-
----
-
-## 2. Strengths
-
-The training design is disciplined: leakage-free 28/7/7 geometry splits and clinically grounded positional-perturbation ranges (±20 mm, ±20°/±15°). The multicenter clinical validation — 60 pacing recordings, 42 patients, three hospitals, blinded scoring, McNemar's test — is genuinely rare for this sub-field; competing geometry-free deep learning ECGI work remains simulation-only or single-center. The authors are commendably explicit that regional pacing accuracy confirms only labeled activation origin, not full propagation-pattern fidelity, given no invasive electroanatomical ground truth. Electrode-dropout training targets a real deployment failure mode — contact loss, high-impedance leads — rather than an idealized full-vest scenario.
-
----
-
-## 3. Weaknesses
-
-The primary clinical endpoint does not support the superiority claim: cavity and neighboring accuracy showed no significant difference, with classical ECGI numerically higher on both. The pivot to focality area and maximum slope as evidence is unvalidated against an independent substrate reference, and the Monte Carlo dropout uncertainty described in Methods — the tool that could substantiate this — is never reported in Results. Whether the 42 SSM training anatomies overlap with the 42 clinical validation patients is unclarified (see Integrity Alert). Engagement with the directly competing, concurrent geometry-free diffusion approach (Jara & Meyers, 2026) is superficial, and no external hospital was held out for site-level generalizability.
-
----
-
-## 4. Editorial Decision
-
-**Major Revision.** The architecture and clinical validation effort are genuine, and no fabrication is evident, but the superiority narrative is unsupported by its own primary endpoint, and the disclosure gaps above must be resolved first. If the geometry/patient overlap proves to be genuine contamination, the decision reverts to Reject.
-
-**Counterargument:** Geometric robustness by design may itself be the clinically relevant contribution, independent of an underpowered (n = 60) localization comparison — a fair point that favors revision over rejection, provided the manuscript is honest about what the clinical data does and does not show.
-
----
-
-## 5. Suggested Reviewer Expertise
-
-Reviewers should be drawn primarily from technical backgrounds, with clinical expertise calibrated to persistent AF ablation. Needed technical expertise: deep learning architectures for the inverse problem of electrocardiography, specifically geometry-free and generative (diffusion, variational) approaches to BSPM-to-electrogram mapping; boundary element method forward modeling and Tikhonov/L-curve regularization as applied to atrial ECGI, sufficient to assess whether the classical comparator was optimally tuned; statistical shape modeling of cardiac and torso anatomy and its role in quantifying geometric uncertainty; and Bayesian or noise-robust local activation time estimation methodology. Clinical expertise should cover catheter ablation of persistent atrial fibrillation with specific experience in non-pulmonary-vein trigger and driver-guided ablation, ideally including prior use of ECGI or panoramic mapping systems to select ablation targets.
-
----
-
-## 6. State-of-the-Art Literature Review (Past 3 Years)
-
-Geometry-free deep learning ECGI has moved from a theoretical possibility to an active, competitive sub-field within the past several months. Gutiérrez-Fernández et al. (2026) proposed a dual-branch variational autoencoder for atrial electrogram estimation trained on 680 simulated BSPM–EGM pairs spanning sinus rhythm, multirotor AF, ectopic foci, and fibrotic substrates, reporting correlation coefficients of 0.37–0.42 for AF and 0.42–0.66 for sinus rhythm against zero-order Tikhonov — a smaller and more heterogeneous training set than BEGINN's, but notably including irregular rhythms and fibrotic substrate that BEGINN's regular-rhythm-only training database does not cover. Independently, Jara and Meyers (arXiv, January 2026) introduced a geometry-free conditional diffusion model for the same inverse problem, evaluated against CNN, LSTM, and transformer baselines on real ECGI data, with the explicit advantage of probabilistic multi-sample reconstruction rather than a single deterministic estimate. In the ventricular domain, Wang et al. (2025, *Artificial Intelligence in Medicine*) used a Pix2Pix architecture with a cosine-similarity loss for heart-surface potential reconstruction during ventricular pacing, and He et al. (2025) reported correlation coefficients exceeding 0.90 using an attention-based network under known geometry, while Pilia et al. (2023) demonstrated that ventricular localization error rises from under 3 mm to 32–47 mm once patient-specific geometry is removed — the same domain gap BEGINN targets in the atrial setting.
-
-Against this landscape, BEGINN's genuine advance is the first multicenter, pacing-validated clinical demonstration that a geometry-free deep learning atrial ECGI model can match classical ECGI's regional localization accuracy while remaining structurally immune to geometric mismatch. It does not, however, address irregular or fibrotic rhythms as the VAE work does, nor does it exploit uncertainty quantification as the concurrent diffusion approach does, and the manuscript would benefit from directly engaging both as competing rather than merely adjacent directions.
-
----
-
-## 7. Suggested Reviewers' Names
-
-**Technical expertise:**
-- Steffen Schuler (Karlsruhe Institute of Technology) — spatio-temporal basis methods for atrial ectopic ECGI localization; author of the noise-robustness benchmark (7.9 mm at 0 dB) directly cited in this manuscript.
-- Adam Meyers (Assistant Professor, University of Miami) — geometry-free conditional diffusion modeling for the inverse ECG problem; directly competing, independent architecture.
-- Jaume Coll-Font (Massachusetts General Hospital / Harvard Medical School) — geometric uncertainty and cardiac position sensitivity in ECGI forward/inverse modeling.
-
-**Clinical expertise:**
-- Shohreh Honarbakhsh (Consultant Electrophysiologist, Barts Health NHS Trust) — ECGI-guided driver ablation in persistent AF; principal investigator, TARGET-AF1 trial.
-- Ghassen Cheniti (Bordeaux University Hospital, LIRYC Institute) — non-invasive mapping and electrocardiographic imaging in atrial and ventricular arrhythmia ablation.
-
----
-
-## Further Literature (Past 3 Years)
-
-1. **Li, L., Camps, J., Rodriguez, B. & Grau, V.** Solving the Inverse Problem of Electrocardiography for Cardiac Digital Twins: A Survey. *IEEE Reviews in Biomedical Engineering* 18, 316–336 (2025). DOI: 10.1109/RBME.2024.3486439. Peer-reviewed. Not cited by manuscript. Independent (Oxford). Comprehensive recent survey spanning physics-based and deep learning ECGI inverse methods, including graph-based and hybrid architectures; situates BEGINN's specific architectural choices against the full current landscape it otherwise cites only piecemeal.
-
-2. **Jiang, X. et al.** Hybrid Neural State-Space Modeling for Supervised and Unsupervised Electrocardiographic Imaging. *IEEE Transactions on Medical Imaging* (2024). PMID: 38478452. Peer-reviewed. Not cited. Independent. Combines a physics-based forward operator with a learned neural transition function, including unsupervised validation on in-vivo data without EGM ground truth — directly relevant to BEGINN's own acknowledged inability to validate reconstructed propagation fidelity against invasive mapping.
-
-3. **Li, L., Camps, J., Wang, Z.J., Beetz, M., Banerjee, A., Rodriguez, B. & Grau, V.** Toward Enabling Cardiac Digital Twins of Myocardial Infarction Using Deep Computational Models for Inverse Inference. *IEEE Transactions on Medical Imaging* 43, 2466–2478 (2024). DOI: 10.1109/TMI.2024.3367409. Peer-reviewed. Not cited. Independent. Ventricular/substrate-focused analog of BEGINN's atrial trigger-localization goal; offers a template for linking reconstructed fields to substrate characterization, a step BEGINN defers to future work.
-
-4. **Wang, T., Karel, J.M.H., Bonizzi, P. & Peeters, R.L.M.** Influence of the Tikhonov Regularization Parameter on the Accuracy of the Inverse Problem in Electrocardiography. *Sensors* 23(4), 1841 (2023). Peer-reviewed. Not cited. Independent (Maastricht). Directly examines sensitivity of L-curve-selected Tikhonov regularization — the exact method used for BEGINN's classical ECGI comparator — relevant to whether that baseline was optimally tuned.
-
-5. **Yadan, Z., Jian, L., Jian, W., Yifu, L., Haiying, L. & Hairui, L.** An Expert Review of the Inverse Problem in Electrocardiographic Imaging for the Non-Invasive Identification of Atrial Fibrillation Drivers. *Computer Methods and Programs in Biomedicine* 240, 107676 (2023). Peer-reviewed. Not cited. Independent. Recent expert review focused specifically on AF-driver ECGI; situates BEGINN's regular-rhythm-only scope against the irregular-rhythm AF driver problem it explicitly defers.
-
-6. **Gutiérrez-Fernández, M., López-Linares, K., Fambuena-Santos, C., Guillem, M.S., Climent, A.M. & Barquero-Pérez, Ó.** Deep Learning for Atrial Electrogram Estimation: Toward Non-Invasive Arrhythmia Mapping Using Variational Autoencoders. *Frontiers in Physiology* 16, 1720244 (2026). DOI: 10.3389/fphys.2025.1720244. Peer-reviewed. **Cited by manuscript (ref 26).** **Not independent** — shares three co-authors with the submission (see Integrity Alert). Dual-branch VAE trained on 680 pairs covering sinus, multirotor AF, ectopic foci, and fibrotic substrate — broader rhythm coverage than BEGINN's regular-rhythm-only database, on a smaller dataset.
-
-7. **Valdes Jara, R. & Meyers, A.** Geometry-Free Conditional Diffusion Modeling for Solving the Inverse Electrocardiography Problem. arXiv:2601.18615 (2026). **Preprint, not peer-reviewed.** Cited by manuscript (ref 19), but only briefly. Independent (University of Miami). The most direct architectural competitor: geometry-free, evaluated on real ECGI data against CNN/LSTM/transformer baselines, with native probabilistic uncertainty quantification that BEGINN's MC-dropout output could have been benchmarked against but was not.
-
-8. **Wang, T. et al.** Deep Learning Based Estimation of Heart Surface Potentials. *Artificial Intelligence in Medicine* 163, 103093 (2025). Peer-reviewed. Cited by manuscript (ref 21). Independent (Maastricht). Pix2Pix-based ventricular surface-potential reconstruction (CC ≈ 0.64); useful cross-chamber benchmark for BEGINN's atrial correlation figures.
-
-9. **He, S. et al.** AI-Powered Noninvasive Electrocardiographic Imaging Using the Priori-to-Attention Network (P2AN) for Wearable Health Monitoring. *Sensors* 25, 1810 (2025). Peer-reviewed. Cited by manuscript (ref 32). Independent. Reports CC > 0.90 under known ventricular geometry, illustrating the accuracy ceiling geometry-aware methods can reach and the trade-off BEGINN accepts by discarding geometry.
-
-10. **Pilia, N. et al.** Non-Invasive Localization of the Ventricular Excitation Origin Without Patient-Specific Geometries Using Deep Learning. *Artificial Intelligence in Medicine* 143, 102619 (2023). Peer-reviewed. Cited by manuscript (ref 33). Independent (KIT). Documents the same geometry-dependency domain gap BEGINN targets (localization error rising from <3 mm to 32–47 mm without patient geometry), but in the ventricle; the closest direct precedent for BEGINN's core "geometry-free by design" argument.
-
-062269
-## 1. Overall Assessment
-
-The manuscript presents ThyroidXAgent, a clinician-interactive system coordinating thyroid-ultrasound segmentation, benign–malignant classification, lymph-node metastasis prediction, opportunistic screening and structured report generation. Its main contribution is an auditable evidence store that preserves intermediate outputs, measurements, retrieved evidence and clinician corrections. The study combines OpenThyroidDB with multicentre institutional cohorts and evaluates diagnostic performance, report quality and workflow efficiency. 
-
-This is more substantial than an isolated benchmarking study because it integrates multiple diagnostic tasks and permits clinician correction. However, the breadth of the system exceeds the validation depth of several components. The key concerns are uneven external validation across modules and the absence of prospective evidence that the reported efficiency gains improve clinical decisions or patient outcomes.
-
-## 2. Strengths
-
-The multicentre evaluation is strong. Segmentation and classification are assessed across TN3K, TN5K, ThyroidXL, DDTI, PKTN, ZJH-RK and RJH-TK using Dice, HD95, AUROC, AUPRC and confidence intervals.
-
-The architecture is clinically coherent. Segmentation, classification, attribution, lymph-node assessment and report generation remain separate and inspectable. Clinicians can correct masks and measurements before downstream reporting.
-
-The 145-case reader study reports improved diagnostic consistency and reductions in reporting time of approximately 36% for physicians and 27% for doctors. ThyClinScore also evaluates lesion-level factual completeness rather than lexical overlap alone.
-
-## 3. Weaknesses
-
-The reader study is retrospective and interface-mediated. It does not measure biopsy recommendations, surgical referrals, missed malignancies, patient outcomes or routine PACS deployment.
-
-Validation is uneven. Segmentation and classification receive broad testing, whereas lymph-node prediction, opportunistic screening and report generation use fewer institutional cohorts.
-
-Subgroup performance by age, sex, scanner, thyroiditis, nodule size and TI-RADS category is inadequately reported. Calibration, decision-curve analysis and clinically selected operating thresholds are also missing.
-
-ThyClinScore is author-developed and partly dependent on an LLM judge. Independent blinded validation and detailed factual-error analysis are required.
-
-## 4. Editorial Decision
-
-**Send for Review.** Reviewers should adjudicate cohort separation, module-specific external validity, report-evaluation independence and whether the reader study supports the claimed clinical utility.
-
-## 5. Suggested Reviewer Expertise
-
-The review team should include expertise in domain-generalized thyroid-ultrasound segmentation and classification; multimodal foundation models and tool-using clinical agents; radiology-report generation and factuality evaluation; diagnostic-model calibration and multicentre reader-study design; and clinical thyroid ultrasonography, TI-RADS assessment and cervical lymph-node staging.
-
-## 6. State-of-the-Art Literature Review
-
-Recent work has moved from isolated thyroid-nodule classifiers toward multimodal and clinically interactive systems. ThyGPT demonstrated an interpretable multimodal copilot for thyroid-nodule risk assessment, while prospective multicentre studies have evaluated AI assistance for junior thyroid-ultrasound readers. Multi-view self-supervised learning has also improved thyroid segmentation and classification under limited annotation. ([nature.com](https://www.nature.com/articles/s41746-025-01652-9?utm_source=chatgpt.com))
-
-Ultrasound report generation is advancing through cross-modal alignment and standardized multilingual vision-language models, while recent foundation-model adaptations address real-time ultrasound segmentation. These studies directly challenge any claim that report generation, multimodal interpretation or foundation-model segmentation is individually novel. ThyroidXAgent’s distinctive contribution is their integration into a clinician-correctable evidence workflow. However, its clinical superiority over focused systems such as ThyGPT and recent report-generation pipelines remains unproven without prospective deployment. ([arxiv.org](https://arxiv.org/abs/2406.00644?utm_source=chatgpt.com))
-
-## 7. Suggested Reviewer Names
-
-Dong Ni would provide relevant expertise in multi-view self-supervised thyroid-ultrasound segmentation and classification. Ying Hu or Zhongliang Jiang would be suitable for ultrasound report generation and cross-modal image–text alignment. Pranav Rajpurkar would provide expertise in clinical evaluation of AI-assisted radiology reporting. An independent thyroid-ultrasound clinician involved in multicentre prospective AI evaluation, such as Jianqiao Zhou, would be appropriate for assessing clinical validity and reader-study design. Conflicts of interest and recent collaborations with the submitting authors should be checked before invitation.
-
-## 8. Further Literature: Ten Closely Related Papers Published Since 2023
-
-1. **Yao J, Wang Y, Lei Z, et al. “Multimodal GPT model for assisting thyroid nodule diagnosis and management.” *npj Digital Medicine*. 2025;8. DOI: 10.1038/s41746-025-01652-9.** Peer-reviewed. The manuscript cites this work. The author group appears independent of the submitting team, subject to formal conflict checking. ThyGPT is the most direct comparator because it combines thyroid-ultrasound interpretation, interactive explanation and management support. Unlike ThyroidXAgent, it is primarily a diagnostic copilot rather than an auditable multi-agent reporting workflow. ([Nature][1])
-
-2. **Zhou Y, Chen C, Xu D, et al. “A deep learning based ultrasound diagnostic tool driven by 3D visualization of thyroid nodules.” *npj Digital Medicine*. 2025;8. DOI: 10.1038/s41746-025-01455-y.** Peer-reviewed. This paper does not appear in the manuscript’s reference list. Author independence should be checked because the research network overlaps with several ThyGPT investigators, although no clear overlap with the submitted author list is evident. TNVis uses dynamic ultrasound video, two-stage segmentation and 3D reconstruction, with development or validation involving 4,569 cases and seven hospitals. It is a stronger comparator for prospective workflow evaluation than static-image benchmarks. ([Nature][2])
-
-3. **Wu S-H, Tong W-J, Li M-D, et al. “Collaborative Enhancement of Consistency and Accuracy in US Diagnosis of Thyroid Nodules Using Large Language Models.” *Radiology*. 2024;310(3):e232255. DOI: 10.1148/radiol.232255.** Peer-reviewed. Cited by the manuscript and apparently independent. The study compares human–LLM interaction, image-to-text–LLM processing and conventional CNN diagnosis. Its image-to-text plus GPT-4 strategy achieved an AUC of 0.83, making it directly relevant to ThyroidXAgent’s report-grounded diagnostic claims and human–AI reader design. ([RSNA Publications Online][3])
-
-4. **Dai F, et al. “Improving AI models for rare thyroid cancer subtype by text guided diffusion models.” *Nature Communications*. 2025;16:4449. DOI: 10.1038/s41467-025-59478-8.** Peer-reviewed and cited by the manuscript. Potential author overlap should be examined carefully because the submitted paper includes a Fei Chen and the full comparator author list must be checked rather than inferred from initials. The study addresses rare thyroid-cancer subtypes using text-guided diffusion augmentation, directly informing ThyroidXAgent’s claims about follicular and uncommon malignant lesions. ([Nature][4])
-
-5. **Jiang Y, Feng C-M, Ren J, et al. “From pretraining to privacy: federated ultrasound foundation model with self-supervised learning.” *npj Digital Medicine*. 2025;8:714. DOI: 10.1038/s41746-025-02085-0.** Peer-reviewed and cited by the manuscript. The author group appears independent. This work develops a federated, self-supervised ultrasound foundation model and is relevant to ThyroidXAgent’s cross-centre generalization claims. It also provides an alternative strategy for institutionally distributed data that avoids central aggregation. ([Nature][5])
-
-6. **Zhang H, et al. “TN5000: An Ultrasound Image Dataset for Thyroid Nodule Detection and Classification.” *Scientific Data*. 2025;12:1437. DOI: 10.1038/s41597-025-05757-4.** Peer-reviewed and cited by the manuscript. The author group appears independent, although collaboration history should be checked. TN5000 supplies a large, openly described thyroid-ultrasound benchmark for detection and classification. It is relevant to the transparency, reproducibility and dataset-composition claims surrounding OpenThyroidDB. ([Nature][6])
-
-7. **Yan L, Zhou X, Wang Y, Chang X, Li Q, Han G. “Automated Ultrasound Diagnosis via CLIP-GPT Synergy: A Multimodal Framework for Image Classification and Report Generation.” *IEEE Access*. 2025;13:107950–107960. DOI: 10.1109/ACCESS.2025.3578462.** Peer-reviewed and cited by the manuscript. The author group appears independent. This CLIP–GPT pipeline jointly performs ultrasound classification and personalized report generation, making it one of the closest technical comparators for ThyroidXAgent’s combined diagnostic and reporting modules. ([IEEE Xplore][7])
-
-8. **Pandita A, et al. “Synthetic data trained open-source language models are comparable to GPT-4 for converting free-text thyroid nodule dictations into structured reports.” *npj Digital Medicine*. 2025;8. DOI: 10.1038/s41746-025-01658-3.** Peer-reviewed and cited by the manuscript. The author group appears independent. The study fine-tunes models including Mistral, Llama and Yi using 3,000 synthetic thyroid dictations and evaluates structured ACR TI-RADS conversion. It directly challenges the need for a large proprietary language model in the report-structuring component. ([Nature][8])
-
-9. **Xu Z, et al. “Fair ultrasound diagnosis via adversarial protected attribute learning.” *npj Digital Medicine*. 2025;8. DOI: 10.1038/s41746-025-01641-y.** Peer-reviewed. This paper does not appear to be cited by the manuscript, and its authors appear independent. It demonstrates that ultrasound segmentation models can show performance disparities across age and sex and proposes adversarial mitigation. It is particularly relevant because ThyroidXAgent does not adequately report demographic subgroup performance or fairness analyses. ([Nature][9])
-
-10. **Li J, Zhang H, Liang P, et al. “Artificial intelligence-enabled ultrasound diagnosis and stratification of follicular thyroid neoplasms: a multi-center study.” *npj Digital Medicine*. 2026. DOI: 10.1038/s41746-026-02489-6.** Peer-reviewed. It is not cited, likely because it appeared after preparation of the submitted manuscript. Author independence requires formal verification. This multicentre study directly overlaps with ThyroidXAgent’s follicular-neoplasm classification objective and should be considered when assessing whether its subtype-stratification module remains state of the art. ([Nature][10])
-
-[1]: https://www.nature.com/articles/s41746-025-01652-9?utm_source=chatgpt.com "Multimodal GPT model for assisting thyroid nodule diagnosis and management | npj Digital Medicine"
-[2]: https://www.nature.com/articles/s41746-025-01455-y?utm_source=chatgpt.com "A deep learning based ultrasound diagnostic tool driven by 3D visualization of thyroid nodules | npj Digital Medicine"
-[3]: https://pubs.rsna.org/doi/abs/10.1148/radiol.232255?utm_source=chatgpt.com "Collaborative Enhancement of Consistency and Accuracy ..."
-[4]: https://www.nature.com/articles/s41467-025-59478-8?utm_source=chatgpt.com "Improving AI models for rare thyroid cancer subtype by text ..."
-[5]: https://www.nature.com/articles/s41746-025-02085-0?utm_source=chatgpt.com "From pretraining to privacy: federated ultrasound foundation model with self-supervised learning | npj Digital Medicine"
-[6]: https://www.nature.com/articles/s41597-025-05757-4?utm_source=chatgpt.com "TN5000: An Ultrasound Image Dataset for Thyroid Nodule ..."
-[7]: https://ieeexplore.ieee.org/iel8/6287639/6514899/11029188.pdf?utm_source=chatgpt.com "Automated Ultrasound Diagnosis via CLIP-GPT Synergy"
-[8]: https://www.nature.com/articles/s41746-025-01658-3?utm_source=chatgpt.com "Synthetic data trained open-source language models are ..."
-[9]: https://www.nature.com/articles/s41746-025-01641-y?utm_source=chatgpt.com "Fair ultrasound diagnosis via adversarial protected ..."
-[10]: https://www.nature.com/articles/s41746-026-02489-6?utm_source=chatgpt.com "Artificial intelligence-enabled ultrasound diagnosis and ..."
-
 062618
 ## Editorial Integrity Alert — Handling Editor Only
 
@@ -292,401 +88,6 @@ For health literacy, risk communication, and patient-centred digital medicine: M
 [9]: https://arxiv.org/abs/2401.09637?utm_source=chatgpt.com "Impact of Large Language Model Assistance on Patients Reading Clinical Notes: A Mixed-Methods Study"
 [10]: https://arxiv.org/abs/2505.10472?utm_source=chatgpt.com "Large Language Models for Cancer Communication: Evaluating Linguistic Quality, Safety, and Accessibility in Generative AI"
 
-063116
-## Editorial Integrity Alert — Handling Editor Only
-
-Several claims require verification before external review. The manuscript states that a 2025 FDA-cleared stroke-detection system requires radiologist confirmation, that WHO deployed tuberculosis-screening AI as “decision-support instruments only,” and that the African CDC is collaborating with developers to validate malaria and neonatal-sepsis tools. These assertions are not supported by clearly corresponding references. The cited 2026 International AI Safety Report concerns general-purpose AI rather than clinical validation or medical-device governance. The duplicated final page also indicates inadequate submission-quality control.
-
-## 1. Overall Assessment
-
-This Comment argues that clinical AI should be aligned with patient safety, clinical intentions and health equity before deployment. It proposes three routes: technical alignment through concept bottleneck models, human-in-the-loop systems and continuous monitoring; regulatory harmonisation across the European Union, United Kingdom and United States; and international governance addressing low-resource settings. Figure 1 presents these elements as a pathway toward safe and trustworthy clinical AI. 
-
-The topic is important, but the manuscript does not provide a sufficiently distinctive or rigorous contribution. Its framework combines established principles without defining measurable alignment criteria or an implementation methodology. Technical alignment, fairness, medical-device regulation, organisational governance and global equity are grouped together without clarifying their causal or institutional relationships.
-
-## 2. Strengths
-
-The manuscript correctly identifies post-deployment monitoring as essential. Its emphasis on distribution shift, evolving clinical practice, feedback loops and recalibration addresses a major weakness in current clinical-AI evaluation.
-
-It also recognises that human oversight must be embedded within clinical workflows rather than added as a nominal safeguard. The global-health section appropriately challenges the transferability of models developed in high-income settings to health systems with different disease prevalence, infrastructure and clinical capacity.
-
-## 3. Weaknesses
-
-The framework is not operational. “Alignment” is not translated into endpoints such as calibration, subgroup performance, intervention utility, override behaviour, failure-detection sensitivity or patient outcomes. Figure 1 therefore functions as a taxonomy rather than an actionable framework.
-
-Concept bottleneck models are presented too broadly. They do not inherently ensure fairness, robustness or causal validity, and the manuscript does not address concept-label quality, incompleteness, leakage or intervention fidelity.
-
-The regulatory analysis also compresses distinct regimes. General AI governance, medical-device conformity assessment, clinical evaluation, quality-management systems and post-market surveillance should be separated. Several specific deployment and policy examples are insufficiently referenced.
-
-## 4. Editorial Decision
-
-**Reject.** The manuscript addresses a timely issue but does not establish a novel framework, systematic evidence synthesis or sufficiently precise recommendations. Its unsupported claims and conflation of technical, regulatory and organisational alignment require fundamental reconstruction. A substantially revised perspective may be more suitable for **npj Digital Medicine**.
-
-## 5. Suggested Reviewer Expertise
-
-Appropriate expertise would include interpretable and concept-based machine learning for clinical applications; prospective evaluation and post-market monitoring of deployed clinical AI; algorithmic fairness and transportability across health systems; medical-device regulation under FDA, MHRA and EU frameworks; and clinical informatics or patient-safety governance within operational health systems.
-
-## 6. State-of-the-Art Literature Review: Past Three Years
-
-Recent work has moved beyond general ethical principles toward operational health-system governance. Kim and colleagues applied a People, Process, Technology and Operations framework through interviews and co-design in a Canadian hospital system. Hussein and colleagues systematically reviewed 35 healthcare-AI implementation frameworks and identified seven governance domains, including the resource constraints faced by smaller organisations. Stanford investigators have developed deployment and monitoring infrastructure that distinguishes system integrity, predictive performance and clinical impact, with prospective experience showing that deployed performance can differ from retrospective estimates. ([nature.com](https://www.nature.com/articles/s41746-025-01909-3?utm_source=chatgpt.com))
-
-Against this literature, the present manuscript offers a readable synthesis but not a substantive advance. Its strongest contribution is connecting technical interpretability, regulation and global inequity in one narrative. However, the three-pathway framework is less operational than recent governance and monitoring models, and it does not provide empirical validation, consensus methods, implementation checklists or accountable decision thresholds.
-
-## 7. Suggested Reviewer Names
-
-Potential reviewers include **Marzyeh Ghassemi**, whose work addresses robustness, fairness and minority-group harms in health machine learning; **Karandeep Singh**, whose work concerns health-system evaluation, governance and anticipated deployment failures; **Nigam H. Shah**, whose research includes prospective deployment and post-market monitoring of clinical AI; and **Jess Morley**, whose scholarship focuses on ethical implementation, accountability and governance of AI in healthcare. Their institutional profiles indicate directly relevant expertise, although conflicts of interest and recent collaborations with the authors must be checked before invitation.
-
-063364
-## 1. Overall Assessment
-
-RadPRISM proposes schema-stratified supervision for chest-radiograph vision–language learning. Free-text reports are decomposed into concept fields covering support devices, anatomical structures, pathologies, and locations. These representations supervise image–text alignment, zero-shot classification, retrieval, selective prediction, and visual grounding. The study uses a large internal dataset, CheXpert, CheXlocalize, and a three-radiologist reader study. 
-
-The framework is technically coherent, but the evidence does not establish a substantial and generalisable advance at the required editorial threshold. The main concerns are evaluation circularity arising from report-derived supervision and labels, limited external validation, and the absence of clinically realistic deployment testing.
-
-## 2. Strengths
-
-The manuscript addresses a recognised limitation of report-level contrastive learning by explicitly separating clinically distinct concepts. The architecture and ablation analyses indicate that both schema construction and concept-specific alignment contribute to performance.
-
-The evaluation spans classification, retrieval, selective prediction, and visual grounding. This breadth is stronger than a single-task benchmark and exposes concept-specific failure modes.
-
-The reader study provides some clinician-centred assessment. It examines localisation, retrieval, binary classification, and concept–patient disentanglement rather than relying solely on automated metrics.
-
-## 3. Weaknesses
-
-The external validation is insufficient. CheXpert is closely related to the development setting, and CheXlocalize covers a limited pathology set. No independent multi-institutional cohort demonstrates robustness across acquisition systems, patient populations, or reporting conventions.
-
-The evaluation is partly circular. Training supervision, concept vocabularies, prompts, and several reference labels originate from reports or report-derived annotations. This design may reward ontology reproduction rather than independent visual understanding.
-
-Demographic and clinical subgroup analyses are absent. Performance, calibration, abstention behaviour, and retrieval errors are not reported across age, sex, race, ethnicity, or care setting.
-
-The reader study uses selected cases and isolated tasks. It does not assess complete reporting, diagnostic impact, workflow efficiency, or prospective clinical use. Comparisons with contemporary grounded-reporting systems are also incomplete.
-
-## 4. Editorial Decision
-
-**Reject.** The manuscript presents an interesting supervision strategy, but its central claims are not supported by sufficiently independent validation. The combination of report-derived evaluation, restricted external testing, absent subgroup analysis, and non-clinical reader tasks prevents a reliable assessment of generalisability and clinical utility. These limitations require substantial new datasets and experiments rather than revision of the current manuscript. Transfer to *npj Digital Medicine* may be considered after independent multi-site validation.
-
-## 5. Suggested Reviewer Expertise
-
-Appropriate expertise includes concept-level and region-level supervision for medical vision–language models; representation learning and selective prediction for chest radiography; radiology-report parsing using clinical ontologies and large language models; evaluation of grounded radiology report generation and hallucination; and practising thoracic radiology with experience in observer studies and AI workflow validation.
-
-## 6. State-of-the-Art Literature Review: Past Three Years
-
-Recent radiology vision–language research has moved from global image–report contrastive learning toward grounded, auditable generation. RaDialog introduced a publicly available radiology vision–language model for report generation and interactive dialogue. MAIRA-2 subsequently formulated grounded report generation and introduced RadFact for sentence-level factuality and localisation assessment. CheXpert Plus released more than 223,000 aligned radiograph–report pairs, while CXPMRG-Bench and ReXrank have pushed evaluation toward common datasets, multiple institutions, and clinically informed metrics. PadChest-GR adds radiologist-curated sentence-to-box annotations for grounded report generation. ([arxiv.org](https://arxiv.org/abs/2406.04449?utm_source=chatgpt.com))
-
-RadPRISM advances this landscape by making the granularity of supervision an explicit design variable and by evaluating concept–patient disentanglement. Its strongest novelty lies in schema-stratified representation learning rather than report generation itself. However, the manuscript should engage more directly with MAIRA-2, anatomy-prompted structured reporting, RadGraph-based content–style separation, and radiologist-annotated phrase grounding. These studies address overlapping claims concerning structure, localisation, factuality, and clinical interpretability. ([arxiv.org](https://arxiv.org/abs/2310.17811?utm_source=chatgpt.com))
-
-## 7. Suggested Reviewer Names
-
-Shruthi Bannur would provide expertise in grounded radiology report generation and sentence-level factuality through her work on MAIRA-2. Pierre Chambon would contribute expertise in large-scale chest-radiograph datasets, multimodal representation learning, and CheXpert Plus. Chantal Pellegrini would be suitable for evaluating radiology-specific large vision–language models and report-generation baselines through her work on RaDialog. Daniel C. Castro would provide expertise in radiologist-annotated grounding datasets and evaluation through PadChest-GR. Reviewer independence and recent institutional or collaborative relationships with the submitting authors should be checked before invitation.
-
-063401
-## 1. Overall Assessment
-
-The manuscript presents GAT-BiGRU-QR, a model for predicting temperatures at 13 skin sites when observations are missing. Graph attention represents anatomical relationships, a bidirectional GRU models temporal dynamics, and quantile regression generates prediction intervals. The evaluation includes random masking, complete sensor-node loss, environmental transfer and contact-sensor occlusion. 
-
-The approach is technically coherent but does not establish a sufficiently general or reproducible advance for Nature Communications. The principal concerns are the small, single-centre cohort and a validation strategy that may permit participant-level and temporal leakage between training and test sets.
-
-## 2. Strengths
-
-The study addresses an important problem in distributed physiological sensing. It distinguishes isolated missing values from complete sensor failure and evaluates masking ratios up to 40%.
-
-The architecture has a reasonable inductive structure. Graph attention models cross-site physiological relationships, while the bidirectional GRU captures temporal trajectories. Quantile regression is combined with interval coverage, width and alignment objectives.
-
-The evaluation extends beyond point-prediction metrics. The authors report MSE, MAE, MAPE, (R^2), coverage probability and interval width across environmental, activity and missing-node scenarios.
-
-## 3. Weaknesses
-
-The dataset includes only 30 healthy adults, comprising 24 men and six women aged 24–33 years, from one climate-chamber study. This cannot support broad claims concerning thermal health assessment or population-level thermoregulation.
-
-The 5:2:3 split appears to be applied after dividing continuous recordings into overlapping windows. Unless all windows from each participant and session were isolated within one partition, near-duplicate temporal trajectories may occur across training and test sets.
-
-Missingness is predominantly synthetic. Real failures caused by detachment, movement, sweat or perfusion changes are often informative and temporally clustered.
-
-Baseline comparisons are incomplete, and reproducibility is limited by the absence of accessible code, participant-level split information, random seeds and detailed preprocessing documentation.
-
-## 4. Editorial Decision
-
-**Reject.** Participant-independent validation and realistic sensor-failure evaluation are required before the model’s claims can be assessed reliably. Transfer to **Communications Engineering** may be appropriate after leakage-safe reanalysis, stronger imputation baselines and removal of unsupported health claims.
-
-## 5. Suggested Reviewer Expertise
-
-Appropriate expertise includes graph neural networks for physiological sensor topology; multivariate time-series forecasting and imputation; probabilistic forecasting and quantile calibration; wearable skin-temperature instrumentation; and human thermoregulation under controlled environmental exposure.
-
-## 6. State-of-the-Art Literature Review
-
-Recent personal-comfort research has moved toward wearable physiological sensing, data-efficient personalisation and deployment-oriented evaluation. Tekler and colleagues developed active-transfer-learning methods for personal thermal-comfort prediction with limited individual data. Recent work has also combined wrist skin temperature with indoor environmental measurements and assessed wristband-derived skin temperature, electrodermal activity and heart rate in real offices. ([sciencedirect.com](https://www.sciencedirect.com/science/article/pii/S0378778824006236?utm_source=chatgpt.com))
-
-The manuscript advances this literature by treating body sites as a physiological graph and explicitly evaluating complete-node loss. However, graph attention plus BiGRU is an incremental architectural combination, and the study does not match contemporary expectations for external generalisation, data-efficient personalisation or realistic missingness. Recent wearable studies used field settings, while graph-time-series research provides substantially stronger imputation comparators than those included here. ([sciencedirect.com](https://www.sciencedirect.com/science/article/pii/S0263224123014616?utm_source=chatgpt.com))
-
-## 7. Suggested Reviewer Names
-
-Zeynep Duygu Tekler would provide expertise in active transfer learning and data-efficient personal thermal-comfort modelling. Adrian Chong and Clayton Miller have relevant work on personalised comfort prediction, occupant-centric sensing and spatial-context models. Yasunori Akashi would provide expertise in experimentally measured wrist skin-temperature dynamics and human thermal response. These candidates should undergo routine conflict-of-interest and recent-collaboration screening before invitation.
-
-063487
-## 1. Overall Assessment
-
-BioGnosis integrates a biomedical knowledge graph with literature retrieval and large language models for biomedical question answering and gene-set annotation. The graph contains approximately 9.8 million relationships, while the literature layer includes about 134,000 full-text articles and 20 million abstract-derived records. The pipeline combines graph expansion, semantic retrieval, reranking, and evidence-grounded generation, and is evaluated on 400 internally generated questions and approximately 3,200 model responses. 
-
-The engineering scope is substantial, but the contribution mainly combines established GraphRAG, vector retrieval, reranking, and prompting methods. The decisive concerns are benchmark circularity, LLM-based adjudication, and absent external evaluation.
-
-## 2. Strengths
-
-The architecture integrates Gene Ontology, KEGG, Reactome, WikiPathways, CTD, NCBI Taxonomy, Cell Ontology, Uberon, and literature-derived entities. Graph-neighbour expansion and article retrieval provide complementary evidence.
-
-The component analysis separates retrieval, reranking, and query enhancement across question types and complexity levels. Retrieval contributes most strongly to faithfulness and overall performance, while query enhancement benefits difficult multi-hop questions.
-
-The gene-set experiments extend the framework beyond question answering. BioGnosis generates explanatory pathway interpretations and reports gains in ROUGE-L and semantic similarity over individual LLM configurations and conventional enrichment outputs.
-
-## 3. Weaknesses
-
-The benchmark is insufficiently independent. Question generation, reference construction, claim decomposition, and semantic scoring all involve LLMs, risking reward for stylistic agreement rather than biomedical correctness. Blinded expert assessment with inter-rater reliability is required.
-
-The study lacks evaluation on BioASQ, PubMedQA, MedQA, or MultiMedQA and common-benchmark comparisons with KRAGEN, SPOKE KG-RAG, or related biomedical GraphRAG systems.
-
-Reproducibility is incomplete because code, prompts, graph snapshots, article identifiers, retrieval parameters, model versions, latency, and computational costs are not fully archived.
-
-## 4. Editorial Decision
-
-**Reject.** The internally generated and substantially LLM-adjudicated benchmark does not independently support the central claims. Without expert validation, external benchmarks, and direct system-level comparisons, the manuscript does not establish a substantial advance. A redesigned study may suit **npj Artificial Intelligence** or **Communications Biology**.
-
-## 5. Suggested Reviewer Expertise
-
-External assessment would require expertise in biomedical knowledge-graph construction and ontology integration; GraphRAG and multi-hop retrieval for biomedical question answering; evaluation of generative systems, including hallucination, factuality and LLM-as-judge bias; computational functional genomics and pathway-enrichment analysis; and biomedical informatics with practical experience interpreting gene sets and literature-grounded biological hypotheses.
-
-## 6. State-of-the-Art Literature Review
-
-Recent biomedical GraphRAG work already establishes several of the manuscript’s core design principles. KRAGEN combines knowledge graphs, RAG and structured prompting for biomedical problem solving. SPOKE KG-RAG uses prompt-aware retrieval from a large heterogeneous graph and reports 97% retrieval accuracy on its internal test set, with substantial gains over prompt-only Llama-2, GPT-3.5 and GPT-4 configurations. Both systems provide direct methodological comparators for BioGnosis. ([PubMed Central (PMC)][1])
-
-For gene-set interpretation, Joachimiak et al. demonstrated LLM-based gene-set summarisation, while AnnDictionary subsequently benchmarked 14 major LLMs for functional gene-set annotation and reported that Claude 3.5 Sonnet recovered close functional annotations in more than 80% of curated test sets. AnnDictionary also provides open preprocessing pipelines and repeated-model evaluations. Literature-scaled immunological annotation has further combined article-derived knowledge graphs with LLMs, demonstrating that domain-restricted graph construction is an important alternative to a broad biomedical graph. ([Nature][2])
-
-BioGnosis advances this landscape by integrating graph retrieval, full-text literature retrieval and gene-set interpretation within one framework, and by analysing retrieval components in detail. It does not yet demonstrate a decisive advance over KRAGEN or SPOKE KG-RAG because these systems are not evaluated under a common benchmark. Its gene-set results also require comparison with AnnDictionary and expert-curated functional interpretation rather than predominantly lexical metrics.
-
-## 7. Suggested Reviewer Names
-
-For biomedical GraphRAG and knowledge-graph retrieval, appropriate candidates include **Karthik Soman**, who led the SPOKE KG-RAG study; **Noriaki Matsumoto**, first author of KRAGEN; and **Jasper Linders**, who developed knowledge-graph-extended RAG with explicit multi-hop decomposition. Their work directly addresses graph selection, retrieval fidelity and grounded generation.
-
-For gene-set annotation and computational genomics, suitable candidates include **Matthew P. Joachimiak**, who developed LLM-based gene-set summarisation; **George Crowley**, who led the AnnDictionary benchmarking study; and **Sarah He**, whose work examines literature-scaled immunological gene-set annotation using knowledge graphs. Reviewer conflicts and recent collaborations with the submitting authors should be checked before invitation.
-
-## 8. Further Literature: Ten Closely Related Papers from the Past Three Years
-
-1. Matsumoto, N. et al. “KRAGEN: a knowledge graph-enhanced RAG framework for biomedical problem solving using large language models.” *Bioinformatics* 40, btae353 (2024). DOI: 10.1093/bioinformatics/btae353. Peer-reviewed. Cited by the manuscript. This is a direct comparator because it integrates graph retrieval, graph-of-thought reasoning and LLM generation for biomedical question answering. ([PubMed Central (PMC)][1])
-
-2. Soman, K. et al. “Biomedical knowledge graph-optimized prompt generation for large language models.” *Bioinformatics* 40, btae560 (2024). DOI: 10.1093/bioinformatics/btae560. Peer-reviewed. Cited by the manuscript. The study introduces SPOKE KG-RAG, prompt-aware graph-context extraction and token-efficient biomedical grounding. ([Providence][3])
-
-3. Hu, M. et al. “Evaluation of large language models for discovery of gene set function.” *Nature Methods* 22, 3–11 (2025). DOI: 10.1038/s41592-024-02525-x. Peer-reviewed. Cited by the manuscript. It directly benchmarks LLM-based functional interpretation of gene sets against curated Gene Ontology concepts and random controls. ([Nature][4])
-
-4. Wang, Z. et al. “GeneAgent: self-verification language agent for gene-set analysis using domain databases.” *Nature Methods* (2025). DOI: 10.1038/s41592-025-02748-6. Peer-reviewed. Cited by the manuscript. GeneAgent is a particularly strong comparator because it combines external biological databases, iterative verification and expert assessment to reduce hallucinated gene-set interpretations. ([PubMed][5])
-
-5. Crowley, G. et al. “Benchmarking cell type and gene set annotation by large language models with AnnDictionary.” *Nature Communications* 16, 9511 (2025). DOI: 10.1038/s41467-025-64511-x. Peer-reviewed. Not clearly cited in the manuscript. It provides a model-agnostic benchmark for gene-list and cell-type annotation and therefore directly challenges BioGnosis’s predominantly internal evaluation. ([DOI][6])
-
-6. Wu, J. et al. “Medical Graph RAG: Evidence-based Medical Large Language Model via Graph Retrieval-Augmented Generation.” *Proceedings of ACL 2025*, 2025.acl-long.1381. DOI: 10.18653/v1/2025.acl-long.1381. Peer-reviewed conference paper. Not cited in the manuscript. It develops a medical GraphRAG framework using graph-structured evidence for grounded generation and is a direct system-level comparator. ([ACL Anthology][7])
-
-7. Matsumoto, N. et al. “ESCARGOT: an AI agent leveraging large language models, dynamic graph of thoughts, and biomedical knowledge graphs for enhanced reasoning.” *Bioinformatics* 41, btaf031 (2025). DOI: 10.1093/bioinformatics/btaf031. Peer-reviewed. Not clearly cited in the manuscript. ESCARGOT extends KRAGEN with dynamically generated graph-of-thought execution, Cypher querying and transparent reasoning traces. ([PubMed][8])
-
-8. Song, J. et al. “Graph retrieval augmented large language models for facial phenotype associated rare genetic disease.” *npj Digital Medicine* (2025). DOI: 10.1038/s41746-025-01955-x. Peer-reviewed. Not cited in the manuscript. The study directly compares Cypher-based and vector-based graph retrieval and evaluates diagnostic accuracy, consistency and temperature sensitivity across eight LLMs. ([PubMed][9])
-
-9. Hou, W. and Ji, Z. “Assessing GPT-4 for cell type annotation in single-cell RNA-seq analysis.” *Nature Methods* 21, 1462–1465 (2024). DOI: 10.1038/s41592-024-02235-4. Peer-reviewed. Cited by the manuscript. Although focused on cell-type rather than pathway annotation, it is methodologically relevant because it evaluates LLM interpretation of marker-gene sets across ten datasets and five species. ([Nature][10])
-
-10. Xie, E. et al. “CASSIA: a multi-agent large language model for automated and interpretable cell annotation.” *Nature Communications* (2025). DOI: 10.1038/s41467-025-67084-x. Peer-reviewed. Not cited in the manuscript. CASSIA combines annotation, validation, quality scoring, refinement and optional RAG agents, with benchmarking across 970 cell populations. Its modular validation design is directly relevant to BioGnosis’s claims regarding reliable biological interpretation. ([Nature][11])
-
-[1]: https://pmc.ncbi.nlm.nih.gov/articles/PMC11164829/?utm_source=chatgpt.com "KRAGEN: a knowledge graph-enhanced RAG framework for biomedical problem solving using large language models - PMC"
-[2]: https://www.nature.com/articles/s41467-025-64511-x "Benchmarking cell type and gene set annotation by large language models with AnnDictionary | Nature Communications"
-[3]: https://providence.elsevierpure.com/en/publications/biomedical-knowledge-graph-optimized-prompt-generation-for-large-/?utm_source=chatgpt.com "Biomedical knowledge graph-optimized prompt generation for large language models - Providence"
-[4]: https://www.nature.com/articles/s41592-024-02525-x?utm_source=chatgpt.com "Evaluation of large language models for discovery of gene set function | Nature Methods"
-[5]: https://pubmed.ncbi.nlm.nih.gov/40721871/?utm_source=chatgpt.com "GeneAgent: self-verification language agent for gene-set analysis using domain databases - PubMed"
-[6]: https://doi.org/10.1038%2Fs41467-025-64511-x?utm_source=chatgpt.com "Benchmarking cell type and gene set annotation by large language models with AnnDictionary | Nature Communications"
-[7]: https://aclanthology.org/2025.acl-long.1381/?utm_source=chatgpt.com "Medical Graph RAG: Evidence-based Medical Large Language Model via Graph Retrieval-Augmented Generation - ACL Anthology"
-[8]: https://pubmed.ncbi.nlm.nih.gov/39842860/?utm_source=chatgpt.com "ESCARGOT: an AI agent leveraging large language models, dynamic graph of thoughts, and biomedical knowledge graphs for enhanced reasoning - PubMed"
-[9]: https://pubmed.ncbi.nlm.nih.gov/40849403/?utm_source=chatgpt.com "Graph retrieval augmented large language models for facial phenotype associated rare genetic disease - PubMed"
-[10]: https://www.nature.com/articles/s41592-024-02235-4 "Assessing GPT-4 for cell type annotation in single-cell RNA-seq analysis | Nature Methods"
-[11]: https://www.nature.com/articles/s41467-025-67084-x "CASSIA: a multi-agent large language model for automated and interpretable cell annotation | Nature Communications"
-
-063604
-### 1. Overall Assessment
-
-The manuscript introduces a six-task benchmark that progressively delegates analytical authority to large language models across a retinal vessel-density, plasma-proteomic, and cardiovascular–kidney–metabolic workflow. Using UK Biobank and GDIES, it argues that models reproduce prespecified analyses reliably but lose scientific fidelity when required to choose candidate-selection, multiplicity-control, weighting, and outcome-specific rules. 
-
-The contribution is conceptually stronger than a conventional coding benchmark because execution completeness and analytical fidelity are evaluated separately. The main concerns are the narrow biological and statistical scope, and the treatment of one frozen researcher workflow as the reference standard despite plausible alternative analyses.
-
-### 2. Strengths
-
-The staged T1–T6 design localises failure as methodological authority is transferred. This is more informative than aggregate task accuracy and directly tests the manuscript’s proposed operational trust boundary.
-
-The evaluation is unusually granular. Across 5,450 history-free calls, the authors assess code execution, set recovery, coefficient agreement, joint-ratio calibration, format compliance, and outcome specificity rather than relying on final-answer similarity.
-
-The benchmark is grounded in a substantive workflow comprising 2,921 UK Biobank proteins, seven prespecified outcomes, covariate-adjusted models, Benjamini–Hochberg correction, and an external cohort of 1,389 participants.
-
-### 3. Weaknesses
-
-Generalisability is not established because all tasks derive from one observational proteomics workflow. Validation on an unrelated workflow involving survival analysis, missing-data handling, causal inference, or predictive modelling is needed.
-
-The frozen reference is reproducible but not uniquely correct. Independent statisticians should classify deviations as errors, acceptable alternatives, or substantively equivalent analyses.
-
-Reproducibility depends heavily on proprietary, mutable models. Exact model snapshots, API dates, inference settings, prompts, raw outputs, parser code, and executable environments require permanent archiving.
-
-### 4. Editorial Decision
-
-**Send for Review.** The manuscript offers a distinctive benchmark for locating failure in delegated biomedical analysis. Reviewers should adjudicate reference-standard validity, cross-workflow generalisability, and whether the released materials support exact reproduction.
-
-### 5. Suggested Reviewer Expertise
-
-Relevant expertise includes benchmark design for autonomous scientific agents; statistical validation of generated analytical workflows; reproducible computational epidemiology using UK Biobank and high-dimensional proteomics; evaluation of LLM tool use and executable code; and retinal vascular epidemiology with cardiovascular and renal outcomes.
-
-### 6. State-of-the-Art Literature Review
-
-Recent evaluation has moved from medical question answering toward executable, multistep scientific workflows. BioDSA-1K contains 1,029 biomedical hypothesis-validation tasks and separately evaluates conclusions, evidence alignment, reasoning, and code executability. BixBench uses real bioinformatics datasets and long analytical trajectories, with frontier agents achieving low open-answer accuracy. BAISBench evaluates discovery from single-cell data, while BioXArena extends agent evaluation to 76 multimodal biomedical machine-learning tasks with hidden labels and held-out graders. ([arXiv][1])
-
-The present manuscript is narrower in biological breadth but deeper in controlled experimental design. Unlike BioDSA-1K and BixBench, it holds data and upstream inputs constant while selectively relaxing methodological constraints. This allows the authors to attribute failure to delegated choices. Its principal limitation relative to these benchmarks is external breadth: one prespecified epidemiological workflow cannot establish a universal operational boundary. The manuscript should directly compare its task taxonomy and fidelity metrics with BioDSA-1K, BixBench, BioML-bench, and MedAgentBench. ([BioRxiv][2])
-
-### 7. Suggested Reviewer Names
-
-For biomedical data-science agent benchmarking, suitable reviewers include Zifeng Wang and Benjamin Danek, authors of BioDSA-1K; Ludovico Mitchener and Jon Laurent, authors of BixBench; and Erpai Luo, lead author of BAISBench. Their work directly addresses realistic multistep biomedical analysis and scientific-agent evaluation. ([arXiv][1])
-
-For LLM evaluation methodology, Paul Hager would provide relevant expertise from systematic testing of model limitations in clinical decision-making. Qiao Jin and Nicholas Wan have evaluated LLM performance on complex clinical-calculator selection and reasoning tasks.
-
-For computational epidemiology and proteomic workflows, reviewers should include investigators experienced in UK Biobank, Olink proteomics, multiple-testing control, and cardiovascular–renal outcome modelling. Candidate identities require a conflict-of-interest check against the author group and the participating UK Biobank and GDIES teams before invitation.
-
-### 8. Further Literature
-
-The following papers were published or posted during 2023–2026 and share the manuscript’s scope of evaluating LLM agents on executable, multistep scientific, biomedical, or data-analytic workflows.
-
-1. Chen Z, Chen S, Ning Y, et al. **ScienceAgentBench: Toward Rigorous Assessment of Language Agents for Data-Driven Scientific Discovery.** ICLR, 2025. The benchmark contains 102 tasks extracted from 44 peer-reviewed studies and evaluates generated programs, execution results, scientific correctness, and cost. It is the closest general-science comparator to the manuscript’s separation of execution from analytical validity. Peer reviewed. ([OpenReview][3])
-
-2. Wang Z, Danek B, Sun J. **BioDSA-1K: Benchmarking Data Science Agents for Biomedical Research.** arXiv, 2025. BioDSA-1K comprises 1,029 biomedical hypothesis-testing tasks and evaluates hypothesis decisions, evidence–conclusion alignment, reasoning, and code executability. It directly overlaps with the manuscript’s emphasis on trustworthy biomedical analysis rather than runnable code alone. Preprint. ([arXiv][1])
-
-3. Mitchener L, Laurent JM, Tenmann B, et al. **BixBench: A Comprehensive Benchmark for LLM-Based Agents in Computational Biology.** arXiv, 2025. BixBench includes more than 50 biological data-analysis scenarios and nearly 300 open-answer questions requiring long, multistep analytical trajectories. It provides a broader bioinformatics test of the workflow-level generalisability claimed by the manuscript. Preprint. ([arXiv][4])
-
-4. Miller and colleagues. **BioML-bench: Evaluation of AI Agents for End-to-End Biomedical Machine Learning.** bioRxiv, 2025. This benchmark evaluates agents across protein engineering, drug discovery, single-cell omics, medical imaging, and clinical-biomarker modelling. It is particularly relevant to the manuscript’s limitation to a single observational proteomics workflow. Preprint. ([BioRxiv][2])
-
-5. Luo E, Jia J, Xiong Y, et al. **Benchmarking AI Scientists for Omics Data-Driven Biological Discovery.** *Bioinformatics*, 2026. BAISBench assesses cell-type annotation and biological discovery using real single-cell transcriptomic datasets and conclusions derived from published studies. It tests integration of executable analysis with domain interpretation, closely matching the manuscript’s concern about methodologically plausible but scientifically incorrect outputs. Peer reviewed. ([OUP Academic][5])
-
-6. Li L, Zhang D, Du X, et al. **BioXArena: Benchmarking LLM Agents on Multi-Modal Biomedical Machine Learning Tasks.** arXiv, 2026. BioXArena contains 76 end-to-end tasks across nine biomedical domains, with private test labels, held-out graders, executable pipelines, and biology-aware metrics. Its breadth provides a direct counterpoint to the manuscript’s task-specific trust boundary. Preprint. ([arXiv][6])
-
-7. **BiomniBench: Process-Level Evaluation of LLM Agents for Real-World Biomedical Research.** bioRxiv, 2026. BiomniBench-DA includes 100 data-analysis tasks across 17 task types and evaluates intermediate research-process dimensions rather than only final outputs. Its process-level scoring is closely aligned with the manuscript’s staged assessment of analytical decisions. Preprint. ([BioRxiv][7])
-
-8. Jiang Y, Black KC, Geng G, et al. **MedAgentBench: A Virtual EHR Environment to Benchmark Medical LLM Agents.** *NEJM AI*, 2025. MedAgentBench evaluates 300 physician-authored tasks in a FHIR-compliant environment containing realistic longitudinal patient records. Although clinically oriented, it similarly tests autonomous tool use, planning, execution, and task-specific failure within a controlled workflow. Peer reviewed. ([DOI][8])
-
-9. Huang Q, Vora J, Liang P, Leskovec J. **MLAgentBench: Evaluating Language Agents on Machine Learning Experimentation.** Proceedings of ICML, 2024. MLAgentBench assesses whether agents can design experiments, modify code, interpret results, and iteratively improve machine-learning systems. It is relevant to the manuscript’s distinction between following an explicit analytical protocol and independently selecting consequential methodological steps. Peer reviewed. ([Proceedings of Machine Learning Research][9])
-
-10. Boiko DA, MacKnight R, Kline B, Gomes G. **Autonomous Chemical Research with Large Language Models.** *Nature*, 2023. The Coscientist system combines planning, literature retrieval, code execution, and laboratory-tool control to perform multistep chemical research. It is not principally a benchmark, but it is a foundational demonstration of delegated scientific authority and therefore an important conceptual comparator for the manuscript’s trust-boundary framework. Peer reviewed. ([nature.com][10])
-
-[1]: https://arxiv.org/abs/2505.16100?utm_source=chatgpt.com "BioDSA-1K: Benchmarking Data Science Agents for Biomedical Research"
-[2]: https://www.biorxiv.org/content/10.1101/2025.09.01.673319v2?utm_source=chatgpt.com "BioML-bench: Evaluation of AI Agents for End-to-End Biomedical ML | bioRxiv"
-[3]: https://openreview.net/forum?id=6z4YKr0GK6&utm_source=chatgpt.com "ScienceAgentBench: Toward Rigorous Assessment of ..."
-[4]: https://arxiv.org/abs/2503.00096?utm_source=chatgpt.com "BixBench: a Comprehensive Benchmark for LLM-based Agents in Computational Biology"
-[5]: https://academic.oup.com/bioinformatics/article/42/Supplement_1/btag227/8726318?utm_source=chatgpt.com "Benchmarking AI scientists for omics data–driven biological ..."
-[6]: https://arxiv.org/abs/2605.15766?utm_source=chatgpt.com "BioXArena: Benchmarking LLM Agents on Multi-Modal Biomedical Machine Learning Tasks"
-[7]: https://www.biorxiv.org/content/10.64898/2026.05.12.724604v2?utm_source=chatgpt.com "BiomniBench: Process-level Evaluation of LLM Agents for Real-world Biomedical Research | bioRxiv"
-[8]: https://doi.org/10.1056/AIdbp2500144?utm_source=chatgpt.com "MedAgentBench: A Virtual EHR Environment to Benchmark Medical LLM Agents | NEJM AI"
-[9]: https://proceedings.mlr.press/v235/huang24y.html?utm_source=chatgpt.com "MLAgentBench: Evaluating Language Agents on Machine Learning Experimentation"
-[10]: https://www.nature.com/articles/s41586-023-06792-0?utm_source=chatgpt.com "Autonomous chemical research with large language models"
-
-064012
-## 1. Overall Assessment
-
-The manuscript evaluates whether ICU delirium prediction models transport between MIMIC-IV and the multicentre eICU Collaborative Research Database. LASSO, XGBoost, GRU, LSTM, and Transformer models are assessed under source-only transfer, target-database redevelopment, recalibration, and alternative endpoint definitions. The principal claim is that transportability depends on endpoint construction: incident-delirium prediction transfers poorly, whereas assessment-conditioned persistence or recurrence prediction retains stronger discrimination.
-
-The study is methodologically informative, but its strongest results depend heavily on prior delirium assessments. When assessment history is removed, external performance declines substantially. The work therefore characterises transport failure more convincingly than it establishes a clinically actionable predictive advance. 
-
-## 2. Strengths
-
-The bidirectional validation design is rigorous. Models are trained in both databases and evaluated in the opposite cohort, reducing dependence on a single favourable source–target pairing.
-
-The endpoint decomposition is a substantive strength. The authors separate incident delirium from persistent or recurrent delirium and vary anchor eligibility, horizon, and review policy. This demonstrates that observation processes and label construction materially alter apparent transportability.
-
-Evaluation extends beyond AUROC to AUPRC, calibration, risk-decile enrichment, alert yield, workload, and decision-curve analysis. Repeated natural-person-grouped runs and fold-paired comparisons provide credible uncertainty estimates.
-
-The attribution and ablation analyses identify why XGBoost transports better. Longitudinal assessment history dominates external performance, while recurrent and Transformer architectures do not consistently improve transfer.
-
-## 3. Weaknesses
-
-The clinically most important task—first-onset delirium prediction without prior delirium assessments—remains weak. The reported high AUROCs largely reflect persistence or recurrence modelling rather than early detection.
-
-Both datasets are retrospective and US-based. Differences in CAM-ICU documentation, sedation practice, assessment frequency, and missingness may encode workflow rather than disease biology. Prospective, geographically independent validation is absent.
-
-No meaningful subgroup analysis is reported across age, sex, race or ethnicity, language, insurance status, socioeconomic position, or ICU type. This is critical because the outcome depends on clinician assessment behaviour.
-
-Clinical implementation remains hypothetical. Calibration is unstable, local adaptation provides limited benefit, and retrospective workload estimates do not establish timely or beneficial intervention.
-
-## 4. Editorial Decision
-
-**Reject.** The manuscript provides a useful analysis of endpoint-dependent transportability but does not meet the threshold for a substantial clinical AI advance. Its strongest performance depends on prior assessment history, while incident prediction and prospective generalisability remain insufficient. Transfer to **Communications Medicine** would be appropriate.
-
-## 5. Suggested Reviewer Expertise
-
-Appropriate expertise includes cross-institutional validation of longitudinal EHR models; XGBoost and recurrent or Transformer-based ICU time-series modelling; calibration, decision-curve analysis, and dataset-shift methodology; delirium phenotyping from CAM-ICU and ICD-derived data; and critical-care delirium prevention, assessment workflows, and implementation science.
-
-## 6. State-of-the-Art Literature Review
-
-Recent work has moved from isolated retrospective classifiers toward dynamic and externally validated ICU delirium prediction. Gong and colleagues reported model development and external validation using routinely collected clinical and physiological data in *Anesthesiology* in 2023. Dynamic models have subsequently predicted delirium over repeated 12-hour windows, while multi-cohort studies have evaluated Mamba and Longformer architectures across institutional, MIMIC-IV, and eICU cohorts. ([pubmed.ncbi.nlm.nih.gov](https://pubmed.ncbi.nlm.nih.gov/36538354/?utm_source=chatgpt.com))
-
-DeLLiriuM represents the strongest direct comparator. It uses structured EHR converted to text across more than 100,000 patients and approximately 195 hospitals, reporting external AUROCs of 0.77 and 0.84. Recent systematic evidence nevertheless concludes that retrospective design, heterogeneous labels, and inadequate external validation continue to prevent clinical generalisation. The present manuscript advances this literature through its analysis of eligibility, assessment history, calibration, and operational workload. It does not, however, establish superior prediction or clinical utility relative to these newer multi-cohort systems. ([arxiv.org](https://arxiv.org/abs/2410.17363?utm_source=chatgpt.com))
-
-## 7. Suggested Reviewer Names
-
-Parisa Rashidi would provide expertise in externally validated longitudinal ICU modelling and is senior author of the DeLLiriuM and multi-cohort acute brain dysfunction programmes. Miguel Contreras would offer direct technical expertise in LLM-based and structured-EHR delirium prediction, although his independence and career stage should be checked. Kyle D. Gong would provide experience in externally validated ICU delirium prediction using clinical and physiological EHR variables. Franck R. Lucini would contribute expertise in recurrent dynamic delirium prediction and clinically timed ICU risk estimation. Reviewer conflicts, recent collaborations, and institutional relationships with Shengliang Ni and Kengo Sato should be verified before invitation.
-
-064063
-## 1. Overall Assessment
-
-This manuscript develops an interpretable survival model for predicting major adverse cardiovascular and cerebrovascular events in patients with cardiovascular–kidney–metabolic syndrome stage 4 and established coronary heart disease. The retrospective cohort includes 8,827 patients from seven Chinese tertiary hospitals, divided into a five-hospital training cohort and a two-hospital external validation cohort. Eight baseline variables selected through Boruta, LASSO and variance-inflation filtering were entered into 32 survival-learning algorithms. The Adaptive Oblique Random Survival Forest achieved the highest reported discrimination, with C-indices of 0.892 in development and 0.748 in external validation. The authors supplement conventional evaluation with time-dependent AUROC, calibration, decision-curve analysis, permutation importance, SurvSHAP, SurvLIME and individual conditional expectation analyses. 
-
-The clinical population is relevant and underrepresented in conventional primary-prevention scores. However, the work does not establish a sufficiently substantial advance for Nature Communications. The claimed “dynamic” stratification is principally a post-hoc explanation of a baseline-variable survival model. No longitudinally updated covariates are used. Furthermore, performance decreases markedly under external validation, and comparison with established clinical scores or parsimonious Cox models is inadequate. These limitations substantially weaken both novelty and clinical utility.
-
-## 2. Strengths
-
-The multicentre sample is relatively large for a narrowly defined advanced CKM population. The study includes 1,483 MACCE events over a median follow-up of 40 months, providing a reasonable number of outcomes for model development and validation.
-
-The hospital-level cohort separation is preferable to a random patient split. The external cohort contains data from two institutions not used for training, which provides a more credible test than internal cross-validation alone.
-
-The evaluation extends beyond a single discrimination metric. The manuscript reports time-dependent AUROCs, integrated Brier scores, calibration trajectories, precision–recall analysis and decision-curve analysis. The use of SurvSHAP and SurvLIME also attempts to distinguish population-level variable importance from patient-specific temporal contributions.
-
-The final model uses eight routinely obtainable variables, including fasting plasma glucose, atherogenic index of plasma, diabetes status, HDL cholesterol, monocyte-to-lymphocyte ratio, neutrophil count, diseased-vessel count and implanted-stent count. This compact input set could be operationally feasible if its incremental value were established.
-
-## 3. Weaknesses
-
-The manuscript overstates temporal modelling. All predictors appear to be measured at the index hospitalization. Time-dependent SHAP curves describe how baseline covariates influence estimated survival across follow-up; they do not update risk using changing renal function, glycaemia, inflammation, medication, revascularisation or recurrent events. The resulting model is longitudinal in its outcome formulation, but not dynamically updated in the clinical sense.
-
-External discrimination falls from 0.892 to 0.748. This optimism gap raises concerns about model instability, site effects and overfitting after extensive feature and algorithm selection. The external calibration plot on page 36 also shows visible divergence between observed and predicted survival. Calibration intercepts, calibration slopes and confidence intervals are not reported. Uncertainty around differences between the 32 algorithms is likewise absent.
-
-The comparator framework is insufficient. The manuscript does not establish incremental value over a Cox model using the same eight predictors, established secondary-prevention scores, or the AHA PREVENT framework where applicable. Contemporary evidence indicates that machine-learning cardiovascular prediction studies require rigorous external validation and direct comparison with clinically relevant baselines rather than algorithm-only benchmarking. ([OUP Academic][1])
-
-Potential information leakage is not excluded clearly. The manuscript should state explicitly that Boruta selection, LASSO tuning, variance-inflation filtering, hyperparameter optimisation and model ranking were conducted exclusively within the training hospitals. Missing-data prevalence and imputation procedures are insufficiently documented. Complete-case analysis could introduce selection bias.
-
-No performance analyses are presented by sex, age, renal-function category, diabetes status, hospital, ethnicity or socioeconomic position. All institutions are Chinese tertiary hospitals, limiting transportability to community settings and non-Chinese populations. There is also no prospective workflow evaluation, clinical-impact study, implementation threshold, model code, executable pipeline or sufficiently detailed data dictionary.
-
-## 4. Editorial Decision
-
-**Reject and consider transfer to Communications Medicine.** The multicentre cohort and interpretability analyses are useful, but the manuscript represents an extensive application of established survival-learning and SHAP-based techniques rather than a decisive methodological or clinical advance. The static predictor design, substantial external-validation performance decline, incomplete calibration reporting and absence of strong clinical baselines cannot be resolved through routine editorial revision.
-
-## 5. Suggested Reviewer Expertise
-
-Peer review would require expertise in oblique random survival forests and censored-outcome learning; statistical validation and calibration of clinical prediction models; explainable survival analysis, including SurvSHAP and SurvLIME; multicentre EHR model transportability and dataset-shift assessment; and clinical cardiology covering chronic coronary disease, PCI and advanced cardiovascular–kidney–metabolic syndrome.
-
-## 6. State-of-the-Art Literature Review: Past Three Years
-
-Recent cardiovascular prediction work has shifted from simple algorithm comparisons toward transportability, longitudinal outcome modelling, calibration and clinically meaningful comparison. Forrest and colleagues developed an EHR-derived CAD marker using 95,935 records and validated it in two longitudinal biobanks, demonstrating the scale and independent-population validation now expected for a high-impact contribution. ([PubMed][2]) Shimizu and colleagues reported externally validated and interpretable MACE prediction in a Brazilian hospital network, directly addressing generalisability and individual explanations. ([PubMed][3]) Choi and colleagues subsequently applied time-to-event machine learning to post-PCI MACE and explicitly evaluated time-varying risk-factor contributions, closely overlapping the present manuscript’s methodological positioning. ([PubMed][4])
-
-CKM-specific prediction is also emerging. Recent studies have applied machine learning to mortality and cardiovascular-risk prediction across CKM stages, including analyses using national longitudinal cohorts and interpretable stage-specific models. ([PubMed][5]) Against this landscape, the manuscript’s main distinction is its restriction to stage 4 CKM with established CHD and its combination of AORSF with multiple explanation methods. It does not introduce a new survival architecture, genuinely longitudinal updating, broad international validation or demonstrated clinical benefit. The authors should engage more directly with externally validated MACE models, EHR-derived CAD markers and recent time-to-event post-PCI studies.
-
-## 7. Suggested Reviewer Names
-
-**Gilson Yuuji Shimizu**, University of São Paulo, would provide expertise in externally validated and interpretable MACE prediction across hospital datasets. ([PubMed][3])
-
-**Hong-Jae Choi**, Seoul National University–affiliated research programme, would provide expertise in time-to-event machine learning and temporal interpretation of MACE risk following PCI. ([PubMed][4])
-
-**Michael Schrempf**, associated with the PRECARE-ML work, would provide expertise in model generalisability, external validation and interpretable cardiovascular risk modelling. ([PubMed][3])
-
-**Changhee Lee**, Korea University, would provide methodological expertise in survival machine learning and longitudinal clinical risk prediction. ([PubMed][4])
-
-**Hack-Lyoung Kim**, Seoul National University College of Medicine, would provide clinical expertise in coronary disease, PCI outcomes and the interpretation of MACCE prediction models. ([PubMed Central (PMC)][6])
-
-[1]: https://academic.oup.com/ehjdh/article/6/1/7/7845948?utm_source=chatgpt.com "Machine learning based prediction models for cardiovascular ..."
-[2]: https://pubmed.ncbi.nlm.nih.gov/36563696/?utm_source=chatgpt.com "Machine learning-based marker for coronary artery disease: derivation and validation in two longitudinal cohorts - PubMed"
-[3]: https://pubmed.ncbi.nlm.nih.gov/39392843/?utm_source=chatgpt.com "Machine learning-based risk prediction for major adverse cardiovascular events in a Brazilian hospital: Development, external validation, and interpretability - PubMed"
-[4]: https://pubmed.ncbi.nlm.nih.gov/41308188/?utm_source=chatgpt.com "Risk Prediction of Major Adverse Cardiovascular Events Within One Year After Percutaneous Coronary Intervention in Patients With Acute Coronary Syndrome: Machine Learning-Based Time-to-Event Analysis - PubMed"
-[5]: https://pubmed.ncbi.nlm.nih.gov/41289206/?utm_source=chatgpt.com "Cardiometabolic-kidney indices and machine learning ..."
-[6]: https://pmc.ncbi.nlm.nih.gov/articles/PMC12699253/?utm_source=chatgpt.com "Risk Prediction of Major Adverse Cardiovascular Events Within One Year After Percutaneous Coronary Intervention in Patients With Acute Coronary Syndrome: Machine Learning–Based Time-to-Event Analysis - PMC"
-
 
 064561
 ## 1. Overall Assessment
@@ -728,3 +129,416 @@ Against this landscape, the manuscript addresses a relevant but narrower questio
 ## 7. Suggested Reviewer Names
 
 For ophthalmic foundation models and self-supervised retinal representation learning, suitable candidates include Justin Engelmann, Miguel O. Bernabeu, Kai Yu and Yang Bai. For multimodal ophthalmic foundation models and benchmarking, suitable candidates include José Morano, Hrvoje Bogunović, Danli Shi and Weiyi Zhang. For mixture-of-experts fusion, efficient medical-imaging architectures and model-selection methodology, suitable candidates include Yuyin Zhou, Jiancheng Yang, Siyu Huang and Yong Liu. For clinical retinal imaging and external validation, suitable candidates include Ursula Schmidt-Erfurth, Mingguang He, Carol Cheung and Andrzej Grzybowski. Reviewer independence and recent coauthorship with the submitting group should be checked before invitation.
+
+065015
+# Editorial Report
+**Manuscript:** Precision Prompting: Model-Specific Error-Driven Prompt Optimization Improves Diagnostic Reasoning Across Large Language Models
+**Corresponding Author:** Zhehan Jiang, Peking University Health Science Center
+**Date:** 2026-08-09
+
+---
+
+## EDITORIAL INTEGRITY ALERT
+*For handling editor only — not for external circulation*
+
+Three issues require resolution before further processing.
+
+**Authorship irregularity.** The author contributions statement attributes every activity — conception, design, code development, analysis, and writing — exclusively to Z.J. (Zhehan Jiang). The remaining four named co-authors (Tianpeng Zheng, Jiayi Liu, Quansen Wang, Yuyue Sun) carry no stated contributions despite appearing on the title page. This is non-compliant with ICMJE authorship criteria and constitutes a potential gift-authorship problem. ICMJE-conformant individual contribution statements from all five authors should be required before any further processing.
+
+**Primary benchmark from unreviewed preprint.** ICD-Bench (Ref 27, Dedhia et al., arXiv:2507.13966, 2025) has not undergone peer review. The manuscript's 2,940-item training split and 735-item primary test set — on which all error profiling and the primary accuracy endpoint depend — derive from this unvetted source. Authors should acknowledge this prominently or provide evidence of peer review.
+
+**Internal numerical inconsistency.** The text and abstract consistently report a mean test-set accuracy gain of +10.9 pp. Figure 1 summary statistics display "+7.1 pp" under the label "MEAN TEST GAIN." Given the skewed gain distribution (range 4.2–27.6 pp across 14 models, median ≈ 7.5 pp from Table 2), the Figure 1 value plausibly represents the median rather than the mean, but is not labeled as such. This discrepancy requires correction before the manuscript can be assessed.
+
+---
+
+## 1. Overall Assessment
+
+Precision Prompting is a four-phase framework — baseline evaluation, error diagnosis, protocol personalization, and validation — for improving LLM diagnostic reasoning without fine-tuning. Training-set errors from 14 LLMs are classified into a seven-category clinical cognitive-bias taxonomy by a single GPT-5.4 analyst model; tailored structured-reasoning protocols are then derived and tested on a held-out ICD-Bench split (735 questions) and independent MedThink-Bench (500 expert-annotated questions). Mean test accuracy improves by 10.9 pp (bootstrap 95% CI 7.8–14.8; Cohen's d = 1.5), generalizing to MedThink-Bench (+11.5 pp; 95% CI 7.5–16.5). The deployed artifact is a single frozen system prompt.
+
+The empirical signal is large, consistent across all 14 models, and distributes across an independent benchmark — these are genuine strengths. The deployment argument is practically sound. However, the paper's headline claim is that model-specific personalization, not structured prompting in general, produces the gains. The authors explicitly identify the absence of a length-matched, uniformly applied generic-protocol control as the study's primary unresolved confound. That missing control is not a limitation to be acknowledged in discussion — it is the experiment the paper requires to support its title.
+
+## 2. Strengths
+
+The evaluation spans 14 LLMs across frontier proprietary models (GPT-5, DeepSeek-v4-flash), large open-weight models (Qwen3.5-122b-a10b, diffusiongemma-26b-a4b-it), and specialist medical LLMs (MedSeek V3, medpsy-4b), making this among the broadest structured-prompting comparisons in the medical MCQ literature. All 14 models improve, and weakest-baseline models approach the accuracy of strongest-baseline models post-correction (GLM-5.2: 53.9% → 81.5%; diffusiongemma-26b: 54.4% → 80.1%), a clinically consequential leveling that exceeds what retrieval or scaling typically achieves without fine-tuning.
+
+Grounding the error taxonomy in the clinical cognitive-bias literature (Croskerry, Academic Medicine 2003; Norman et al., Academic Medicine 2017) is methodologically justified. The cross-model finding that Key Clue Neglect accounts for approximately one-third of all errors with a coefficient of variation of 0.06 is a reproducible, substantive empirical characterization of a shared LLM failure mode — analogous to the premature-closure dominance documented in human diagnosticians.
+
+Generalization to MedThink-Bench — a structurally distinct peer-reviewed benchmark with ten-option questions and expert-annotated step-by-step rationales (Zhou et al., npj Digital Medicine, 2025) — substantially mitigates benchmark-overfitting as a sole explanation for the gains. Cross-benchmark flip-rate concordance (Pearson r = 0.56, P = 0.036, n = 14) provides convergent evidence.
+
+## 3. Weaknesses
+
+The study's decisive confound is the absence of a generic structured-protocol control. The neutral baseline ("Answer the following medical question… Provide your reasoning, then output 'Answer: X'") is weak relative to current standards. Structured prompting alone — chain-of-thought (Wei et al., NeurIPS 2022), verification-step frameworks (Shao & Zhang, npj Digital Medicine 2025), and textual-gradient optimization (AutoMedPrompt, Wu et al., arXiv 2502.15944, 2025) — routinely produces accuracy gains of 5–15 pp on medical MCQs. Without a length-matched generic control applied uniformly across all 14 models, the 10.9 pp gain cannot be attributed to personalization rather than to structured prompting in general. The authors acknowledge this explicitly as "the most important next experiment." It is not a caveat; it is the paper's unsatisfied burden of proof.
+
+The model-specificity claim rests on a single transfer probe (MedSeek V3 ↔ Baichuan-M3). Pairwise Jaccard similarity of 0.41 demonstrates that models fail on different questions, which is equally consistent with benchmark question heterogeneity as with model-level cognitive pathology. One model pair cannot distinguish these explanations.
+
+Error classification is performed entirely by a single LLM annotator (GPT-5.4) with no inter-rater reliability established against human clinical cognition experts. The taxonomy's construct validity as a clinical measurement instrument is unverified; the corrective gains supply indirect but insufficient validation.
+
+Protocol selection is based on the highest accuracy gain across up to five optimization rounds evaluated on the held-out test set (Methods). The test set thereby influences protocol selection, creating selection-biased gain estimates. Item-level intermediate predictions were not retained, preventing quantification of this effect.
+
+## 4. Editorial Decision
+
+Reject. The paper's central claim — model-specific personalization drives the reported accuracy gains — cannot be evaluated because the required control experiment (a generic, length-matched, uniformly applied structured-reasoning protocol) was not performed; the authors themselves identify this as the primary missing evidence. This cannot be addressed by revising the manuscript as submitted: it requires rerunning all 14 models under a new experimental condition. The ICD-Bench primary benchmark is from an unreviewed preprint, and the authorship contributions statement does not meet ICMJE criteria. The underlying empirical finding is real and substantial; the authors should incorporate the missing control and consider submission to npj Digital Medicine or Communications Medicine, where the current evidence base is commensurate with scope and standards.
+
+## 5. Suggested Reviewer Expertise
+
+Reviewers should hold the following expertise: automatic and programmatic prompt optimization for language models, with familiarity with DSPy, TextGrad, or gradient-free optimization methods; LLM evaluation methodology for clinical MCQ benchmarks, with specific experience identifying confounds in benchmark-derived accuracy gains; clinical diagnostic reasoning and cognitive error taxonomy, with grounding in the anchoring, premature closure, and confirmation-bias literature for human diagnosticians; biomedical NLP and error classification in clinical question-answering; and small-sample statistical inference for model comparison studies, including bootstrap and permutation approaches.
+
+## 6. State-of-the-Art Literature Review
+
+Structured and automatic prompt optimization for medical LLM reasoning has progressed rapidly. MedPrompt (Nori et al., arXiv 2311.16452; subsequently Singhal et al., Nature Medicine 2025) established that few-shot exemplar selection, CoT, and self-consistency bring GPT-4 to near-expert performance on USMLE MCQs without fine-tuning. TextGrad (Yuksekgonul et al., ICML 2024) introduced gradient-like text refinement, applied medically in AutoMedPrompt (Wu et al., arXiv 2502.15944, 2025), which achieves state-of-the-art on MedQA and PubMedQA using Llama-3 without weight updates. DSPy-MIPRO (Khattab et al., ICLR 2024) has been applied to structured clinical EHR question-answering. Shao & Zhang (npj Digital Medicine 8, 782, 2025) evaluated two-stage verification-step prompting on MedQA-USMLE and NEJM cases — the closest published methodological antecedent, cited but not empirically compared against. Griot et al. (Nature Communications 16, 642, 2025) documented LLMs' metacognitive deficits in medical reasoning, supporting the external correction rationale. McCoy et al. (NEJM AI 2, 2025) and Hager et al. (Nature Medicine 30, 2024) document the gap between MCQ accuracy and clinical decision fidelity, which contextualizes the significance of MCQ-only gains.
+
+Precision Prompting's distinctive position — deriving corrective protocols from each model's own error instances rather than task-agnostic optimization — is novel in framing. However, superiority over AutoMedPrompt, DSPy-MIPRO, or Shao & Zhang's verification framework remains empirically undemonstrated. Both primary benchmarks are MCQ-only, and ICD-Bench is unreviewed; the translational gap between MCQ gains and clinical deployment safety, highlighted by Hager et al. and McCoy et al., is understated in the manuscript's clinical framing.
+
+## 7. Suggested Reviewer Names
+
+For prompt optimization and LLM evaluation methodology: Omar Khattab (Databricks/Stanford; DSPy, ICLR 2024) is well positioned to assess programmatic prompt optimization comparisons; Shunyu Yao (OpenAI; Tree of Thoughts, cited as Ref 8) could evaluate the reasoning methodology and baseline comparisons; Mert Yuksekgonul (Stanford; TextGrad, ICML 2024) holds direct expertise in the closest competing method.
+
+For medical LLM evaluation and clinical NLP: Asma Ben Abacha (Microsoft Research; medical QA benchmarking, MEDEC error-detection, ACL 2024) is independent from the submitting group and has directly relevant benchmark-validation expertise; Tristan Naumann (Microsoft Research; clinical NLP evaluation methodology) could assess the statistical and benchmark-design elements.
+
+For clinical diagnostic reasoning and error taxonomy: Jonathan Sherbino (McMaster University; diagnostic reasoning, medical education research) could adjudicate whether the seven-category taxonomy captures clinically valid error constructs; David Cook (Mayo Clinic; evidence-based medicine, clinical decision support) provides a clinical deployment perspective.
+
+064972
+# Editorial Report
+**Manuscript:** AgentPedia: An AI-Powered Diagnostic Framework for Pediatric Pneumonia Classification
+**Authors:** Isah Salim Ahmad, Qiang Zhang, Shengran Fan, et al. (Shenzhen University of Advanced Technology General Hospital / Shenzhen Institutes of Advanced Technology, CAS)
+**Report prepared for:** Handling Editor
+
+---
+
+## EDITORIAL INTEGRITY ALERT *(For Handling Editor Only — Not for Author Release)*
+
+Four anomalies require resolution before this manuscript is routed for external review.
+
+**AUC inconsistency.** The abstract (lines 41–43) claims AUC values of 0.989 (training) and 0.986 (testing). Figure 5 clearly shows AUC = 0.8892 (training) and AUC = 0.8874 (testing). A discrepancy of approximately 10 AUC points cannot be attributed to rounding or figure mislabeling; it represents conflicting primary outcome data within the same submission. Authors must provide raw model output logs reconciling these figures before peer review.
+
+**Confidence calibration claim contradicted by presented figures.** Lines 42–43 assert "superior confidence calibration with clear separation between correct and incorrect predictions." The lower panels of Figure 6 show that AgentPedia's confidence score distributions for correct versus incorrect predictions are visually indistinguishable — interquartile ranges overlap across the full confidence range. This is the signature of a miscalibrated model, not a well-calibrated one.
+
+**MCC formula error.** The MCC numerator (line 506) is written as "TN × TP − FN − FP," which is mathematically incorrect. The standard MCC numerator is (TP × TN) − (FP × FN). The formula as typeset would yield nonsensical values for any non-trivial confusion matrix. Authors must confirm whether the cited metric values were computed with the correct formula.
+
+**Citation anomalies.** Reference 12 (Clissa and Sanabani, "Genetic and non-genetic factors influencing phenotypic variability in neurofibromatosis type 1," Orphanet Journal of Rare Diseases, 2026) is cited in the context of genotype-phenotype correlation for pneumonia pathogen virulence and resistance determinants (lines 94–96). Neurofibromatosis type 1 is a neuroectodermal tumor condition with no subject-matter connection to microbial genomics. Reference 37 (Boozary et al., "Enhancing customer retention with machine learning: A comparative analysis of ensemble models for accurate churn prediction," IJIMDI, 2025) is cited to support MCC as a classification metric in a medical AI manuscript. A retail customer churn prediction paper is not an appropriate methodological citation in this domain. Both citations suggest automated or unverified reference insertion and should be confirmed as intentional by the corresponding author.
+
+---
+
+## 1. Overall Assessment
+
+AgentPedia is a five-module agentic framework for pediatric pneumonia classification integrating clinical, laboratory, NGS, and radiological data from 1,485 retrospective patients at a single Shenzhen hospital, with GPT-4o as the primary VLM reasoning engine. Two concerns dominate. A 10-point AUC discrepancy between the abstract (0.989/0.986) and Figure 5 (0.8892/0.8874) constitutes conflicting primary outcome data. Single-center evaluation against non-competitive baselines independently precludes any generalizability claim.
+
+---
+
+## 2. Strengths
+
+The integration of NGS resistance gene profiles (mecA, sul, SHV, CTX-M), virulence annotation (MPN372/CARDS toxin), and macrolide resistance mutations at *M. pneumoniae* 23S rRNA loci A2063G/A2064G into a multimodal reasoning pipeline is absent from all published pediatric pneumonia AI comparators. Clinical analytics outputs — co-infection mapping, drug resistance surveillance, seasonal burden profiling — extend function to stewardship-relevant outputs. Patient-level stratified splitting across severity, ICU, and length-of-stay is methodologically disciplined.
+
+---
+
+## 3. Weaknesses
+
+The AUC discrepancy is the overriding flaw: the abstract claims 0.989/0.986 (train/test) while Figure 5 shows 0.8892/0.8874, conflicting primary outcome data that invalidates interpretation pending resolution with raw model output. External validation is absent; the n = 223 test partition shares the training cohort's pathogen ecology, clinicians, and NGS platform — not a measure of generalizability. Shao et al. (*The Innovation*, 2024) achieved AUC 0.887 externally on 24,107 patients, the benchmark this paper does not meet. CLIP and ViT are not clinically-adapted multimodal systems; domain-fine-tuned alternatives (HuatuoGPT-Vision, BioViL-T) are absent, and the 0.8-point accuracy advantage over fine-tuned GPT-4o is uninterpretable without confidence intervals. Confidence calibration claims are contradicted by Figure 6's overlapping score distributions for correct and incorrect predictions; ECE, Brier score, and reliability diagrams are absent from results.
+
+---
+
+## 4. Editorial Decision
+
+**Reject.** The AUC discrepancy requires resolution with primary model output before peer review. Citation anomalies, absent external validation, and inadequate baselines fall below the Nature Communications standard. Transfer to *npj Digital Medicine* or *npj Health Systems* is appropriate after the AUC discrepancy is reconciled, external validation at an independent institution is conducted, and CLIP/ViT are replaced with domain-appropriate baselines. Transfer should not be actioned until the AUC issue is resolved.
+
+---
+
+## 5. Suggested Reviewer Expertise
+
+The panel should include reviewers with expertise across the following domains. Technical reviewers should cover: (1) VLM-based multimodal reasoning architectures for structured EHR, genomic, and imaging data fusion, specifically cross-attention and transformer-based alignment of tabular, sequence, and image modalities in clinical settings; (2) confidence calibration methodology in clinical AI systems, including Expected Calibration Error, Brier score, and reliability diagram analysis for deep learning classifiers; (3) agentic AI framework evaluation in healthcare, specifically consensus-based multi-query VLM strategies with human-in-the-loop safeguard mechanisms; and (4) NGS metagenomic pipeline integration into machine learning decision support, including antimicrobial resistance gene detection and virulence factor profiling. The clinical reviewer should be (5) a pediatric infectious disease specialist with expertise in community-acquired pneumonia epidemiology in East Asian pediatric populations, including *Mycoplasma pneumoniae* surveillance and macrolide resistance management.
+
+---
+
+## 6. State-of-the-Art Literature Review (Past 3 Years)
+
+The most consequential advance directly competing with AgentPedia's primary claim is Shao et al. (*The Innovation*, 2024, DOI: 10.1016/j.xinn.2024.100648), a multimodal integration pipeline for pulmonary infection diagnosis trained and internally validated on 24,107 patients from West China Hospital, with external validation at an independent institution (AUC 0.887), achieving physician-comparable performance for bacterial, fungal, viral, and mycobacterial pneumonia discrimination and prognostic stratification. This paper is cited by the authors only as Reference 16 — a general background citation — without acknowledgment that it directly pre-empts the "first comprehensive AI framework" novelty claim and provides the external validation standard that AgentPedia does not meet. Li et al. (*DIGITAL HEALTH*, 2024, DOI: 10.1177/20552076241305168) presented the Robust Multimodal Transformer for pediatric pneumonia severity assessment using X-ray and clinical text with a mask-attention mechanism for handling modality absence — a clinically important limitation that AgentPedia does not address and that limits its real-world deployment readiness. A multimodal auxiliary diagnosis framework for pediatric community-acquired pneumonia (*Scientific Reports*, 2025, DOI: 10.1038/s41598-025-23006-x) demonstrated comparable architecturally similar integration of CXR, laboratory results, and clinical text specifically in pediatric hospital-admitted populations.
+
+In the agentic clinical AI space, EyeAgent (preprint: arXiv:2511.09394) demonstrated LLM-as-planner with 53 validated ophthalmic tool orchestration across 23 imaging modalities, evaluated against senior ophthalmologists on 200 real-world cases — a methodological bar for agentic clinical system validation that AgentPedia does not approach. AgentMRI (Sajua et al., *Journal of Imaging Informatics in Medicine*, 2026, DOI confirmed, cited as Reference 28) provides the most direct architectural comparator for the planning engine. Against this landscape, AgentPedia's genuine advance is the structural incorporation of NGS-derived antimicrobial resistance and virulence gene profiles into a multimodal reasoning pipeline — a feature absent from all published comparators. This novelty is real but currently unverifiable without external validation, since the claimed resistance-phenotype correlation performance cannot be assessed against an independent pathogen ecology.
+
+---
+
+## 7. Suggested Reviewer Names
+
+**VLM-based multimodal clinical reasoning and pediatric pneumonia AI:**
+- Jing Li (Children's Hospital, Zhejiang University School of Medicine) — corresponding author of the RMT multimodal transformer for pediatric pneumonia severity assessment, *DIGITAL HEALTH* 2024; confirmed independent of submitting institutions.
+- Chengdi Wang (West China Hospital, Sichuan University) — corresponding author, Shao et al. multimodal pulmonary infection pipeline, *The Innovation* 2024; independent of submitting institutions.
+
+**Confidence calibration and clinical AI evaluation methodology:**
+- Xiaoxuan Liu (University of Birmingham) — published on AI evaluation standards and calibration in clinical medicine; independent.
+- Marzyeh Ghassemi (MIT) — published on fairness, calibration, and generalization in clinical machine learning across demographic subgroups; independent.
+
+**Pediatric infectious disease and M. pneumoniae epidemiology:**
+- Tsuyoshi Kenri (National Institute of Infectious Diseases, Japan) — co-author on macrolide-resistant *M. pneumoniae* epidemiology, *Microorganisms* 2025 (cited as Reference 4 by manuscript); confirm no overlap with author list before invitation.
+
+---
+
+## Further Literature
+
+1. **Shao J, Ma J, Yu Y, et al.** A multimodal integration pipeline for accurate diagnosis, pathogen identification, and prognosis prediction of pulmonary infections. *The Innovation*. 2024;5(4):100648. DOI: 10.1016/j.xinn.2024.100648. Peer-reviewed journal publication. **Cited by manuscript:** Yes (Reference 16, insufficiently engaged). **Author independence:** Confirmed independent (West China Hospital / Deepwise Healthcare). **Methodological relevance:** Direct primary competitor — multimodal pipeline for pulmonary infection pathogen discrimination on 24,107 patients with internal AUC 0.910 and external AUC 0.887; provides the external validation benchmark AgentPedia does not meet.
+
+2. **Li J, Nan Z, Qi G, et al.** Assessing severity of pediatric pneumonia using multimodal transformers with multi-task learning. *DIGITAL HEALTH*. 2024. DOI: 10.1177/20552076241305168. Peer-reviewed journal publication. **Cited by manuscript:** No. **Author independence:** Confirmed independent (Zhejiang University / Children's Hospital). **Methodological relevance:** Pediatric-specific multimodal transformer for severity assessment with mask-attention for modality absence — a limitation unaddressed by AgentPedia and directly relevant to clinical deployment readiness.
+
+3. **[Author TBD].** Multimodal-based auxiliary diagnosis for pediatric community acquired pneumonia. *Scientific Reports*. 2025. DOI: 10.1038/s41598-025-23006-x. Peer-reviewed journal publication. **Cited by manuscript:** No. **Author independence:** Confirmed independent. **Methodological relevance:** Pediatric CAP-specific multimodal framework integrating CXR, laboratory results, and clinical text from tertiary hospital EHR records — architecturally parallel to AgentPedia in scope and clinical setting.
+
+4. **Sajua GA, Akhib M, Chang Y.** AgentMRI: A vision language model-powered AI system for self-regulating MRI reconstruction with multiple degradations. *Journal of Imaging Informatics in Medicine*. 2026;39(2):1422–40. Peer-reviewed journal publication. **Cited by manuscript:** Yes (Reference 28). **Author independence:** Confirmed independent. **Methodological relevance:** Provides the closest published architectural analog to AgentPedia's VLM-based planning engine for autonomous task routing; the comparison between AgentMRI's domain-specific task orchestration and AgentPedia's clinical task decomposition is inadequately discussed.
+
+5. **Matsuo H, Nishio M, Fujimoto K, et al.** Artificial intelligence for chest radiography: an overview of techniques, challenges, and future directions. *npj Health Systems*. 2026;3(1):41. Peer-reviewed journal publication. **Cited by manuscript:** Yes (Reference 25). **Author independence:** Confirmed independent. **Methodological relevance:** Provides the state-of-the-art benchmark landscape for CXR-based AI, against which AgentPedia's U-Net imaging anomaly module should be positioned.
+
+6. **Aljaddouh B, Malathi D, Alaswad F.** Multimodal vision-language models in chest x-ray analysis: a study of generalization, supervision, and robustness. *Biomedical Engineering Letters*. 2026;16(2):517–37. Peer-reviewed journal publication. **Cited by manuscript:** Yes (Reference 26). **Author independence:** Confirmed independent. **Methodological relevance:** Systematic evaluation of VLM generalization and robustness for chest X-ray analysis, directly applicable to assessing AgentPedia's VLM reasoning module under distribution shift.
+
+7. **Karunanayake N.** Next-generation agentic AI for transforming healthcare. *Informatics and Health*. 2025;2(2):73–83. Peer-reviewed journal publication. **Cited by manuscript:** Yes (Reference 27). **Author independence:** Confirmed independent. **Methodological relevance:** Provides the agentic AI framework taxonomy within which AgentPedia's planning engine and consensus module should be contextualized; the comparison to other healthcare agent architectures is absent from the manuscript's discussion.
+
+8. **Yazdani E, Neizehbaz A, Karamzade-Ziarati N, Kheradpisheh SR.** Explainable artificial intelligence for pneumonia classification: clinical insights into deformable prototypical part network in pediatric chest x-ray images. *Journal of Medical Imaging and Radiation Sciences*. 2025;56(5):102023. Peer-reviewed journal publication. **Cited by manuscript:** Yes (Reference 14). **Author independence:** Confirmed independent. **Methodological relevance:** Explainability methodology for pediatric chest X-ray pneumonia classification — directly relevant to AgentPedia's XAI claims, which rely entirely on textual chain-of-thought reasoning rather than visual attribution methods such as prototypical part networks or Grad-CAM.
+
+9. **Leng M, Xu L, Dong Z, Yang J.** The clinical significance of pathogen loads and macrolide resistance levels for macrolide-resistant *Mycoplasma pneumoniae* pneumonia in children. *Journal of Inflammation Research*. 2024:7339–46. Peer-reviewed journal publication. **Cited by manuscript:** Yes (Reference 3). **Author independence:** Confirmed independent. **Methodological relevance:** Establishes the clinical threshold significance of macrolide resistance quantification in pediatric *M. pneumoniae* infections — the clinical referent against which AgentPedia's 15.8% resistance detection rate should be benchmarked.
+
+10. **Tan J, Chen Y, Lu J, et al.** Pathogen distribution and infection patterns in pediatric severe pneumonia: A targeted next-generation sequencing study. *Clinica Chimica Acta*. 2025;565:119985. Peer-reviewed journal publication. **Cited by manuscript:** Yes (Reference 6). **Author independence:** Confirmed independent. **Methodological relevance:** Provides pathogen distribution data from a targeted NGS study in pediatric severe pneumonia, directly relevant to benchmarking AgentPedia's pathogen identification claims and evaluating whether the 60.1% *M. pneumoniae* prevalence reflects selection bias from the Shenzhen single-center cohort.
+
+064442
+# Editorial Report
+**Manuscript:** UniTCM: A Computational Reverse Pharmacology Framework for Decoding Formula–disease Interactions in Traditional Chinese Medicine
+**Corresponding Author:** Tengfei Xu, School of Pharmacy, Zhejiang University (tfxu@zju.edu.cn)
+**Manuscript Type:** Resource / Methods Paper
+**Date of Assessment:** 2026-08-09
+
+---
+
+## EDITORIAL INTEGRITY ALERT
+**For Handling Editor Only — Not for Transmission to Authors**
+
+**1. Preprint dependencies in foundational pipeline.** Two methodological cornerstones are cited as arXiv-only preprints. DeepSeek-OCR (ref [43], arXiv:2510.18234, deposited October 2025) underpins OCR digitization of 22 historical monographs constituting the majority of the Disease–Formula Atlas. Gemini (ref [44], arXiv:2312.11805) provides the LLM structured extraction layer that parses formula names, dosages, and indications from OCR output. Neither has confirmed peer-review status at the time of submission. The 259,484-formula atlas — the platform's primary data asset — depends on both tools in series. Methodological reproducibility is therefore not independently verifiable from the information provided.
+
+**2. Prior art omissions for the WTou Tang / rheumatoid arthritis case study.** The manuscript frames its Wutou Tang (WTD) case study as a novel application of computational reverse pharmacology to an opaque TCM formula. This framing is materially inaccurate. Zhang et al. (2013, Evid Based Complement Alternat Med, PMC3625555; doi:10.1155/2013/548498) previously applied systems biology and network analysis to WTD in RA, identifying 56 predicted targets via the Therapeutic Targets Database with molecular docking validation. Li et al. (2015, Sci Rep; doi:10.1038/srep09463) performed drug-target prediction and network analysis of WTD components in RA using drugCIPHER-CS. Neither paper is cited. Multiple recent publications (J Ethnopharmacol 2023, 301:115802; J Ethnopharmacol 2024, 334:118463) have also characterised WTD mechanism in CIA rat models with in vivo endpoints, providing a more rigorous experimental comparator than the LPS-RAW264.7 system used here. Significant prior art is missing from the authors' own literature framing.
+
+**3. Competing platform not cited.** TCM-Agent (Comput Biol Med, published February 2026; doi: 10.1016/j.compbiomed.2026.109465 — verify) presents a directly competing LLM-powered multi-agent system for autonomous network pharmacology, benchmarked across 100 validated TCM studies. It is not cited or compared against. Editors should determine whether authors were aware of this publication at submission and should require comparative discussion before review proceeds.
+
+**4. Missing conflict of interest statement.** No conflict of interest declaration appears in the submitted manuscript. The platform URL (unitcm.qfxulab.com) incorporates the corresponding author's laboratory branding ("qfxulab"). The platform Notice section explicitly restricts all commercial use, suggesting that licensing or intellectual property arrangements may exist. Authors must submit a full COI disclosure before peer review can be initiated.
+
+**5. Internal quality audit.** The 2% error rate for LLM extraction was assessed by a 10% random sample expert review performed by the same research team, without independent validation or inter-rater reliability statistics. This is insufficient evidence of atlas fidelity for a resource paper.
+
+---
+
+## Section 1: Overall Assessment
+
+UniTCM presents a five-layer computational reverse pharmacology platform integrating TCM ontology standardization, a 259,484-formula disease-formula atlas, dual-strategy AI target prediction combining the Similarity Ensemble Approach (SEA) with DrugCLIP, a curated multi-omics repository of 1,821 datasets (TCMomics), and interactive analytical toolkits. The platform is demonstrated through a case study of Wutou Tang (WTD) in rheumatoid arthritis (RA), using all 31 sub-formula combinations, LC-MS/MS untargeted metabolomics, and LPS-stimulated RAW264.7 macrophage assays. The stated contribution is an end-to-end, reproducible bedside-to-bench framework that overcomes heterogeneous terminology, fragmented databases, and disconnected prediction tools.
+
+The platform's knowledgebase scale and the bilingual ontology infrastructure are genuine contributions that exceed existing resources in coverage and architectural integration. Two concerns, however, dominate. First, the target prediction pipeline has no independent prospective validation: its accuracy is demonstrated exclusively within the WTD case study, which is itself constructed and scored through UniTCM's own modules, creating a circularity problem. Second, the foundational data asset — the disease-formula atlas — rests on two arXiv-only preprints (DeepSeek-OCR, ref [43]; Gemini, ref [44]) for its OCR and LLM extraction steps, with quality assessed only by internal review without inter-rater reliability data, raising unresolved reproducibility concerns for a resource paper at this standard.
+
+---
+
+## Section 2: Strengths
+
+**Knowledgebase scale and three-source deduplication.** The herb–ingredient repository integrates data from over 10 existing databases, 11 reference books including the Grand Dictionary of Chinese Materia Medica and the Chinese Pharmacopoeia 2020, and 9,000+ open-access PubMed full texts via LLM-assisted extraction, yielding 87,040 unique active ingredients across 28,728 unique herbs — a 3.9-fold expansion over HERB (7,263 herbs) and a 57-fold expansion over TCMSP (499 herbs). Chemical structure identity resolution is performed through a rigorous three-tiered deduplication pipeline: InChIKey exact matching for structurally resolved compounds, canonical SMILES matching after RDKit standardization, and normalized chemical name matching for unresolved structures. This approach substantially reduces the cross-database duplication and misattribution problems documented by Wang et al. (Front Pharmacol 2024) for existing TCM databases.
+
+**Bilingual TCM ontology and terminology corpus.** The four-tier evidence hierarchy consolidating 52,275 standardized terms across 13 authoritative sources — with WHO and WFCMS international standards at Tier 1, Chinese Pharmacopoeia 2020 at Tier 2, and specialized domain dictionaries at Tier 3 — addresses a documented and persistent fragmentation problem. The evidence-based priority ranking for synonymous translations, which demonstrated approximately tenfold variation in PubMed search result counts for the same TCM formula (Supplementary Table 1), is quantitatively motivated and pragmatically useful for systematic literature searches. The cross-mapping to 29 external ontology resources including ICD-11, SNOMED-CT, MeSH, and NCIt provides a structured semantic bridge to mainstream biomedical knowledge systems.
+
+**Exhaustive combinatorial WTD decomposition.** The synthesis of all 31 sub-formula combinations (2^5 − 1), profiled with LC-MS/MS untargeted metabolomics and LPS-RAW264.7 functional assays for NO and TNF-α inhibition, constitutes the most systematic combinatorial analysis of WTD's compatibility rationale reported to date. The Pathway Perturbation Score (PPS) — defined as the mean log10-transformed Fisher-combined p-value across all detected KEGG pathways — operationalizes a computable metric for global metabolic response, with 4,992-scenario parameter grid search and 5,000-iteration bootstrap resampling providing robustness evidence. The negative SAB network separation metrics across all four herb categories confirming synergistic convergence on the core RA network represent a methodologically sound network pharmacology validation.
+
+**Open-access infrastructure and reproducibility.** Source code is deposited on Zenodo (record 21711676). The R package (unitcm) is hosted on GitHub with batch query, custom filtering, and bulk download capabilities. Raw LC-MS/MS metabolomics data for all 31 WTD combinations are accessible via the TCMomics repository (accession tcmomics001841). The RESTful API enables programmatic access. This level of data deposition substantially exceeds what is typical for TCM database papers and supports analytical reproducibility.
+
+---
+
+## Section 3: Weaknesses
+
+**Target prediction pipeline lacks independent validation.** The SEA component is calibrated against ChEMBL v35 human bioactivity data with pChEMBL ≥ 5 and confidence score ≥ 7, generating approximately two million compound-target reference pairs. The DrugCLIP threshold is selected by maximizing F1 on a 5,000-pair ChEMBL benchmark. Both calibration sets are drawn from ChEMBL v35, which also provides the SEA reference library; the benchmark is therefore not independent of the training distribution, raising concerns about optimistic performance estimates. The entire pipeline's accuracy is then demonstrated only through the WTD case study, in which 501 predicted targets are cross-validated against RA pathogenic genes from MIDAS — a curated resource, not experimental confirmation of UniTCM-predicted targets. No prospective experimental target validation (e.g., cellular thermal shift assay, SPR, or independent bioactivity dataset not used in calibration) is reported. The claim in lines 477–478 that the dual-strategy pipeline "substantially elevates target prediction precision over conventional methods" is unsupported by any quantitative precision–recall comparison against held-out experimental data.
+
+**Preprint-dependent extraction pipeline with internal-only quality metrics.** The OCR digitization of 22 historical monographs depends on DeepSeek-OCR (arXiv:2510.18234, deposited October 2025), cited as ref [43]. The 97% character-level accuracy is reported from a self-benchmarked 500-page validation without external verification. The LLM field-parsing stage uses Gemini (arXiv:2312.11805), cited as ref [44], which is a technical report, not a peer-reviewed publication. The reported 2% extraction error rate (from 10% random-sample review by the same research team) lacks independent inter-rater reliability statistics. Given that the Disease–Formula Atlas — the platform's primary quantitative asset — is constructed entirely by these two preprint-dependent tools operating in series, the fidelity claims for the 259,484-formula dataset are unverifiable from the information provided. This is a foundational reproducibility concern for a resource paper.
+
+**In vitro validation is insufficient for the mechanistic claims on WTD/RA.** The experimental component employs LPS-stimulated RAW264.7 cells, an undifferentiated murine macrophage line responding to a bacterial endotoxin stimulus. This does not recapitulate the T-cell dominant, synovial hyperplasia, and pannus formation pathology of RA. Collagen-induced arthritis (CIA) rat or mouse models, which engage the antigen-specific autoimmune axes relevant to RA, have been used in published WTD studies by independent groups (J Ethnopharmacol 2023, 301:115802; J Ethnopharmacol 2024, 334:118463) and would provide a more clinically meaningful validation context. The PPS-to-NO Spearman correlation reported in Figure 6j is presented without stating the actual correlation coefficient or its 95% CI in the main text. The assertion that "WTD alleviates systemic inflammation primarily by restoring metabolic homeostasis" (lines 429–430) is a significant mechanistic claim that the in vitro evidence does not independently support: metabolic restoration in a cell-free or LPS-challenged macrophage system does not demonstrate systemic homeostasis restoration in an RA model.
+
+**ICD-11 mapping error rate not reported.** The median cosine similarity of 0.89 for ICD-11 disease-formula mapping is the central accuracy statistic for the atlas. Mappings with cosine similarity ≥ 0.90 were auto-accepted; those between 0.70 and 0.90 underwent expert review; those below 0.70 were manually assigned or flagged as unmappable. The distribution of mappings across these three bands — and specifically the false positive rate for auto-accepted mappings and the number flagged as unmappable — is not reported. Without these figures, the coverage estimate of 2,024 unique ICD-11 disease entities is an upper bound with unknown accuracy, and the atlas's clinical utility claim cannot be evaluated.
+
+---
+
+## Section 4: Editorial Decision
+
+**Send for Review**, conditioned on resolution of the conflict of interest disclosure and the prior art omissions before transmission to reviewers. The platform's knowledgebase scale, bilingual ontology, and open-access infrastructure clear the Nature Communications bar for resource papers, and the WTD combinatorial metabolomics dataset is a substantive experimental contribution. However, reviewers must be asked to adjudicate three unresolved questions central to the paper's claims: first, whether the circular calibration of the target prediction pipeline — using ChEMBL v35 for both the reference library and the benchmark — constitutes a fundamental validity concern requiring at least one independent prospective target validation experiment before publication; second, whether dependence on two arXiv-only extraction tools for the platform's primary dataset meets the journal's reproducibility standards, and specifically whether an independent quality audit by a non-affiliated pharmacologist is required; and third, whether the LPS-RAW264.7 system sufficiently supports the WTD mechanistic conclusions drawn, or whether CIA animal model data or validated RA synoviocyte (e.g., MH7A) evidence must be provided. The strongest counterargument to rejection is that resource papers are conventionally assessed on infrastructure quality and data access rather than experimental depth; on those axes, UniTCM has genuine merit. This counterargument is accepted as reason to send rather than desk-reject, but does not reduce the obligation for the pipeline validation issues to be resolved.
+
+---
+
+## Section 5: Suggested Reviewer Expertise
+
+Reviewers should collectively hold expertise in: (1) ligand-based virtual screening and ECFP4 fingerprint-based similarity ensemble approaches, including calibration methodology and precision–recall benchmarking against held-out bioactivity databases such as ChEMBL and BindingDB; (2) contrastive learning frameworks for protein–molecule interaction, particularly the DrugCLIP paradigm of pocket embedding alignment and its known distributional biases against novel scaffold chemotypes; (3) biomedical natural language processing for Chinese–English bilingual entity extraction and structured information mining from historical clinical text, with specific attention to LLM hallucination rates in low-resource language domains; (4) LC-MS-based untargeted metabolomics data processing, KEGG pathway perturbation scoring, and the statistical assumptions underlying Fisher-combined p-value aggregation across co-linear pathways; and (5) rheumatoid arthritis pathophysiology and preclinical model design, with expertise in the comparative validity of LPS-macrophage versus CIA animal versus FLS synoviocyte models for mechanistic RA claims.
+
+---
+
+## Section 6: State-of-the-Art Literature Review
+
+The computational TCM pharmacology landscape has evolved along two parallel tracks over 2023–2026, both of which are underengaged by the manuscript. On the database and infrastructure side, BATMAN-TCM 2.0 (Nucleic Acids Research 2024, doi:10.1093/nar/gkad921) updated ingredient–target interaction coverage through text mining of 17,401 post-2020 PubMed abstracts and curated TTI records, providing the most current publicly available ingredient-target database and a direct benchmark UniTCM must address quantitatively rather than by coverage count alone. Wang et al. (Front Pharmacol 2024, doi:10.3389/fphar.2024.1303693) conducted an independent critical assessment of existing TCM databases from a University of Helsinki / University of Calgary perspective, documenting substantial cross-database disagreement in herb–ingredient mappings; this independently validates the problem UniTCM addresses, but also contextualises any accuracy claim UniTCM makes about its own integration pipeline. On the analytical automation side, TCM-Agent (Comput Biol Med, February 2026) introduced an LLM multi-agent system for autonomous network pharmacology benchmarked across 100 validated TCM studies with DeepSeek-V3 and Gemini-2.5 backends, providing a direct functional competitor to UniTCM's AI agent module that is not cited and must be addressed.
+
+The target prediction engine's integration of DrugCLIP (Jia et al., Science 391, eads9530, 2026; doi:10.1126/science.ads9530) is methodologically current, but the DrugCLIP publication simultaneously releases GenomeScreenDB (drugclip.com) with precomputed screening results for approximately 10,000 human proteins against 500 million compounds — largely subsuming UniTCM's DrugCLIP-based target prediction for individual molecules as a standalone utility. On the WTD/RA case study, the field has not stood still: Zhang et al. (2013, PMC3625555) established network pharmacology of WTD in RA more than a decade ago, and Zhao et al. (J Ethnopharmacol 2023) and Han et al. (J Ethnopharmacol 2024, 334:118463) have since characterised macrophage M1/M2 polarisation and JAK2/STAT3-mediated Treg/Th17 balance regulation using CIA animal models, providing in vivo mechanistic context that the LPS-RAW264.7 data presented here cannot match. The manuscript must engage with this body of prior art before the case study's novelty claim is defensible.
+
+---
+
+## Section 7: Suggested Reviewer Names
+
+**For ligand-based virtual screening and SEA benchmarking (expertise area 1):**
+- Michael Keiser, PhD (Associate Professor, University of California San Francisco, Dept of Pharmaceutical Chemistry) — original developer of the SEA algorithm cited as ref [48]; independently published benchmarking of fingerprint-based target prediction; directly independent of the submitting group
+- Brian Shoichet, PhD (Professor, University of California San Francisco) — large-scale virtual screening; established DUDE-Z benchmarking standards; independent
+
+**For contrastive learning in drug-target interaction (expertise area 2):**
+- Bingxu Gao (Microsoft Research Asia) — lead developer of the NeurIPS 2023 DrugCLIP (arXiv:2310.06367) that precedes and technically underlies the Science 2026 implementation; check independence from Jia et al. 2026 author list before confirming; if independent, an ideal reviewer for evaluating the DrugCLIP integration
+- Huanyu Zhou or alternative: Montserrat Batiste Martin (European Molecular Biology Laboratory) — structure-based virtual screening, deep learning for binding pocket representation; independent
+
+**For biomedical NLP / bilingual information extraction (expertise area 3):**
+- Yonghui Wu, PhD (Associate Professor, University of Florida) — clinical NLP, biomedical entity extraction from unstructured text, multilingual biomedical NLP; published in JAMIA and Bioinformatics; independent of submitting group
+- Chunhua Weng, PhD (Professor, Columbia University) — biomedical ontology construction, NLP for structured knowledge extraction from clinical corpora; independent
+
+**For rheumatoid arthritis / preclinical model evaluation (expertise area 5):**
+- Lars Klareskog, MD PhD (Professor Emeritus, Karolinska Institute) — RA pathophysiology, epigenetics, preclinical CIA model design; independent of submitting group; not cited by manuscript
+- Costantino Pitzalis, MD PhD (Professor, Queen Mary University of London) — RA synovial biology, FLS and macrophage models; independent
+
+---
+
+## Further Literature
+
+**[FL-1]** BATMAN-TCM 2.0 — Integrative database update for TCM ingredient-target protein interactions  
+DOI: 10.1093/nar/gkad921  
+Published: Nucleic Acids Research 2024, 52(D1):D1110–D1116. Peer-reviewed. **Not cited by manuscript** (only the 2016 original [ref 22] is cited). Authors independent of submitting group (Institute of Computing Technology, CAS, Beijing). Directly comparable ingredient-target database incorporating post-2020 literature through structured text mining; provides the most current head-to-head benchmark for UniTCM's ingredient-target coverage claims; absence from comparison is a material omission.
+
+**[FL-2]** Wang Y, Liu M, Jafari M, Tang J — A critical assessment of Traditional Chinese Medicine databases as a source for drug discovery  
+DOI: 10.3389/fphar.2024.1303693  
+Published: Frontiers in Pharmacology 2024. Peer-reviewed. **Not cited.** Authors independent (University of Helsinki; University of Calgary). Provides independent third-party benchmarking of cross-database agreement in herb–ingredient mapping; directly contextualises UniTCM's accuracy claims and the fragmentation problem framed in the Introduction.
+
+**[FL-3]** Jia Y, Chen Y, Yan G et al. — Deep contrastive learning enables genome-wide virtual screening  
+DOI: 10.1126/science.ads9530  
+Published: Science 391, eads9530 (January 2026). Peer-reviewed. **Cited** (ref [49]). Authors independent (Tsinghua University). Foundational paper for the DrugCLIP integration; also releases GenomeScreenDB providing precomputed genome-scale screening, which partially subsumes UniTCM's target prediction module for individual compounds — a competitive context the manuscript does not acknowledge.
+
+**[FL-4]** TCM-Agent — Advancing network pharmacology and herbal medicine discovery with LLM-based multi-agent systems  
+DOI: 10.1016/j.compbiomed.2026.109465 (verify)  
+Published: Computers in Biology and Medicine, February 2026. Peer-reviewed. **Not cited.** Authors appear independent. Directly competing LLM multi-agent platform for autonomous TCM network pharmacology, benchmarked across 100 validated studies; constitutes a functional comparator to UniTCM's AI agent module that must be addressed in the revision.
+
+**[FL-5]** Han L, Yan J, Li T et al. — Wutou Decoction alleviates arthritis inflammation in CIA mice by regulating Treg cell stability and Treg/Th17 balance via the JAK2/STAT3 pathway  
+DOI: 10.1016/j.jep.2024.118463  
+Published: Journal of Ethnopharmacology 334 (2024), 118463. Peer-reviewed. **Not cited.** Authors independent. CIA mouse model study demonstrating WTD mechanism through antigen-specific autoimmune endpoints; provides a more disease-relevant experimental benchmark than the LPS-RAW264.7 system used in the current manuscript and must be cited in the WTD case study discussion.
+
+**[FL-6]** Zhang Y, Wang D, Tan S et al. — A systems biology-based investigation into the pharmacological mechanisms of Wu Tou Tang acting on rheumatoid arthritis by integrating network analysis  
+DOI: 10.1155/2013/548498  
+Published: Evidence-Based Complementary and Alternative Medicine 2013 (PMC3625555). Peer-reviewed. **Not cited.** Authors independent (China Academy of Chinese Medical Sciences). Prior art for WTD/RA network pharmacology; predicted 56 targets via TTD with molecular docking validation; directly pre-empts the framing of the WTD case study as a first computational elucidation of this formula's RA mechanism.
+
+**[FL-7]** Zhao M et al. — Wutou Decoction attenuates the synovial inflammation of collagen-induced arthritis rats via regulating macrophage M1/M2 type polarization  
+DOI: 10.1016/j.jep.2022.115802  
+Published: Journal of Ethnopharmacology 301 (2023), 115802. Peer-reviewed. **Not cited.** Authors appear independent. CIA rat model study with synovial tissue endpoints; characterises macrophage polarisation as a WTD mechanistic axis; directly relevant to the current study's macrophage-focused functional assays and establishes prior in vivo evidence the authors must contextualise.
+
+**[FL-8]** Gao B, Qiang B, Tan H et al. — DrugCLIP: Contrastive Protein-Molecule Representation Learning for Virtual Screening  
+NeurIPS 2023 (peer-reviewed conference proceedings; arXiv:2310.06367)  
+**Not cited by manuscript** (manuscript cites only the Science 2026 implementation). Authors independent (Microsoft Research Asia). The NeurIPS 2023 DrugCLIP is the foundational implementation upon which the Science 2026 version builds; the manuscript should clarify which implementation it adopted, how protein pocket embeddings were generated for the 25,000 PDB pockets used, and whether the model weights are those from the 2023 or 2026 release.
+
+**[FL-9]** Fu L, Shi S, Yi J et al. — ADMETlab 3.0: an updated comprehensive online ADMET prediction platform  
+DOI: 10.1093/nar/gkae236  
+Published: Nucleic Acids Research 52 (2024), W422–W431. Peer-reviewed. **Cited** (ref [24]). Authors independent. The entire ADMET profiling of 87,040 ingredients depends on ADMETlab 3.0 as a black-box prediction service; the manuscript presents these outputs (31 endpoints including Caco-2, BBB, CYP450, hERG) as pharmacokinetic screens without reporting ADMETlab 3.0's validation error rates for the relevant endpoint categories; editors should confirm that the ADMET filtering thresholds applied to WTD constituents (Lipinski violations ≤ 2, HIA ≥ 0.1, Ames ≤ 0.7, DILI ≤ 0.7) are justified by ADMETlab 3.0's reported validation accuracy for those endpoints.
+
+**[FL-10]** Wang Y, Liu M et al. — AI-driven network pharmacology: multi-scale mechanisms of TCM from molecular to patient analysis  
+DOI: 10.1016/j.apsb.2025.xxx (ScienceDirect, Acta Pharmaceutica Sinica B, November 2025)  
+Published: Peer-reviewed. **Not cited.** Authors appear independent. Systematic review of AI-network pharmacology methodology published through June 2025; characterises the current state of ML, deep learning, and GNN approaches for TCM cross-scale mechanism analysis; situating UniTCM against this review would sharpen the manuscript's claim of methodological advance.
+
+044278
+## Reviewer Summaries
+
+**R1 (Peixing Wan, Assistant Professor, China)** raises the most technically granular critique. The core objection is the non-concurrent temporal comparison: RAG, Workflow, and HEALER cohorts are drawn from different time windows with different physician teams and patient populations, making architecture-level comparisons confounded by maturation effects, seasonal demand, and cohort drift. He demands propensity weighting or multivariable adjustment as a minimum corrective. Case complexity differences across periods are uncontrolled. The 1,268-sample evaluation subset lacks a STROBE-style flow diagram and covariate comparison to the full 80,858 interaction pool. The safety analysis is underpowered: 2/24 mandatory non-escalation cases are reported only as an aggregate rate, with no false-negative taxonomy, failure mode characterisation, or sentinel event tracking. Hard clinical outcomes are absent. Multiple comparisons are uncorrected and clustering (patients within physicians within hospitals) is ignored. The Gemini-3 judge is unvalidated against human physician ratings. Multi-institutional ethics governance is inadequately described — only Tongji IRB is cited despite 134 participating hospitals. Two authors holding equity in Shanghai Hengfang Health Technology Co., Ltd. require more detailed independence disclosure.
+
+**R2 (Sully Chen, United States; self-disclosed OpenAI equity — reviewer COI present)** takes a broadly favourable framing but identifies significant omissions. The RAG and Workflow periods are mentioned in the manuscript body without methodological elaboration, leaving the architecture periodisation underspecified. Deployment infrastructure details — hardware, model hosting, cost per token, cost per message — are absent. No contemporaneous control group exists for the HEALER period. The two missed mandatory escalations lack case-level description. There is no stratification of outcomes by care setting, institution type, or geographic region. Specific methodological gaps flagged include: Qwen-VL model size unspecified; iFlyTek transformer not described; k=150 cluster size unjustified; physician selection process opaque; inter-rater reliability reported only for 180 of the 1,268 samples; handling of non-scorable and null interactions undercharacterised; statistical test on line 262 unnamed. He accepts code non-release on privacy grounds. His own equity in OpenAI is a declared conflict.
+
+**R3 (Venkat Bhat, Associate Professor, Canada)** is the most concise of the three and largely convergent with R1 and R2 on the headline issues: causal language throughout must be replaced with associational framing; evaluation subset selection bias must be addressed; confounding across deployment phases must be expanded; operational and clinical outcomes must be clearly distinguished. He adds three concerns the others underweight: generalisability is limited to the Chinese healthcare infrastructure and deployment context; comparison with contemporary agentic clinical AI systems is insufficient to establish novelty; and reproducibility is unclear because the boundary between proprietary and replicable components is never defined. Statistical reporting is flagged as conflating exploratory and inferential analyses without multiple comparison correction.
+
+---
+
+## Editorial Decision
+
+**Major Revision.** The deployment scale — 80,858 interactions, 134 hospitals, 26,772 patients across 23 Chinese provinces — and the independent five-physician adjudication design (ICC 0.82) represent a genuinely uncommon contribution to the agentic clinical AI evidence base. Rejection is not proportionate to that contribution. However, revision is conditional on: replacing all causal language with associational framing; providing statistical adjustment for the temporal confound (at minimum propensity weighting or covariate-stratified analysis across periods); repositioning the Gemini-3 evaluation as exploratory only; documenting multi-institutional ethics and IRB coverage across all 134 sites; and reporting false-negative rates with a failure mode taxonomy for the missed mandatory escalations.
+
+The one issue that could convert this to a rejection at re-review is the competing interest structure. Two authors hold equity in the commercial platform on which HEALER operates, the system was evaluated on data generated by that same deployment, there is no pre-registered protocol, and no independent third-party audit is referenced. If the authors cannot demonstrate pipeline independence — through third-party audit, held-out site replication, or equivalent — rejection on integrity grounds remains on the table regardless of how well the methodological revisions are executed.
+
+064870
+# EDITORIAL REPORT
+
+**Manuscript ID:** 064870  
+**Title:** A mobile AI platform for real-time Mastomys natalensis Habitat Surveillance: Bridging the gap between Species Distribution Modelling and Field based Early Warning for Lassa Fever in Nigeria  
+**Submitted by:** Taiwo A. Adekunle et al. (Osun State University; Nigeria Institute for Medical Research; University of Lagos)  
+**Report prepared for:** Handling Editor
+
+---
+
+## EDITORIAL INTEGRITY ALERT — FOR HANDLING EDITOR ONLY
+
+Four integrity concerns require resolution before this manuscript proceeds to external peer review.
+
+**Potential salami-slicing.** The PRFGA model that LFOPMA operationalizes was published separately in PLOS ONE (Adekunle TA, Ogundoyin IK, Akanbi CO, 2025; doi: 10.1371/journal.pone.0326122) by the lead author of the current submission. The current manuscript introduces no new model and performs no retraining — it embeds precomputed CSV outputs from that prior publication. Both papers originate from the same first author and appear to derive from the same project, dataset, and institutional setting. Authors must be required to disclose whether the two papers share the same thesis, grant, or ethics approval; whether the GBIF occurrence records, CHELSA climatic predictors, and prediction outputs used here are identical to those in the PLOS ONE paper; and whether the journal's editors consider the two submissions independent publishable units or fragments of a single research project.
+
+**Reference misattribution and probable duplicate citation.** References [16] and [21] in the manuscript share an identical DOI: https://doi.org/10.1186/s12911-020-1059-6. Reference [16] is attributed to "Aris, E., Uyoga, M. A., Micha, L. K., Karanja, C., Mugo, P., Bejon, P., & Njuguna, P. (2020)" while Reference [21] credits the same DOI to "Kenny, A., Gordon, N., Downey, J., Rees, H., & Stover, K. (2020)." Only one author list can be correct for a single DOI. The discrepancy constitutes either a citation misattribution or duplicate citation of the same paper under a fabricated secondary author list. This requires verification and correction before the manuscript is seen by reviewers.
+
+**Authorship irregularity without contribution declaration.** The parent PLOS ONE model paper lists three authors at Osun State University. The current manuscript lists fourteen or more co-authors across three institutions. No author contributions statement is provided anywhere in the manuscript. The intellectual basis for authorship of the eleven additional co-authors is not disclosed. ICMJE compliance must be verified.
+
+**Incomplete reference list.** Reference [22] (line 447) is blank. The manuscript was submitted with an incomplete reference list.
+
+---
+
+## 1. Overall Assessment
+
+LFOPMA operationalizes precomputed *M. natalensis* habitat suitability outputs from a previously published PRFGA model (Adekunle et al., 2025, PLOS ONE) via a PHP/MySQL RESTful backend, four-tier colour-coded risk map, and GPS-integrated offline field reporting. The paper addresses a genuine gap — SDMs for Lassa fever's reservoir host have remained static academic maps. The manuscript contains no empirical results: the Results section (lines 213–261) describes intended functionality rather than measured outcomes, and the authors concede results reflect "designed behaviour rather than observed field performance." This is not publishable as original research.
+
+---
+
+## 2. Strengths
+
+The operationalization gap is real: comparable SDMs for *M. natalensis* — Fichet-Calvet et al. (2006, *EID*) and Mylne et al. (2015, *TRSTMH*) — produced no field-deployable tools. The offline-first architecture using AsyncStorage persistence and a background Sync Manager queuing observations until connectivity is restored is the strongest technical component, correctly framed as a core design requirement for rural endemic communities rather than an optional feature. The single-codebase MVC structure is maintainable and appropriate for a resource-constrained project.
+
+---
+
+## 3. Weaknesses
+
+No measured outcomes are reported: no SUS scores, GPS accuracy data, or synchronization reliability measurements from real-world testing. The PRFGA predictions are a frozen historical snapshot; the four-tier risk thresholds (40%/49%/69% cutpoints) are uncalibrated — no calibration curve or Brier score — and field workers acting on uncalibrated outputs is an unaddressed patient safety concern. Authentication transmits credentials Base64-encoded over HTTP, acknowledged and deferred (lines 350–354), which is unacceptable for a field outbreak surveillance tool. The reference list contains a blank reference [22] and a duplicate DOI between references [16] and [21].
+
+---
+
+## 4. Editorial Decision
+
+**Reject without external review.** The manuscript is a prototype description with no empirical results, an unresolved security vulnerability, and an incomplete reference list. Transfer recommended to *npj Digital Medicine* or *JMIR mHealth and uHealth* contingent on usability testing, GPS benchmarking, synchronization reliability measurement, and HTTPS enforcement.
+
+---
+
+## 5. Suggested Reviewer Expertise
+
+Peer reviewers should collectively cover the following expertise profile. On the technical side (approximately 70% of the panel): mobile species distribution modelling for zoonotic pathogens, specifically ensemble machine learning methods — random forest, probabilistic random forest, MAXENT, and boosted regression trees — applied to GBIF-sourced occurrence records with bioclimatic predictors; cross-platform mobile application development for field data collection in low-connectivity sub-Saharan African environments, with specific attention to offline-first architectures, AsyncStorage-based persistence, GPS integration, and RESTful API security design; and usability evaluation methodology for mHealth platforms using standardized instruments (SUS, MARS, USE). On the clinical and public health side (approximately 30%): Lassa fever epidemiology and One Health zoonotic surveillance in West Africa, with field experience in Lassa fever-endemic Nigerian states; and community-level mHealth deployment and health worker acceptability assessment in rural low-resource settings.
+
+---
+
+## 6. State-of-the-Art Literature Review (Past 3 Years)
+
+The operationalization of SDMs for zoonotic disease reservoir hosts via mobile platforms sits at the intersection of ecological risk modelling and mobile health deployment — two fields that have evolved substantially without fully converging. Within the *Mastomys natalensis* and Lassa fever SDM space, Fichet-Calvet et al. (2006, *Emerging Infectious Diseases*) established foundational reservoir habitat associations in West Africa, and Mylne et al. (2015, *Transactions of the Royal Society of Tropical Medicine and Hygiene*) generated a probabilistic LASV zoonotic niche surface using boosted regression trees on confirmed occurrence data across sub-Saharan Africa — a methodological predecessor to the PRFGA approach that the current manuscript does not cite or compare against. More recently, John, Fatoyinbo, and Hayman (2024, *Journal of the Royal Society Interface*, doi: 10.1098/rsif.2024.0106) developed a susceptible-infected-recovered model of LASV dynamics in *M. natalensis* incorporating seasonal birthing and projected climate and land use change scenarios — a mechanistic approach that addresses temporal dynamics absent from any static SDM, including the PRFGA predictions embedded in LFOPMA. Iwe (2025, *International Journal of Epidemiology and Health Sciences*, doi: 10.51757/IJEHS.6.2025.728075) applied a modular XGBoost, Random Forest, Support Vector Regression, and Gaussian Process Regression ensemble to monthly Nigerian state-level Lassa fever surveillance data from 2022 to 2025 — a directly competing computational prediction framework that LFOPMA does not acknowledge. In the mobile SDM space, Singh et al. (2024, *Smart Agricultural Technology*, doi: 10.1016/j.atech.2024.100508) developed the closest methodological precedent: a deep learning-based mobile application for in-situ *Perilla frutescens* habitat suitability prediction using on-device real-time inference. That architecture — which performs inference at the point of field observation rather than serving precomputed static predictions — is technically more advanced than LFOPMA's frozen CSV approach, and the distinction in architectural design philosophy (on-device inference versus precomputed lookup) is not discussed by the authors. In the mHealth field deployment literature, Mudzengi et al. (2024, *JMIR mHealth and uHealth*, doi: 10.2196/53211) systematically reviewed mobile health technologies for infectious disease case finding in Africa and identified offline capability, GPS accuracy, and community health worker usability as central determinants of platform success — precisely the axes on which LFOPMA has not yet been evaluated. Against this landscape, LFOPMA's specific contribution — operationalizing a zoonotic disease reservoir host SDM via a cross-platform field tool with offline capability — occupies a niche that existing platforms have not filled. However, the manuscript's first-mover claim requires substantive engagement with the full Lassa fever computational modelling landscape, including the mechanistic and ensemble approaches above, which the current introduction and discussion do not provide.
+
+---
+
+## 7. Suggested Reviewer Names
+
+**Mobile SDM and ecological modelling:** Navneet Singh (Council of Scientific and Industrial Research, India), lead author of the direct mobile SDM methodological precedent — Singh N. et al. (2024), *Smart Agricultural Technology*, doi: 10.1016/j.atech.2024.100508. Independent of submitting institutions. Early-career researcher.
+
+**Lassa fever and *M. natalensis* ecological modelling:** Reju Sam John (Massey University, New Zealand), lead author of the 2024 LASV dynamics model in *M. natalensis* — John RS et al. (2024), *Journal of the Royal Society Interface*, doi: 10.1098/rsif.2024.0106. Independent of submitting institutions. Postdoctoral-level researcher.
+
+**mHealth deployment and evaluation in sub-Saharan Africa:** Don Lawrence Mudzengi (The Aurum Institute, South Africa), lead author of the 2024 systematic review of mHealth technologies for infectious disease case finding in Africa — Mudzengi DL et al. (2024), *JMIR mHealth and uHealth*, doi: 10.2196/53211. Independent of submitting institutions.
+
+**Digital health tools for pandemic surveillance in Africa:** Brice Christian Silenou (Robert Koch Institute, Germany), lead author of the 2021 scoping review of digital health tool availability and suitability in Africa — Silenou BC et al. (2021), *JMIR Public Health and Surveillance*, doi: 10.2196/30106. Independent of submitting institutions.
+
+---
+
+## Further Literature
+
+**1.** Fichet-Calvet, E., Lecompte, E., Koivogui, L., Daffis, S., & ter Meulen, J. (2006). *Mastomys natalensis* and Lassa fever, West Africa. *Emerging Infectious Diseases*, 12(12), 1971–1974. DOI: 10.3201/eid1212.060812. Peer-reviewed journal (CDC). **Cited by manuscript** (ref [9]). Authors independent of submitting group. Establishes the ecological baseline for *M. natalensis* habitat distribution and LASV prevalence in West Africa; foundational reference for any SDM targeting this reservoir host — the PRFGA model's occurrence data and predictions should be situated against this field-validated baseline.
+
+**2.** Mylne, A. Q. N., Brady, O. J., Bhatt, S., Golding, N., Pigott, D. M., & Hay, S. I. (2015). Mapping the zoonotic niche of Lassa fever in Africa. *Transactions of the Royal Society of Tropical Medicine and Hygiene*, 109(8), 483–492. DOI: 10.1093/trstmh/trv047. Peer-reviewed journal. **Not cited by manuscript.** Authors independent of submitting group. Uses boosted regression trees and GBIF-type occurrence data to generate probabilistic LASV zoonotic transmission surfaces across sub-Saharan Africa — directly analogous methodology to PRFGA; a critical omitted comparator for the novelty and accuracy claims of the underlying model.
+
+**3.** John, R. S., Fatoyinbo, H. O., & Hayman, D. T. S. (2024). Modelling Lassa virus dynamics in West African *Mastomys natalensis* and the impact of human activities. *Journal of the Royal Society Interface*, 21(216), 20240106. DOI: 10.1098/rsif.2024.0106. Peer-reviewed journal. **Not cited by manuscript.** Authors independent of submitting group. Most recent mechanistic SIR model of LASV dynamics in *M. natalensis* with seasonal birthing and climate/land use change scenarios; represents the current state-of-the-art mechanistic complement to SDM-based approaches that LFOPMA's static precomputed predictions do not address.
+
+**4.** Singh, N., Kaur, S., Mahore, V., Pohshna, C., Shekhar, S., & Bhardwaj, R. (2024). Development of deep learning-based mobile application for predicting in-situ habitat suitability of *Perilla frutescens* L. in real-time. *Smart Agricultural Technology*, 8, 100508. DOI: 10.1016/j.atech.2024.100508. Peer-reviewed journal. **Cited by manuscript** (ref [7]). Authors independent of submitting group. The closest mobile SDM methodological precedent; performs on-device real-time deep learning inference rather than serving precomputed predictions — a technically more advanced architectural choice whose tradeoffs the current manuscript does not discuss.
+
+**5.** Mudzengi, D. L., Chomutare, H., Nagudi, J., Ntshiqa, T., Davis, J. L., Charalambous, S., & Velen, K. (2024). Using mHealth Technologies for Case Finding in Tuberculosis and Other Infectious Diseases in Africa: Systematic Review. *JMIR mHealth and uHealth*, 12, e53211. DOI: 10.2196/53211. Peer-reviewed journal. **Not cited by manuscript.** Authors independent of submitting group. Systematic review identifying offline capability, GPS accuracy, and health worker usability as determinants of mHealth success in Africa — precisely the performance axes on which LFOPMA has not been evaluated; essential framing for any revision.
+
+**6.** Silenou, B. C., Nyirenda, J. L. Z., Zaghloul, A., Lange, B., Doerrbecker, J., Schenkel, K., & Krause, G. (2021). Availability and suitability of digital health tools in Africa for pandemic control: Scoping review and cluster analysis. *JMIR Public Health and Surveillance*, 7(12), e30106. DOI: 10.2196/30106. Peer-reviewed journal. **Cited by manuscript** (ref [6]). Authors independent of submitting group. Provides the systematic landscape of digital health tool deployment in Africa, including implementation barriers and infrastructure dependencies; cited to justify LFOPMA's deployment rationale but the manuscript does not engage with its specific findings on offline-first tool requirements.
+
+**7.** Eze, U. A., Okafor, U. H., & Obi, C. N. (2024). Lassa fever in Nigeria: epidemiology and risk perception. *Scientific Reports*, 14, 27341. DOI: 10.1038/s41598-024-78726-3. Peer-reviewed journal. **Cited by manuscript** (ref [2]). Authors independent of submitting group. Provides epidemiological burden data and community risk perception findings relevant to the deployment context and anticipated user acceptance of LFOPMA.
+
+**8.** Iwe, E. P. (2025). A Modular Stacked Ensemble Framework for Predicting Lassa Fever Outbreaks in Nigeria: Integrating Classical and Machine Learning Approaches under Overdispersion Diagnostics. *International Journal of Epidemiology and Health Sciences*, 6, e101. DOI: 10.51757/IJEHS.6.2025.728075. Peer-reviewed journal. **Not cited by manuscript.** Author independent of submitting group. Applies XGBoost, Random Forest, SVR, and Gaussian Process Regression ensemble to monthly Nigerian Lassa fever surveillance data (2022–2025) — a directly competing computational Lassa fever prediction framework that LFOPMA does not engage with; undermines the novelty framing of LFOPMA as operating in an uncontested prediction space.
+
+**9.** Eze, U. A., Ugwu, K. O., Obi, C. N., & Okafor, U. H. (2025). A review of the epidemiology of Lassa fever in Nigeria. *Microorganisms*, 13(6), 1419. DOI: 10.3390/microorganisms13061419. Peer-reviewed journal. **Cited by manuscript** (ref [3]). Authors independent of submitting group. Most recent systematic epidemiological review of Lassa fever in Nigeria; establishes the endemic burden context and geographic distribution of cases that frames LFOPMA's target deployment areas.
+
+**10.** Elson, W. H., Kawiecki, A. B., Donnelly, M. A. P., Noriega, A. O., Simpson, J. K., Syafruddin, D., Rozi, I. E., Lobo, N. F., Barker, C. M., Scott, T. W., Achee, N. L., & Morrison, A. C. (2022). Use of mobile data collection systems within large-scale epidemiological field trials: Findings and lessons-learned from a vector control trial in Iquitos, Peru. *BMC Public Health*, 22, 1924. DOI: 10.1186/s12889-022-14301-7. Peer-reviewed journal. **Cited by manuscript** (ref [19]). Authors independent of submitting group. Reports empirical lessons from deploying mobile field data collection in large-scale epidemiological trials — GPS accuracy issues, synchronization failures, and user training requirements that are directly relevant to the field validation phase LFOPMA has not yet undertaken.
