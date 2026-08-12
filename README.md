@@ -542,3 +542,353 @@ The operationalization of SDMs for zoonotic disease reservoir hosts via mobile p
 **9.** Eze, U. A., Ugwu, K. O., Obi, C. N., & Okafor, U. H. (2025). A review of the epidemiology of Lassa fever in Nigeria. *Microorganisms*, 13(6), 1419. DOI: 10.3390/microorganisms13061419. Peer-reviewed journal. **Cited by manuscript** (ref [3]). Authors independent of submitting group. Most recent systematic epidemiological review of Lassa fever in Nigeria; establishes the endemic burden context and geographic distribution of cases that frames LFOPMA's target deployment areas.
 
 **10.** Elson, W. H., Kawiecki, A. B., Donnelly, M. A. P., Noriega, A. O., Simpson, J. K., Syafruddin, D., Rozi, I. E., Lobo, N. F., Barker, C. M., Scott, T. W., Achee, N. L., & Morrison, A. C. (2022). Use of mobile data collection systems within large-scale epidemiological field trials: Findings and lessons-learned from a vector control trial in Iquitos, Peru. *BMC Public Health*, 22, 1924. DOI: 10.1186/s12889-022-14301-7. Peer-reviewed journal. **Cited by manuscript** (ref [19]). Authors independent of submitting group. Reports empirical lessons from deploying mobile field data collection in large-scale epidemiological trials — GPS accuracy issues, synchronization failures, and user training requirements that are directly relevant to the field validation phase LFOPMA has not yet undertaken.
+
+Github code:
+Found it: `github.com/jamessheppard48/STRATIFY-BP`. Let me check the actual repo contents.Now I have enough to give you a bulletproof assessment.
+
+**Repo:** `github.com/jamessheppard48/STRATIFY-BP` — this is the code deposit cited by the manuscript's data-availability statement, corresponding to the published Nat Comms paper "Predicting hypotension, syncope, and fracture risk..." (STRATIFY models).
+
+**What's actually in the repo (verified via GitHub):**
+- `README.md` (one-line description only)
+- `Shared calibration and validation codes.do` (Stata)
+- `Shared model derivation codes.R`
+- 2 commits total, no license file, no branches relevant to this specific paper beyond `main` (other branches — `STRATIFY-AKI`, `Causal-inference-project` — belong to *other* STRATIFY papers, not this one)
+
+**Gaps that fail standard NatComms code-availability requirements — this is what to put to the author:**
+
+1. **No environment/dependency spec.** No `sessionInfo()`/`renv.lock` for R, no Stata version stated, no package list. Reviewer/reader cannot reproduce without guessing versions.
+2. **No documented execution order.** Two scripts with no README explaining which runs first, what inputs each expects, or how derivation → calibration/validation connect.
+3. **No de-identified sample data or synthetic dataset.** CPRD data can't be shared (understood), but there's nothing — not even a synthetic mock dataset — letting a third party run the pipeline end-to-end to confirm the code executes as described.
+4. **No mapping from code to manuscript output.** Which script produces Table 2, Figure 2 (calibration plots), the C-statistics reported in the abstract? Nothing ties code to specific reported numbers.
+5. **No license.** Repo is public but has no LICENSE file — ambiguous reuse terms, which NatComms explicitly checks for at code deposits.
+6. **Model/coefficients not obviously included.** The paper states the algorithm is separately hosted at `process.innovation.ox.ac.uk/software` — confirm whether that portal (not GitHub) holds the actual model coefficients/weights, since the GitHub repo alone is codelists + derivation scripts, not a deployable model artifact.
+7. **README doesn't state repo scope.** Given the same repo hosts branches for at least three related STRATIFY papers (BP, AKI, causal inference), the README should explicitly state which files/branch correspond to *this* manuscript, or a reader could apply the wrong codelist.
+
+**Counterargument to raise this at all:** NatComms code policy for clinical prediction models built on non-shareable EHR data (CPRD) sometimes accepts "codelists + core scripts" as sufficient when full reproducibility is blocked by data governance regardless of code completeness — i.e., no amount of repo polish lets an outsider actually rerun this on CPRD. If that's the journal's practice, items 1–4 are still worth requesting (costs the author nothing, meaningfully raises transparency) but shouldn't be treated as blocking.
+
+**Bottom line for your author query:** ask for (a) environment/session info for both R and Stata, (b) a README describing script execution order and mapping code→manuscript exhibits, (c) confirmation of what's hosted at the separate Oxford Innovation portal vs. GitHub, (d) a license, and (e) explicit scope note distinguishing this branch from the AKI/causal-inference branches in the same repo.
+
+037372
+**Reviewer 1 (Zifeng Wang, postdoc)** — Core objection: the paper never disentangles where the performance gain actually comes from. The fine-tuned single-model baseline (PanDerm) already tracks the full system closely, so scaling/fine-tuning may be doing the work the "multi-agent design" is credited for. No ablation isolates a single ReAct-style agent with the same memory module, and no before/after fine-tuning baseline exists. Memory/graph construction is called "heuristic" and "insufficiently motivated," with no justification for why a graph structure beats standard vector retrieval. Literature positioning is also weak — the manuscript's claim that multi-agent healthcare systems are "still in its infancy" is contradicted by an existing body of work the reviewer cites directly.
+
+**Reviewer 2 (Zongyuan Ge, associate professor)** — Comparatively favorable but not uncritical. Praises originality and technical soundness of EvoDerma-Mem and the DermNet498 reorganization. Major points: the triggering/update threshold for memory evolution is unspecified (reproducibility gap); HAM10000 class imbalance (melanocytic nevi overrepresentation) is unaddressed with no resampling/reweighting discussion; the quantitative metric behind Figure 5b's "guideline evolution" bubble-intensity encoding is undefined; Algorithm 1 doesn't explain cold-start handling for diseases with no existing guideline entry; the three-dimension physician evaluation rubric needs clearer quantitative grounding. Everything else is minor (terminology consistency, typos, figure legibility, missing compute-cost discussion).
+
+**Reviewer 3 (Jeff Gehlhausen, assistant professor, did not run code)** — By far the most serious critique, and it goes to clinical validity rather than engineering. Four load-bearing problems: (1) RSDD tests discrimination among only 8 preselected rare diagnoses with no mimics, unrelated controls, or abstention option — reviewer calls this "a toy example" that "does not in reality have clinical value," and notes several RSDD labels (Behçet's, CAPS, Gorlin, Blue Rubber Bleb Nevus) are systemic/syndromic and cannot be established from a photograph alone. (2) The DermNet498 "ontology" mixes disease, anatomic site, imaging modality, and treatment context as if they were equivalent diagnostic classes — described as requiring a full dermatologist-reviewed re-taxonomy before the benchmark is valid. (3) The memory system produces documented dangerous outputs — a gluteal ulcer misclassified as HIV/AIDS, a hyperpigmented scar misclassified as diabetes — with a plausible mechanism for self-reinforcing propagation of these errors into future cases. (4) The evolved "expert-level" clinical guidelines contain factual errors (incorrect urticaria resolution timing, conflated Ehlers-Danlos criteria), directly undermining the central "knowledge evolution improves clinical accuracy" claim. The physician evaluation (100 cases, 2 dermatologists, ~4.9/5) is dismissed as measuring prose quality, not diagnostic safety or accuracy — near-ceiling scores are uninformative by design.
+
+**Decision: Reject**, not major revision.
+
+The reason isn't cumulative reviewer dissatisfaction — it's that Reviewer 3's flaws are structural, not fixable by rewriting text or adding an ablation table. A benchmark built on a coherence-broken ontology, a rare-disease dataset that structurally cannot test rare-disease recognition, and a memory mechanism with a documented failure mode for propagating misdiagnoses cannot be patched at the manuscript-revision stage — the evaluation framework itself needs to be rebuilt, and until it is, the central claims ("transparent, trustworthy diagnosis," "knowledge evolution improves recognition") are unsupported or actively contradicted by the paper's own supplementary outputs. Reviewer 1's unresolved confound (fine-tuning vs. architecture) independently undermines the paper's mechanistic claim even before you reach the clinical safety issues. Reviewer 2's enthusiasm is real but is about the engineering elegance of EvoDerma-Mem, not about whether the system is safe or valid as a diagnostic claim — and that's the axis this journal has to gate on.
+
+Counterargument worth taking seriously before finalizing: Reviewer 2, who actually ran the code, rates this as fundamentally sound with addressable major-revision-level issues, and the retrieval-augmented-memory architecture is a genuinely underexplored direction worth keeping in the literature. If you want to leave a revision door open, it would have to be scoped extremely narrowly — full ontology reconstruction with dermatologist adjudication, replacement of RSDD with a benchmark including mimics/controls/abstention, and a corrected error-propagation audit of the memory guidelines — which is realistically a new submission, not a revision cycle. That's the basis for rejecting now rather than sending back for major revision.
+
+Transfer suggestion: **npj Digital Medicine** — the multi-agent/memory architecture has technical interest independent of the current dermatology validation, but authors must be told explicitly that the clinical-safety and ontology issues Reviewer 3 raised must be resolved before resubmission anywhere, not just reformatted for a lower-tier venue.
+
+063796
+## Editorial Report: "A Vision–Language Model for Nerve and Cell Phenotyping in Corneal Confocal Microscopy" (Condensed)
+
+### 1–4. Assessment, Strengths, Weaknesses, Decision
+
+BioMiner is a vision-language framework that jointly grades corneal nerve tortuosity and Langerhans cell activation from corneal confocal microscopy (CCM), combining a topology-aware self-supervised image encoder, a numerical-aware text encoder over twelve morphometric descriptors, and bidirectional cross-attention fusion. It is validated across eight centres, three countries, 26,224 images, and six downstream clinical tasks spanning neuropathic corneal pain, herpes simplex keratitis, dry-eye severity, diabetic peripheral neuropathy, and post-LASIK prognosis.
+
+This is a substantive, well-instrumented contribution with genuine external cross-centre validation and component ablations that credibly isolate each module's effect. Two issues will most influence the decision: an undisclosed authorship overlap with the primary baseline, DeepGrading, and the absence of confidence intervals around the headline downstream clinical AUCs.
+
+**Strengths:** the EXT-Biomarker cohort is a true external holdout (four centres, never used in development), with transparent, modest performance decay and corrected significance testing against nine baselines. The topology-aware corruption strategy is ablated and shown to matter (AUC 0.697 to 0.746). Grad-CAM-to-clinician IoU (83.88%/85.79%) and the segmentation-robustness stress test directly address interpretability and brittleness. Six independent downstream cohorts anchor the biomarkers to real clinical outcomes rather than grading accuracy alone.
+
+**Weaknesses:** DeepGrading, the strongest baseline, shares three authors (Qi, Zheng, Zhao) with this manuscript, undisclosed as a possible source of bias in baseline tuning. Downstream AUCs (NCP 0.90, HSK 0.95, DPN 0.85, LASIK 0.88) lack confidence intervals despite small cohorts (HSK n=78, one-month n=71). All grading derives from a single instrument (Heidelberg HRT-III), untested cross-platform. The QA-curation pipeline reports no inter-rater agreement statistic, and the diagnosis-supervision task (D6) sits close enough to inference to warrant reviewer scrutiny for leakage.
+
+**Decision:** Send for review. The multicentre external validation and anatomical grounding are distinctive, but reviewers must adjudicate baseline-tuning independence, bootstrap CIs on downstream AUCs, and cross-platform generalizability before acceptance.
+
+*(294 words, verified)*
+
+---
+
+### 5. Suggested Reviewer Expertise
+
+Reviewers should include expertise in vision-language and cross-modal attention architectures for medical imaging; self-supervised and topology-aware representation learning for curvilinear/vascular-like structures; quantitative corneal confocal microscopy image analysis and nerve/Langerhans-cell morphometrics; clinical corneal neuropathy and ocular surface disease (NCP, DED, DPN); and biostatistics for multi-site diagnostic-AUC validation with small clinical cohorts.
+
+### 6. State-of-the-Art Literature Review (Past 3 Years)
+
+Two recent, directly competing lines of work deserve engagement. First, Ouan, Moreau, and Bozek (MIDL 2026 short paper, arXiv:2603.15269) show that fine-tuned self-supervised ImageNet features (DINO) match or exceed DeepGrading's tortuosity-grading accuracy without requiring any nerve segmentation masks, directly challenging BioMiner's reliance on upstream CCM-Pro/MorphoBoost segmentation for both its image corruption pipeline and its morphometric text inputs; this segmentation-free alternative is not cited or discussed. Second, Koseoglu et al. (npj Digital Medicine, 2025, Beam and Hamrah groups) trained a deep learning model on 103,168 IVCM images across multiple sites to detect microneuromas as a direct NCP biomarker, achieving AUROC 0.97 internally and 0.90 at a new institution — an order of magnitude larger dataset than the present manuscript's 4,760-image NCP cohort, and one that targets the causal microneuroma phenotype rather than an intermediate tortuosity/activation grade. Since NCP diagnosis is one of BioMiner's headline downstream applications, the absence of this paper from the reference list is a notable omission the authors should address, situating BioMiner's broader multi-disease grading contribution against this NCP-specific, larger-scale competing system.
+
+### 7. Suggested Reviewers
+
+**Multimodal/vision-language architectures for medical imaging:** Qing Yu (CLIP-DR, MICCAI 2024); Sheng Zhang (BioMedCLIP, arXiv 2303.00915).
+
+**Self-supervised/topology-aware representation learning for curvilinear structures:** Katarzyna Bozek; Kim Ouan (DINO-based tortuosity grading without segmentation maps, MIDL 2026).
+
+**Corneal confocal microscopy and nerve/Langerhans-cell morphometrics:** Maria Ferdousi (corneal nerve fibre damage and Langerhans cell density in type 1 diabetes, Sci. Rep. 2019) — note: co-author on the present manuscript, disqualified.
+
+**Clinical corneal neuropathy / neuropathic corneal pain:** Pedram Hamrah (NCP deep learning screening via microneuromas, npj Digit. Med. 2025); Andrew L. Beam (co-senior author, same paper).
+
+---
+
+## Further Literature (Past 3 Years, Similar Scope)
+
+1. **Ouan K, Moreau N, Bozek K.** Self-Supervised ImageNet Representations for In Vivo Confocal Microscopy: Tortuosity Grading without Segmentation Maps. *MIDL 2026, Short Paper Track* (arXiv:2603.15269). Peer-reviewed workshop paper. **Not cited** by manuscript. Fully independent (University of Cologne). Directly relevant: shows a segmentation-free self-supervised alternative matches DeepGrading's accuracy, challenging BioMiner's reliance on upstream segmentation masks.
+
+2. **Koseoglu ND, Chen E, Tuwani R, et al.** Development and validation of a deep learning model for diagnosing neuropathic corneal pain via in vivo confocal microscopy. *npj Digit Med.* 2025;8:277. DOI: 10.1038/s41746-025-01577-3. Peer-reviewed. **Not cited**. Independent (Tufts/Harvard, Beam & Hamrah groups). Highly relevant: NCP-specific competing system trained on 103,168 images (AUROC 0.97 internal / 0.90 external), directly bearing on one of BioMiner's headline downstream claims.
+
+3. **Rabah CB, Petropoulos IN, Stettner M, Ferdousi M, Alam U, Efron N, Serag A, Malik RA.** Deep Learning–Assisted Differentiation of Four Peripheral Neuropathies Using Corneal Confocal Microscopy. *Ann Clin Transl Neurol.* 2026;13:747–754. Peer-reviewed. **Not cited**. **Shares four co-authors with the present manuscript** (Petropoulos, Ferdousi, Alam, Malik). Highly relevant and a notable omission given near-total author overlap and shared topic (multi-condition neuropathy differentiation via CCM with Grad-CAM localization).
+
+4. **Meng Y, Preston FG, Ferdousi M, Azmi S, Petropoulos IN, Kaye S, Malik RA, Alam U, Zheng Y.** Artificial Intelligence Based Analysis of Corneal Confocal Microscopy Images for Diagnosing Peripheral Neuropathy: A Binary Classification Model. *J Clin Med.* 2023. Peer-reviewed. **Not cited**. **Shares five co-authors with the present manuscript** (Ferdousi, Petropoulos, Malik, Alam, Zheng) — essentially the same author group as this submission's DPN co-authors. Directly relevant prior work on DPN classification from CCM by the same team; its absence from the reference list should be queried.
+
+5. **Chen W, Liao D, Deng Y, Hu J.** Development of a transformer-based deep learning algorithm for diabetic peripheral neuropathy classification using corneal confocal microscopy images. *Front Cell Dev Biol.* 2024;12:1484329. DOI: 10.3389/fcell.2024.1484329. Peer-reviewed. **Not cited**. Independent (Fujian Medical University). Relevant: Swin-transformer DPN classifier from CCM, a competing single-task approach to one of BioMiner's downstream domains.
+
+6. **[Authors].** Comparative performance of deep learning architectures for diabetic peripheral neuropathy detection using corneal confocal microscopy: a retrospective single-centre study. *BMJ Open.* 2025;15(8):e095342. DOI: 10.1136/bmjopen-2024-095342. Peer-reviewed. **Not cited**. Independent. Relevant: architecture benchmarking (InceptionV3-based) for DPN via CCM, single-centre scope contrasts with BioMiner's multicentre claim.
+
+7. **[Authors].** Vision transformers for automated detection of diabetic peripheral neuropathy in corneal confocal microscopy images. *Front Imaging.* 2025;4:1542128. DOI: 10.3389/fimag.2025.1542128. Peer-reviewed. **Not cited**. **Shares two co-authors with the present manuscript** (Petropoulos, Malik). Relevant: ViT-based DPN detector from CCM by an overlapping author subset, not engaged with in the manuscript.
+
+8. **Shi D, Zhang W, Yang J, et al.** A multimodal visual–language foundation model for computational ophthalmology (EyeCLIP). *npj Digit Med.* 2025;8:381. DOI: 10.1038/s41746-025-01772-2. Peer-reviewed. **Not cited**. Independent. Relevant as a broader vision-language foundation-model paradigm for ophthalmic imaging, a useful comparator for BioMiner's fusion design philosophy.
+
+9. **Qiu J, Wu J, Wei H, et al.** Development and validation of a multimodal multitask vision foundation model for generalist ophthalmic artificial intelligence (VisionFM). *NEJM AI.* 2024;1(12):AIoa2300221. Peer-reviewed. **Not cited**. Independent. Relevant: large-scale multi-task multimodal ophthalmic foundation model, a scale/paradigm comparator to BioMiner's joint two-biomarker grading.
+
+10. **Zhang S, et al.** A Multimodal Biomedical Foundation Model Trained from Fifteen Million Image–Text Pairs (BiomedCLIP). *NEJM AI.* 2024. Peer-reviewed journal version. **Manuscript cites only the 2023 arXiv preprint** (ref 35, arXiv:2303.00915) as its BioMedCLIP baseline, not this subsequently peer-reviewed publication. Minor citation-currency issue: authors should cite the published version and confirm the baseline implementation matches it.
+
+064103
+Editorial Report — Manuscript 064103
+
+## 1–4. Assessment, Strengths, Weaknesses, Decision (condensed)
+
+This manuscript reports a retrospective observational evaluation of the AI Care Coordinator (AI CC), a four-agent (Supervisor, Specialized, Reply, Guardrails) LangGraph-based orchestration system that triages and resolves 21,255 patient-support tickets across three US employer-sponsored digital health programs over a nine-week deployment. The central claim is that governance-driven autonomy allocation can expand operational capacity without degrading safety or patient experience, evidenced by 95.8% routing accuracy, 87.5% resolution accuracy, and a reported drop in median resolution time from 53.9 hours to 0.02 hours. The bounded-autonomy design and operational scale are genuine strengths against a literature dominated by single-task pilots. But two flaws dominate: the 0.02-hour figure is implausible and likely conflates automated first-response with true resolution, and the efficiency claim rests on a non-concurrent, year-separated pre/post cohort rather than a matched or randomized contemporaneous control, confounding the result with secular and seasonal trends.
+
+The safeguard taxonomy in Figure 2c is a real contribution, decomposing the 5.3% intercepted tickets by triggering cause and mechanism. Inter-rater reliability is rigorously reported (Krippendorff's α 0.993; Fleiss' κ 1.000), with a Cochran-based sample-size justification and post-hoc power calculation.
+
+Set against these strengths, the headline efficiency result is not credible as written; a 72-second median resolution time for tickets involving shipment coordination and human oversight steps indicates a mislabeled outcome, not a genuine speedup. The pre/post design lacks any concurrent control. The audited accuracy figures rest on only 497 of 21,255 tickets (2.3%), and a 12.5% resolution error rate for a system autonomously executing backend actions warrants a harm-severity breakdown that is absent. Code and data are available only on request from a proprietary commercial system, precluding independent replication.
+
+**Editorial Decision:** Reject, with encouragement to resubmit after the resolution-time metric is corrected and a concurrent-control or interrupted-time-series design replaces the year-separated comparison. The mislabeled central efficiency outcome is currently a fatal validity flaw, compounded by unreleased code and data.
+
+*(311 words)*
+
+## 5. Suggested Reviewer Expertise
+
+Reviewers should have expertise in retrieval-augmented multi-agent LLM orchestration and ReAct-style tool-use architectures; causal inference for non-randomized health-system operational interventions (difference-in-differences, interrupted time series); healthcare AI governance and bounded-autonomy safety design; and clinically, digital musculoskeletal, women's health, and cardiometabolic program operations, plus care-coordination workforce/patient-portal message-triage systems.
+
+## 6. State-of-the-Art Literature Review (Past 3 Years)
+
+The field has moved rapidly from single-task classifiers toward agentic, tool-using systems. Anderson et al. (NEJM AI, 2025) prospectively deployed an NLP router for EHR portal messages at Emory, achieving 97.8% classification accuracy and measurable reductions in staff message-handling time — a narrower but methodologically cleaner (prospective, concurrent-control) precedent this manuscript should engage directly rather than only cite. Ferber et al. (Nature, 2026) demonstrated MIRA, an autonomous EHR-embedded agent performing physician-level diagnostic and treatment actions within a sandboxed environment, establishing that governed, tool-executing agents can match clinical performance benchmarks — a higher evidentiary bar for "autonomous execution" claims than this manuscript's operational-ticket framing. Singapore's IMDA Model AI Governance Framework for Agentic AI (January 2026) and NIST's emerging agent-identity work formalize multi-agent coordination risk (cascading errors, unintended coordination) that this manuscript's safeguard taxonomy addresses empirically but does not cite. This manuscript's contribution is deployment scale and the explicit three-tier governance taxonomy; it does not advance model architecture or evaluation methodology beyond these precedents, and its causal inference design is weaker than the Anderson et al. comparator it most resembles.
+
+## Suggested Reviewers
+
+**Multi-agent/orchestration methods:** Dyke Ferber; Jakob Nikolas Kather; Daniel Truhn; Georg Wölflein
+
+**Causal inference/health-services methods:** Blake J. Anderson; Arash Harzand
+
+**Clinical/care-coordination domain:** Alison D. Cowan; Yuanda Zhu
+
+065206
+# Editorial Report — "Zero-Shot ECG Waveform Measurement via Multimodal Large Language Models" (Mori, Fujisaki et al.)
+
+## 1. Overall Assessment
+
+The manuscript evaluates six MLLMs (GPT-5.5, GPT-5.6-Sol, GPT-5.6-Terra, Claude Opus 4.8, Claude Sonnet 5, Gemini 3.1 Pro Preview) on zero-shot quantitative measurement of 11 ECG parameters from 204 printed 12-lead tracings, using device-generated numeric readouts (OCR-extracted) as reference values. The central claim is a systematic "prediction range compression" — regression slopes below 1.0 in 64 of 66 model–parameter combinations — pulling voltage and temporal measurements toward central typical values, compounded by broader reference-value dispersion for voltage parameters.
+
+This isolates a genuinely distinct question from prior ECG-MLLM work on diagnostic accuracy or verbalized hallucination: whether numeric outputs are grounded in measured pixel distances at all. The regression-slope and decile-stratified error analyses are a real methodological step forward. But the study's core limitation is structural: reference values are machine-generated readings extracted by one LLM performing OCR, cross-checked only against a second LLM's OCR output — never against expert caliper measurement. Combined with a cohort restricted to normal ECGs and no non-MLLM digitization baseline, this undermines the clinical interpretability of the reported errors, even though the compression phenomenon itself is likely real.
+
+## 2. Strengths
+
+The paper operationalizes "grounding versus recall" quantitatively via regression slope (β) rather than gesturing at it qualitatively. The output-format ablation on self-reported box counts is a well-designed probe showing SV1/RV5 box counts shift ≥2 boxes in 30–40% of cases without changing MAE — demonstrating that stated "reasoning" is not a faithful audit trail. The statistical apparatus (bootstrapped CIs, correct circular statistics for QRS axis, decile-stratified normalized MAE) exceeds typical MLLM benchmarking rigor.
+
+## 3. Weaknesses
+
+Ground truth is circular: two LLMs agreeing on OCR of printed digits confirms nothing about the device measurement's correctness. The cohort excludes pathological/tachycardic tracings — precisely where measurement stakes are highest. No non-MLLM digitization baseline is run despite citing several. Landmark-identification error is never separated from conversion/compression error, so the Discussion's causal narrative is unproven by the authors' own admission.
+
+## 4. Editorial Decision
+
+**Reject.** The findings are real, but ground-truth circularity, exclusion of pathological ECGs, and unquantified error decomposition require new experiments, not revision.
+
+## 5. Suggested Reviewer Expertise
+
+Reviewers should include expertise in multimodal vision-language model evaluation and visual grounding methodology, specifically for chart- and image-based quantitative extraction tasks; automated ECG digitization and signal-reconstruction pipelines, to assess whether the study's benchmark design meaningfully compares against established non-LLM methods; circular and directional statistics as applied to biomedical angular measurements (QRS axis); interpretability and faithfulness of intermediate reasoning traces in medical LLMs; and clinical electrophysiology, specifically QT/QTc measurement reproducibility and cardiac axis determination, to evaluate whether the proposed grid-based tolerances have any clinical defensibility.
+
+## 6. State-of-the-Art Literature Review (Past 3 Years)
+
+The relevant field has moved through three phases. First, instruction-tuning approaches specialized MLLMs for ECG images: Liu et al.'s ECGInstruct/PULSE (arXiv 2024; published *npj Digital Medicine* 2026) built a million-sample instruction-tuning dataset and the ECGBench evaluation suite, showing that a fine-tuned model outperforms general MLLMs like GPT-4o by 15–30% on classification-style tasks — but ECGBench evaluates categorical answers, not continuous measurement error, leaving the present manuscript's numeric-regression approach genuinely novel in scope. Second, diagnostic-performance audits of general-purpose MLLMs found that errors trace to failures of visual grounding rather than medical knowledge: Seki et al. (*Front Cardiovasc Med* 2025) showed MLLMs erred more in "extracting and verbalizing image features" than in logical inference, and the more recent ECG-Reasoning-Benchmark (Oh et al., arXiv 2026, cited by the manuscript as ref. 6) explicitly targets whether models maintain a "complete reasoning chain" between linguistic knowledge and visual evidence — this is the same conceptual territory the present manuscript occupies, and the overlap is close enough that the authors should more explicitly differentiate their quantitative-regression contribution from Oh et al.'s qualitative reasoning-chain framework rather than citing it only as background motivation. Third, general multimodal-benchmark work (CharXiv, Wang et al. 2024; MMMU-Pro, Yue et al. 2025) has shown that even strong MLLMs overestimate their own chart- and figure-reading accuracy absent vision-only controls, a caution the present manuscript's zero-shot, single-pass design does not fully address since no vision-ablated control (e.g., text-only prior-value guessing) is reported to establish how much of the observed "measurement" is actually pattern-matching to typical ECG values.
+
+---
+
+## 5 (bis). Suggested Reviewers
+
+**Visual grounding / MLLM measurement methodology:** a corresponding author of "Teach Multimodal LLMs to Comprehend Electrocardiographic Images" (ECGInstruct/PULSE, arXiv:2410.19008 / *npj Digit Med* 2026) — directly built and evaluated the closest competing dataset/benchmark.
+
+**Clinical + technical, ECG-VQA hallucination:** Tomohisa Seki, MD PhD, Department of Healthcare Information Management, University of Tokyo Hospital — author of "Assessing the Performance of Zero-Shot Visual Question Answering in Multimodal Large Language Models for 12-Lead ECG Image Interpretation" (*Front Cardiovasc Med* 2025), the most directly comparable prior evaluation design.
+
+**Reasoning-chain faithfulness:** a corresponding author of "ECG-Reasoning-Benchmark: A Benchmark for Evaluating Clinical Reasoning Capabilities in ECG Interpretation" (Oh et al., arXiv:2603.14326, 2026) — closest concurrent work on grounding-versus-recall failure modes.
+
+**ECG digitization / measurement reproducibility (clinical):** a corresponding author of "Digitizing ECG image: A new method and open-source software code" (Fortune, Coppa, Haq, Patel, Tereshchenko, *Comput Methods Programs Biomed* 2022) — best positioned to judge whether a deterministic-digitization comparator was a feasible and necessary control the authors omitted. Note: this author group includes senior investigators; a co-author or postdoctoral collaborator on the digitization work should be sought first if available.
+
+065678
+# Editorial Report — Manuscript 065678
+**Title:** Stress testing reveals hidden safety vulnerabilities in clinical large language models
+**Authors:** Shen Y, Wu X, Yu L (Zhejiang University; The First Hospital of Jiaxing)
+
+---
+
+## 1. Overall Assessment
+
+The manuscript proposes AI-MASLD, a double-stress evaluation framework administering 240 clinical vignettes to seven LLMs under clean and narratively perturbed conditions, scored via three indices (metabolic index, perturbation flip rate, counterfactual fairness index) combined into a non-compensatory KEM product. It claims accuracy benchmarks obscure safety failures — quantization pseudonormalization, GPT-5 contradiction flips, SFT-induced degradation — that only stress auditing reveals.
+
+The tri-index design is diagnostically granular, but the framing as a novel paradigm does not hold: adversarial benchmark perturbation, demographic counterfactual testing, and quantization collapse each have directly competing prior work left uncited, and a version-provenance error in the model roster compounds the concern.
+
+## 2. Strengths
+
+The double-stress design — pairing every case with a matched perturbed variant and computing decay metrics rather than raw accuracy — enables the strongest finding: five of seven models cluster at 97.5% baseline accuracy (Kruskal-Wallis P = 0.12) yet span a 7.8-fold range in stress MI (P = 1.8×10⁻⁴¹).
+
+The pseudonormalization analysis (Qwen-Int4's lowest PFR coinciding with stress MI collapse to 1.06) is well controlled, corroborated by McNemar's test on Qwen3-8B (P = 0.016) confirming the probe registers perturbation in a non-degraded model.
+
+Isolating medical SFT effects via an architecture-matched pair (Qwen3-8B vs. -SFT) is a clean natural experiment; simultaneous PFR, MI, and CFI degradation (Fisher's exact P = 0.027) is clinically consequential if it replicates.
+
+Human validation of the LLM-judge protocol (weighted κ 0.78–0.86) and de novo case construction avoiding contamination are appropriate safeguards.
+
+## 3. Weaknesses
+
+The framework substantially overlaps with uncited published work. MedFuzz (Ness et al., 2024, Microsoft Research) already showed adversarial perturbation of clinical benchmarks collapses performance invisible to accuracy scoring — the paper's central thesis. Liu et al. ("Quantization Hurts Reasoning?", 2025) and follow-on signal-degradation-versus-computation-collapse work directly anticipate the pseudonormalization finding. HealthBench (Arora et al., 2025) already argues for realistic conversational evaluation over clean vignettes. None appear in the 38-item reference list, overstating novelty.
+
+A serious integrity concern: Methods report API version "gpt-5-2025-01-13," a date preceding GPT-5's actual release (August 7, 2025) by seven months. This version string cannot exist and requires clarification.
+
+The probe set is underpowered for the claims made — 40 cases per category, one institution, undisclosed panel size, no external validation — yet Table 2's deployment thresholds (e.g., "P1 MI > 4.5") carry unsupported precision.
+
+The LLM-judge (Claude Opus 4.6) scores peer frontier models with no cross-judge validation and only 20% human-checked; judge-family bias is untested.
+
+## 4. Editorial Decision
+
+**Reject.** The version-provenance error in the GPT-5 identifier is a factual impossibility requiring resolution before re-evaluation, and uncited overlap with MedFuzz, HealthBench, and the quantization-collapse literature means the paper cannot currently support its novelty claims — not addressable through minor revision without materially reframing the contribution.
+
+## 5. Suggested Reviewer Expertise
+
+Adversarial/perturbation-based robustness evaluation of clinical NLP; post-training quantization effects on LLM reasoning and safety alignment; LLM-as-judge methodology and calibration against clinical experts; supervised fine-tuning dynamics and alignment tax in domain-adapted LLMs; hepatology/MASLD diagnostic pathways, to assess fidelity of the metabolic-stress analogy.
+
+## 6. State-of-the-Art Literature Review (Past 3 Years)
+
+The field has converged on the view that clean-vignette benchmarks overstate clinical readiness. MedFuzz (Ness et al., 2024) established adversarial fuzzing of MedQA items as a robustness probe; HealthBench (Arora et al., 2025) moved evaluation toward realistic conversation graded by physician rubrics; BiasMedQA and MedEqualQA (2025) formalized demographic-counterfactual testing paralleling this manuscript's CFI. On compression, "Quantization Hurts Reasoning?" (Liu et al., 2025) and follow-on signal-degradation-versus-computation-collapse work pre-empt the pseudonormalization argument almost exactly. The genuine addition here is the joint, non-compensatory KEM composite and iatrogenic-injury framing for medical SFT — but it must engage this literature rather than present stress testing as newly discovered.
+
+---
+
+## Editorial Integrity Alert (Handling Editor Only)
+
+Two items require pre-review clarification directly from the authors. First, the reported GPT-5 version identifier ("gpt-5-2025-01-13") predates GPT-5's actual release by seven months; request the correct API version log or usage receipts. Second, the reference list omits MedFuzz, HealthBench, and the quantization-collapse literature identified above despite direct conceptual overlap; this pattern — a compelling but insufficiently literature-grounded framework — warrants a straightforward query to the authors rather than an assumption of intent, but should be tracked if it recurs in resubmission.
+
+## Suggested Reviewers
+
+**Adversarial/robustness evaluation:** Robert Osazuwa Ness (Microsoft Research, MedFuzz); Rahul K. Arora (OpenAI, HealthBench).
+**Quantization and model compression:** Ruikang Liu (Tsinghua University, quantized-reasoning degradation studies); Haoli Bai (Huawei Noah's Ark Lab, low-bit quantization-aware training for reasoning LLMs).
+**Fairness/counterfactual evaluation in clinical NLP:** authors of the MedEqualQA counterfactual-bias framework (2025).
+**Hepatology/clinical correspondence:** a senior hepatologist with MASLD nomenclature expertise, to adjudicate whether the transaminase-pseudonormalization analogy is clinically accurate as described.
+
+065565
+## Editorial Report — "Towards Lifelong-Learning Diagnostic Agents with Authority-Aware Evolving Memory" (DxEvolver)
+
+## 1. Overall Assessment
+
+DxEvolver adds an authority-graded external memory harness — evidence-aligned episodes, truth-anchored episodes, consolidated disease-level skills — to free-action diagnostic hosts, claiming that longitudinal, authority-graded memory converts repeated use into measurable, evidence-bounded improvement without weight updates. The empirical program is extensive: controlled longitudinal replay, four-backbone generalization, three feedback-authority regimes, noise stress-testing, four-component ablation, and a real three-physician deployment with blinded ratings. Two concerns dominate my read: undisclosed author overlap with the primary comparator system, and physician-deployment gains that depend on an internally engineered ensembling step rather than single-physician use.
+
+## 2. Strengths
+
+The write-admission mechanism (knowledge-verification and case-grounding scores gating feedback into memory, Eq. 1) is architecturally sound and directly targets pseudo-evidence contamination. The ablation (Fig. 5) is disciplined, isolating LLM-reranking as contributing more than twice the Recall@1 gain of vector retrieval alone. The feedback-authority gradient and noise-injection experiments show gains persist even under corrupted free-text feedback. The 2,400-rating blinded physician study is a substantive move beyond simulated evaluation.
+
+## 3. Weaknesses
+
+DeepRare, the "strongest non-memory baseline," shares three authors — including two corresponding authors — with this manuscript; this is undisclosed and the "no competing interests" statement is questionable. Individual physician traces (Recall@1 8.0–10.0%) are statistically indistinguishable from the DeepRare baseline (8.5%); reported gains emerge only after an internal three-physician ensembling policy not tested against single-physician deployment. No demographic or site-level subgroup analysis is reported despite multi-country cohorts. Recall@N depends on LLM-mediated label normalization with no independent human-adjudicated concordance check.
+
+## 4. Editorial Decision
+
+**Send for Review**, conditional on corrected competing-interests disclosure. Reviewers should adjudicate: fidelity of the DeepRare re-implementation, single-physician (non-ensembled) performance, and normalization-driven measurement circularity.
+
+## 5. Suggested Reviewer Expertise
+
+Agentic LLM system design and memory architectures for long-horizon tasks (technical); retrieval-augmented generation and hierarchical reranking for biomedical text (technical); rare-disease phenotype-driven differential diagnosis and HPO-based tools such as PhenoBrain/PubCaseFinder (clinical/technical hybrid); clinical informatics and EHR-derived cohort construction (MIMIC-IV, DDD) with attention to site heterogeneity and demographic generalizability (clinical); rare-disease clinical genetics with experience in diagnostic-odyssey case management (clinical).
+
+## 6. State-of-the-Art Literature Review (Past 3 Years)
+
+Memory-augmented LLM agents have moved from episodic recall (Reflexion, MemGPT) toward structured, self-organizing architectures (A-MEM, HippoRAG, Memory-R1, DarwinMem), with 2025–2026 benchmarks (Evo-Memory, LifelongAgentBench) formalizing test-time learning as its own evaluation axis — the framing DxEvolver adopts. In clinical AI, the same author cluster has produced a tightly linked trajectory: DeepRare established the rare-disease agentic baseline used here; Deep-DxSearch trained an end-to-end agentic RAG diagnostic system; DiagAgent/DiagGym trained diagnostic policies via reinforcement learning in a simulated EHR environment. DxEvolver's distinct contribution — persisting authority-graded memory across encounters — is genuine relative to this lineage, but the manuscript should engage DiagAgent/DiagGym as a directly competing paradigm (RL-trained adaptive policy versus training-free evolving memory), and should address the contemporaneous argument from Qwen-Character's "Scaling Self-Evolving Agents via Parametric Memory" that prompt-space memory alone cannot substitute for durable policy change.
+
+## 7. Suggested Reviewers' Names
+
+**Agentic memory architectures:** Charles Packer; Zeyu Zhang; Wanjun Zhong; Noah Shinn.
+**Retrieval-augmented biomedical reasoning:** Qiaoyu Zheng; Guangzhi Xiong; Rui Yang; Minbyul Jeong.
+**Rare-disease phenotype-driven diagnosis:** Xiaohao Mao; Toyofumi Fujiwara; Xuanzhong Chen.
+**Clinical informatics / EHR cohort construction:** Alistair Johnson; Dyke Ferber; Shuyue Jia.
+**Rare-disease clinical genetics:** Yanjie Fan; Caroline Wright; Jessica Chong.
+
+---
+
+## Further Literature (Past 3 Years)
+
+1. **Zhao, W., Wu, C., Fan, Y., et al.** "An agentic system for rare disease diagnosis with traceable reasoning" (DeepRare). *Nature*, 651:775–784, 2026. DOI: 10.1038/s41586-025-10097-9. Peer-reviewed. **Cited (ref. 12).** **Not author-independent** — shares three authors with the submission, including two corresponding authors (Ya Zhang, Chaoyi Wu). Central methodological relevance: this is the primary non-memory comparator against which the headline Recall@1/3/5 gains are computed; independence of this baseline is the report's key open question.
+
+2. **Qiu, P., Wu, C., Liu, J., et al.** "Evolving Diagnostic Agents in a Virtual Clinical Environment" (DiagAgent/DiagGym). arXiv:2510.24654, 2025 (v2 Feb 2026). Preprint, unreviewed. **Not cited** by the manuscript. **Not author-independent** — shares Chaoyi Wu, Yanfeng Wang, Ya Zhang, Weidi Xie. High relevance: a directly competing paradigm (RL-trained multi-turn diagnostic policy in a simulated EHR world model) for achieving longitudinal diagnostic improvement, which the manuscript should discuss and differentiate from its training-free memory approach.
+
+3. **Zheng, Q., Sun, Y., Wu, C., et al.** "End-to-end agentic RAG system training for traceable diagnostic reasoning" (Deep-DxSearch). arXiv:2508.15746, 2025. Preprint, unreviewed. **Cited (ref. 33).** **Not author-independent** — shares Ya Zhang, Yanfeng Wang, Weidi Xie. Directly relevant: supplies the common-disease host-agent architecture (guideline corpus, similar-case retrieval) that DxEvolver's common-disease variant builds upon.
+
+4. **Wei, T., Sachdeva, N., Coleman, B., et al.** "Evo-Memory: Benchmarking LLM Agent Test-time Learning with Self-Evolving Memory." arXiv:2511.20857, 2025. Preprint, unreviewed. **Cited (ref. 19).** Author-independent. High methodological relevance: formalizes the "search-synthesis-refine" evolving-memory evaluation protocol that DxEvolver's longitudinal controlled-evaluation design explicitly follows.
+
+5. **Cai, Y., Hao, Y., Zhou, J., et al.** "Building self-evolving agents via experience-driven lifelong learning: A framework and benchmark." arXiv:2508.19005, 2025. Preprint, unreviewed. **Cited (ref. 32).** Author-independent. General-domain lifelong-learning agent framework providing the non-clinical evaluation precedent DxEvolver adapts to diagnosis.
+
+6. **Chen, H., Zhao, Z., Zhou, S., et al.** "Rarearena: a comprehensive benchmark dataset unveiling the potential of large language models in rare disease diagnosis." *The Lancet Digital Health*, 8(2), 2026. Peer-reviewed. **Cited (ref. 30).** Author-independent (distinct group). Relevant as an independently constructed large-scale rare-disease benchmark (~50,000 patients) that could serve as an external validation cohort beyond the datasets used here.
+
+7. **Ren, T., Luo, W., Yang, H., et al.** "Scaling Self-Evolving Agents via Parametric Memory" (Qwen-Character Team, Alibaba/Peking University). arXiv:2606.04536, 2026. Preprint, unreviewed. **Not cited.** Author-independent. Methodologically contradicting position: argues prompt-space-only memory of the kind DxEvolver uses cannot substitute for parametric policy adaptation — a counterargument the discussion should address.
+
+8. **Jia, S., Bit, S., Jasodanand, V. H., et al.** "Agentic memory-augmented retrieval and evidence grounding" (Kolachalama lab, Boston University). medRxiv 2025.08.06.25333160. Preprint, unreviewed. **Not cited.** Author-independent. Directly overlapping mechanism: a cache-and-prune memory bank for evidence grounding in medical question answering, offering an independent precedent for evidence-gated memory admission that parallels DxEvolver's knowledge-verification/case-grounding gate.
+
+9. **Liu, X., Liu, H., Yang, G., et al.** "A generalist medical language model for disease diagnosis assistance." *Nature Medicine*, 31(3):932–942, 2025. Peer-reviewed. **Cited (ref. 31).** Author-independent. Relevant as a generalist diagnostic-LLM comparator establishing performance norms in the broader (non-rare) disease-diagnosis LLM space DxEvolver also targets.
+
+10. **[SSGM Framework authors].** "Governing Evolving Memory in LLM Agents: Risks, Mechanisms, and the Stability and Safety Governed Memory (SSGM) Framework." arXiv:2603.11768, 2026. Preprint, unreviewed. **Not cited.** Author-independent. High relevance to the manuscript's own stated limitation: a systematic treatment of auditability, traceability, and safety governance for evolving agent memory — exactly the gap the authors acknowledge but leave to future work regarding clinician ability to trace, correct, or expire stored memories.
+
+066174
+# Editorial Report
+**Manuscript:** Improving Trust Calibration in AI-assisted Surgical Navigation: A Preclinical Randomised Study of Surgeon-AI Interfaces
+**Authors:** Hudson G, Khan DZ, Fayez F, Bhatia S, Bano S, Costanza E, Blandford A, Stoyanov D, McCulloch P, Marcus HJ, CARES Evaluation Group
+**Corresponding Author:** Dr George Hudson (george.hudson7@nhs.net)
+
+---
+
+## ⚠️ EDITORIAL INTEGRITY ALERT — FOR HANDLING EDITOR ONLY — DO NOT TRANSMIT TO AUTHORS
+
+**Competing interests (inadequately managed).** Stoyanov and Marcus are co-founders and equity holders of Panda Surgical (UCL spinout, est. 2022), developing AI-assisted robotic platforms targeting precisely pituitary and skull base minimally invasive neurosurgery — the exact indication studied here. The statement that these interests "did not cause a conflict" is not credible given that positive trust calibration findings directly advance Panda Surgical's commercial narrative. The disclosure must be supplemented with a specific account of how the commercial interest was managed during study design and whether Panda Surgical had access to results before submission.
+
+**Preprint cluster and salami-slicing risk.** Reference 16 (first-in-human study, Khan et al., medRxiv, posted 11 June 2026) and Reference 31 (interpretability preprint, Khan et al., medRxiv, posted 2 June 2026) are unreviewed manuscripts from the same CARES Evaluation Group, both posted after the current study's recruitment closed (March 2026). Authors must confirm that participant populations, operative video clips, and AI model weights do not overlap across these three near-simultaneous submissions. The chronological pattern is consistent with correct IDEAL staging but must be explicitly declared so reviewers can verify that clinical findings from Ref 16 did not influence the preclinical framing post-hoc.
+
+---
+
+## 1. Overall Assessment
+
+This online RCT (n=70; 64 completers) randomised clinicians 1:1 to Basic or interpretability-Enhanced AI-CDSS for sella annotation on real EETS video, measuring STIAS trust across six clips spanning AI DICE 0.68–0.95. The Enhanced design reduced trust at clip 5 (median 3.00 vs. 3.67, p=.035, r=.26) without compromising DICE — meaningful where overtrust of a failing overlay risks carotid injury. Two problems dominate: no power calculation was performed, rendering senior-clinician subgroup findings (n≈15–18 per cell) statistically untenable; and confidence indicators were fabricated by senior investigators rather than generated by the AI, so participants calibrated trust to expert opinion, not machine uncertainty.
+
+---
+
+## 2. Strengths
+
+A randomised design applied to a genuine deployed segmentation AI on authentic EETS footage — not synthetic stimuli — advances the field. The STIAS is validated for AI assistant contexts (McGrath et al., Front Artif Intell 2025); glmmTMB with participant random intercepts and the 50,000-permutation dispersion test are appropriate. The asymmetric calibration result — interpretability attenuates trust during AI failure (p=.035) but not success (p=.521) — is the paper's most actionable finding and its strongest case for publication.
+
+---
+
+## 3. Weaknesses
+
+Senior-clinician subgroup findings (p=.066 trend, IQR dispersion p=.004, n≈15–18 per arm) receive sustained mechanistic interpretation without a post-hoc power analysis. The fabricated binary confidence scheme (green >70%, amber <70%) replaces real AI stochastic uncertainty with deterministic investigator judgement — a fundamental unacknowledged confound that weakens ecological validity. Deterministic clip ordering conflates fatigue and learning with AI performance; STIAS scores rather than toggle-use rates leave the trust-performance disconnect at clip 5 unresolved.
+
+---
+
+## 4. Editorial Decision
+
+Transfer to npj Digital Medicine. Scope, AI platform, and prior art (Khan et al., npj Digit. Med. 7, 314, 2024 — same group, same model) are calibrated to that journal. Competing interest concerns in the Integrity Alert must be resolved first. Reviewers should adjudicate: (1) whether fabricated confidence indicators are a credible proxy for real AI uncertainty; (2) whether subgroup findings are defensible at current sample sizes; and (3) whether AI toggle-use data could resolve the trust-performance disconnect.
+
+---
+
+## 5. Suggested Reviewer Expertise
+
+Four areas: (1) real-time anatomical segmentation in intraoperative endoscopic video; (2) human-AI trust and confidence indicator design in safety-critical automation; (3) explainable AI for clinician-facing CDSS with controlled experiment design expertise; (4) active pituitary or skull base surgical practice outside the UCLH/UCL/Oxford/CARES network. All CARES Evaluation Group members must be excluded.
+
+---
+
+## 6. State-of-the-Art Literature Review
+
+The directly relevant prior works are the same group's own: Khan et al. (npj Digit. Med. 2024), same AI model, showing greater benefit for juniors than seniors; Williams et al. (Ann. Surg. 2026), same group, expertise-dependent trust effects in surgical scene recognition. The programme is internally coherent but the review is self-referential. Critically absent is Rezaeian et al. (IJHCI 2025), who showed high confidence scores in a breast cancer CDSS increased overreliance and reduced accuracy — directly contradicting the assumption that confidence labels are calibration-positive. Buçinca et al. (CSCW 2021) on cognitive forcing functions as overreliance countermeasures and Rosenbacke et al. (JMIR AI 2024) on context-dependent XAI trust effects are the conceptual antecedents to this intervention and must be engaged with substantively. The manuscript is under-contextualised against the broader XAI-in-CDSS literature.
+
+---
+
+## 7. Suggested Reviewer Names
+
+**Surgical AI / intraoperative CV:** Pietro Mascagni (IHU Strasbourg; Mascagni et al., *Ann. Surg.* 2022, deep learning for laparoscopic safety assessment); Amin Madani (University of Toronto; surgical AI generalisation and intraoperative decision support in laparoscopy).
+
+**Human-AI trust / XAI:** Zana Buçinca (Harvard SEAS; Buçinca et al., *CSCW* 2021, cognitive forcing functions and AI overreliance); Olya Rezaeian (Stevens Institute of Technology; Rezaeian et al., *IJHCI* 2025, XAI confidence effects on trust and diagnostic accuracy in clinical CDSS).
+
+**Clinical neurosurgery:** A pituitary or skull base neurosurgeon at a UK or European tertiary centre with no CARES Evaluation Group affiliation; verify independence against the Supplementary collaborator list before invitation.
