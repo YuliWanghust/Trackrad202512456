@@ -764,3 +764,574 @@ Steelman against rejection: all five reviewers describe the engineering executio
 Two independent reviewers (Toro Tobon, Iqbal) and the pre-review editorial triage converge on the same fatal flaw, not three separate complaints: the manuscript's central causal claim — that AI literacy, not documentation design, is the structural barrier to oversight — is inferred from unadjusted bivariate correlations on an unvalidated, memory-confounded four-item comprehension instrument (the Card was unavailable during testing), evaluated in a static mockup disconnected from any functioning CDSS. This is not a fixable reporting gap; the operationalization of the outcome variable is broken at the design level, and "meaningful human oversight" — the paper's title claim — was never actually measured. Reviewer 3's absence of concerns does not offset this, since her comments engage with presentation rather than the design's internal validity. Recommend rejection with transfer suggestion to **npj Digital Medicine** (best fit for the clinician-facing documentation/oversight angle) or **Communications Medicine** (if authors prefer a broader digital-health venue), contingent on redesigning the comprehension measure, adding multivariable adjustment, and embedding the CMC in a live CDSS before resubmission.
 
 **Steelman against rejection:** One could argue this is exploratory, hypothesis-generating work — the authors never claim confirmatory causal inference, and the qualitative-to-quantitative traceability chain (structured survey items derived from coded interview findings) is genuinely uncommon rigor for this literature. Under that reading, the correlational limitation is a disclosed scope constraint rather than a fatal flaw, and major revision (add multivariable models, validate the comprehension instrument, report intercoder reconciliation) could suffice. I don't find this persuasive at Lancet Digital Health–caliber bar: the abstract and title assert AI literacy as a structural barrier in declarative terms, not exploratory ones, and the measurement confound (memory test masquerading as comprehension test) can't be revised away — it requires a new instrument and likely new data collection, which is a reject-and-resubmit, not a revision.
+
+
+068229
+
+# Editorial Report — Manuscript 068229
+
+**Title:** Development and Validation of a Multilevel Deep-Learning Framework for Individualized Prediction in Clustered Data
+**Authors:** Zhu, Schoedel, Sust, Bühner, Terhorst (LMU Munich; Charlotte Fresenius Hochschule; DZPG Munich-Augsburg)
+**Venue considered:** *Nature Communications*, Digital Health section
+
+---
+
+## Editorial Integrity Alert (confidential — handling editor only)
+
+Five matters require attention before any further processing.
+
+**Missing mandatory declarations.** The manuscript contains no ethics approval statement, no informed consent statement, and no competing interests declaration. Prior publications from the same Smartphone Sensing Panel Study (SSPS) cohort state explicitly that the study adhered to EU-GDPR and received ethical approval; the present submission omits this entirely. Passive smartphone logging of GPS, Bluetooth device counts, ambient loudness, notification content categories, and app usage is high-sensitivity personal data under GDPR. Absence of these statements is a compliance defect that must be corrected regardless of the scientific decision.
+
+**Extensive prior use of the validation cohort, inadequately disclosed.** The SSPS (Schoedel & Oldemeier, 2020; ref. 52) is a heavily mined benchmark dataset with multiple prior publications, including Reiter & Schoedel (*Behavior Research Methods*, 2024), große Deters & Schoedel (2024), a systematic app-categorisation paper in *Journal of Open Psychology Data*, and a *Psychometrika* paper on SSPS preprocessing pipelines. Co-author R. Schoedel is a principal architect of the SSPS. The manuscript cites only the protocol. It does not state which prior analyses used overlapping participants, overlapping sensing features, or the same daily-affect outcome. This is not necessarily salami-slicing, but the overlap is undeclared and the authors should be required to enumerate it. Note in particular that the preprocessing pipeline appears to be inherited from the group's own *Psychometrika* methodology paper, which is uncited.
+
+**Undisclosed author overlap with a cited comparator work.** Reference 65 (Zhu, N. et al., *npj Digital Medicine* 8, 413, 2025) is a first-author self-citation; co-authors Bühner and Terhorst are also on that paper. Reference 53 (Büscher et al.) and the JMIR depression-sensing paper by Terhorst et al. (2025) originate from the same LMU/Ulm/DZPG network. The manuscript nowhere flags these as own-group work. This is common practice but should be surfaced given the framing of ref. 65 as neutral field evidence.
+
+**Uncited prior art that materially undercuts the novelty claim.** The "slope network" is a feature-wise multiplicative modulation of the input vector generated by a hypernetwork conditioned on cluster covariates. This is FiLM (Perez et al., AAAI 2018), restricted to the scale term and applied at the input layer. FiLM, hypernetworks, and the mixed-effects deep-learning literature (Simchoni & Rosset, *JMLR* 2023; Xiong et al., MeNets, CVPR 2019) are all absent. The authors' own reference 43 (ARMED; Nguyen, Treacher & Montillo, *IEEE TPAMI* 2023) already implements nonlinear cluster-specific random slopes with explicit generalization to unseen clusters — the exact capability claimed as novel here — yet is miscategorised in the taxonomy as "similarity-based transfer" and its unseen-cluster mechanism is misdescribed. The claim at lines 146–149 that mixed-effects approaches "typically default to b_i = 0" for new clusters is directly contradicted by the cited ARMED paper.
+
+**Numerical and internal inconsistencies.** Lines 361–363 state that few-shot learning was the best-performing existing personalized model; Table 1 shows mixed-effects random forest superior on both MAE (0.717 vs 0.721) and R² (0.004 vs −0.080), with an MSE difference of 0.001 against a reported SD of 0.052. That sentence is incorrect as written. Table 1 SDs are stated to come from ten outer folds of a single nested cross-validation, while Fig. 4 reports 100 estimates across ten resamples; which resample Table 1 represents is never specified, and the headline numbers should come from all 100 folds. Supplemental Fig. S2 is cited both as the day-level feature list (line 341) and as the nested cross-validation schematic (line 641); Supplemental Table S1 is cited both as the person-level feature list (line 342) and as the evaluation-metric definitions (line 649). Lines 266–267 label the slope network's parameters W_base and b_base. Lines 272–273 reverse the definitions of d̃_ij and d_ij. Equation at line 631 writes f_dev((p_i) ⊙ d_ij), which is dimensionally impossible (37 vs 560).
+
+---
+
+## 1. Overall Assessment
+
+Three-component architecture (baseline, slope, deviation networks) decomposing clustered-data prediction into a covariate-driven cluster mean and covariate-gated residual. Validated on 483 SSPS participants (6,737 person-days) predicting daily affect from 560 sensing and 37 person-level features. Two concerns dominate: the architecture is unacknowledged input-level FiLM conditioning, unbenchmarked against cited mixed-effects deep learning; and R² = 0.100 is likely dominated by between-person variance from trait-affect predictors overlapping the outcome construct, with no within-person R² reported — the exact critique the authors' own ref. 56 makes.
+
+## 2. Strengths
+
+The decomposition is theoretically coherent and enables three-layer Integrated Gradients interpretation. Evaluation is unusually careful: nested ten-fold cross-validation with participant-level separation, repeated across ten resamples (Fig. 4), correctly exposing few-shot instability. Benchmarks isolate architecture from feature-set contribution well; the concatenation model's near-null R² = 0.009 against the proposed R² = 0.100 is the paper's most informative result. Reproducibility (OSF code, PsychArchives data, preregistration) exceeds field norms.
+
+## 3. Weaknesses
+
+Trait affect dominates the baseline network (Fig. 5) while predicting a daily-affect outcome, so most of R² = 0.100 may be near-tautological rather than incremental sensing signal; no within-person R² is reported. The critical ablation — residualization without gating — is absent, so the gain over concatenation cannot be attributed to personalization. No statistical inference accompanies any comparison, and lines 361–363 misstate the best comparator relative to Table 1. Learned "slopes" have no coefficient interpretation, and Fig. 7 shows sign reversal across resamples for the Saturday feature, undermining the interpretability claim. No external cohort validation, no subgroup analysis despite salient demographic features, unexamined 29% attrition.
+
+## 4. Editorial Decision
+
+**Reject**, with transfer offer. Construct overlap, missing ablation, and absent within-person R² render the central claim untestable; combined with unacknowledged FiLM equivalence, a mischaracterised ARMED comparator, and no external validation, this falls below a *Lancet Digital Health*-calibrated bar. *Communications Psychology* is the natural transfer target.
+
+**Steelman.** As a methods paper, the tenfold R² gain from architecture alone over naive concatenation is real and not explained by trait-affect leakage, which is equally available to the concatenation benchmark. This would justify review elsewhere, but the missing ablation confounds the mechanism and Fig. 7's sign instability contradicts the interpretability claim being sold.
+
+## 5. Suggested Reviewer Expertise
+
+Five areas are needed, weighted toward methods. First, mixed-effects and random-effects deep learning for clustered non-i.i.d. data — specifically researchers who have implemented cluster-specific random slopes in neural architectures and evaluated generalization to unseen clusters, and who can adjudicate the ARMED and LMMNN comparison directly. Second, conditioning and modulation mechanisms in neural networks (FiLM, hypernetworks, gating), to assess the novelty claim and the identifiability of the learned gain vectors. Third, prediction methodology for intensive longitudinal and experience-sampling data, with particular competence in the between-person versus within-person decomposition of predictive accuracy and in the choice of the person-specific mean as reference model. Fourth, digital phenotyping and passive smartphone sensing for affect and mental health, including feature-extraction pipelines, expected effect-size ceilings, and the replication record of the field. Fifth, on the clinical side, ambulatory assessment and just-in-time adaptive intervention design in mental health, to evaluate whether daily aggregated valence in a non-clinical German quota sample can support the intervention claims the discussion makes.
+
+## 6. State-of-the-Art Literature Review (Past 3 Years)
+
+The problem this manuscript addresses has an active and directly competitive methodological literature that the introduction does not engage. Nguyen, Treacher and Montillo's ARMED framework (*IEEE TPAMI*, 2023) combines an adversarially regularised fixed-effects subnetwork, a Bayesian random-effects subnetwork supporting nonlinear random slopes, and a cluster-membership predictor that enables prediction on clusters unseen in training, with reported 2–9% relative gains on unseen clusters across four datasets including dementia prognosis. Simchoni and Rosset's LMMNN (*JMLR*, 2023, extending their NeurIPS 2021 paper) integrates a linear-mixed-model negative log-likelihood loss directly into deep networks for high-cardinality repeated-measures data. Both are more principled treatments of the same problem than the sequential two-stage least-squares-style residualization used here, and neither is benchmarked against. The conditioning mechanism itself dates to FiLM (Perez et al., AAAI 2018), whose scale-and-shift operator γ ⊙ F + β subsumes the proposed slope network as the shift-free, input-layer special case; the manuscript's "slope network" is a hypernetwork FiLM generator by any standard reading, and the omission of this literature is the single largest citation gap.
+
+On the application side, the field has moved decisively toward the question the manuscript sidesteps. Balliu et al. (*npj Digital Medicine*, 2024) showed on 183 individuals with depressive symptoms over 40 weeks that idiographic models substantially outperform nomothetic ones for mood forecasting, and — critically — benchmarked against a model predicting from past depression severity alone. Timmons et al. (*npj Mental Health Research*, 2025) reached the same conclusion for family mental health symptoms and demonstrated that personalization benefit varies systematically with individual characteristics, which is precisely the cross-level moderation this manuscript models but does not test for heterogeneity. Hammelrath et al. (*Neuroscience Applied*, 2026) — the authors' own reference 56 — explicitly criticises prior personalized-versus-population comparisons for omitting the person-specific mean affect benchmark, arguing that without it one cannot know whether passive features add anything beyond a person's average. This manuscript is subject to that critique in full: R² is computed against the global mean, the strongest predictors are trait affect self-reports, and no within-person accuracy is reported. Terhorst et al. (*JMIR*, 2025), from the same institutional network, found only incremental value of smart-sensing features over EMA for depression severity, which is consistent with the low absolute performance here and should be discussed as context rather than left out. Where the manuscript does advance the field is in demonstrating that a fixed feature set yields sharply different performance under different architectural treatments of the multilevel structure; where it merely replicates is in showing, again, that personalization helps and that passive sensing explains little daily affect variance.
+
+## 7. Suggested Reviewer Names
+
+For mixed-effects and random-effects deep learning: **Kevin P. Nguyen** (UT Southwestern), first author of ARMED, *IEEE TPAMI* 45, 8081–8093 (2023) — the single most directly comparable architecture, and best placed to assess whether the proposed decomposition improves on it. **Giora Simchoni** (Tel Aviv University), author of "Integrating random effects in deep neural networks," *JMLR* 24(156), 2023 — the LMMNN benchmark. **Alex H. Treacher** (UT Southwestern), co-author on ARMED and on the UQ-ARMED uncertainty-quantification extension.
+
+For conditioning mechanisms and identifiability of modulation parameters: **Mehmet Ozan Türkoğlu**, whose work extends FiLM-style conditioning to structured and temporal domains and who can evaluate whether the learned gain vectors are identifiable and interpretable. **Francesca Mandel** (University of Pennsylvania), first author of "Neural networks for clustered and longitudinal data using mixed effects models," *Biometrics* 79, 711–721 (2023) — the manuscript's own reference 39, and a reviewer who can judge the residualization scheme's statistical properties directly.
+
+For prediction methodology in intensive longitudinal data: **Brunilda Balliu** (Assistant Professor, UCLA Computational Medicine), senior author of "Personalized mood prediction from patterns of behavior collected with smartphones," *npj Digital Medicine* 7, 49 (2024) — the strongest available referee on within-person versus between-person accuracy decomposition and on appropriate reference models. **Egon Dejonckheere** (Assistant Professor, KU Leuven / Tilburg), for experience-sampling measurement and the psychometrics of single-item momentary affect.
+
+For digital phenotyping and passive sensing: **Adela C. Timmons** (Assistant Professor, UT Austin), first author of "Developing personalized algorithms for sensing mental health symptoms in daily life," *npj Mental Health Research* 4, 34 (2025) — directly comparable personalized-versus-generalized comparison. **Theodora Chaspari** (Associate Professor, University of Colorado Boulder), senior author on the same paper, for the signal-processing and feature-engineering side.
+
+For ambulatory assessment and JITAI: **Claire R. van Genugten** (Amsterdam UMC), first author of "Beyond the current state of just-in-time adaptive interventions in mental health," *Frontiers in Digital Health* 7, 1460167 (2025) — the manuscript's reference 67, and the right person to assess whether the intervention claims are supportable.
+
+Conflicts to exclude: all LMU Munich, Charlotte Fresenius Hochschule, DZPG Munich-Augsburg, and Ulm University personnel; all SSPS and PhoneStudy collaborators, including Clemens Stachl, Florian Pargent, Sandra Matz, Gabriella Harari, and Harald Baumeister.
+
+---
+
+## Further Literature (past three years, annotated)
+
+**1.** Nguyen, K. P., Treacher, A. H. & Montillo, A. A. Adversarially-Regularized Mixed Effects Deep Learning (ARMED) Models Improve Interpretability, Performance, and Generalization on Clustered (non-iid) Data. *IEEE Transactions on Pattern Analysis and Machine Intelligence* 45, 8081–8093 (2023). DOI: 10.1109/TPAMI.2023.3234291 *(verified)*. Peer-reviewed. Cited as ref. 43 but miscategorised as "similarity-based transfer." Authors independent of the submitting group. This is the closest competitor: it already provides nonlinear cluster-specific random slopes, quantification of inter-cluster variance, and explicit prediction for unseen clusters. The manuscript's Type-2 criticism that mixed-effects models default to zero random effects for new clusters is falsified by this reference. Must be reclassified and benchmarked.
+
+**2.** Simchoni, G. & Rosset, S. Integrating Random Effects in Deep Neural Networks. *Journal of Machine Learning Research* 24(156), 1–57 (2023). Available at jmlr.org/papers/v24/22-0501.html *(verified; JMLR does not issue DOIs)*. Peer-reviewed. Not cited. Authors independent. LMMNN embeds an LMM negative log-likelihood loss in deep networks for high-cardinality repeated measures; it is the principal statistical-learning alternative to the sequential residualization used here and should appear both in the taxonomy and in Table 1.
+
+**3.** Mandel, F., Ghosh, R. P. & Barnett, I. Neural Networks for Clustered and Longitudinal Data Using Mixed Effects Models. *Biometrics* 79, 711–721 (2023). DOI *not independently verified*. Peer-reviewed. Cited as ref. 39. Authors independent. Cited only in passing to support the claim that mixed-effects neural approaches rely on linear random-effect structure; that characterisation should be checked against what this paper actually implements, since the manuscript's Type-2 critique leans on it.
+
+**4.** Balliu, B. et al. Personalized mood prediction from patterns of behavior collected with smartphones. *npj Digital Medicine* 7, 49 (2024). DOI: 10.1038/s41746-024-01035-6 *(verified)*. Peer-reviewed. Cited as ref. 33. Authors independent. Demonstrates idiographic superiority over nomothetic models for mood forecasting in 183 symptomatic individuals over 40 weeks, and benchmarks against prediction from past symptom severity alone. The reference-model discipline shown here is exactly what the present manuscript lacks.
+
+**5.** Timmons, A. C. et al. Developing personalized algorithms for sensing mental health symptoms in daily life. *npj Mental Health Research* 4, 34 (2025). DOI: 10.1038/s44184-025-00147-5 *(verified)*. Peer-reviewed. Cited as ref. 54. Authors independent. Shows that personalization benefit varies systematically with individual characteristics — the heterogeneity the slope network is designed to capture but never tests for. The manuscript should report whether personalization gain correlates with person-level features.
+
+**6.** Hammelrath, L. et al. Comparing personalized and population-based models for predicting momentary negative affect in internalizing disorders: A digital phenotyping study. *Neuroscience Applied* 5, 107006 (2026). DOI *not independently verified*. Peer-reviewed. Cited as ref. 56. Authors independent. Contains the explicit methodological critique — that comparisons omitting a person-specific mean benchmark cannot establish incremental value of passive features — that the present manuscript falls foul of. Its citation without engagement is the most consequential omission in the discussion.
+
+**7.** Terhorst, Y. et al. Investigating Smartphone-Based Sensing Features for Depression Severity Prediction: Observation Study. *Journal of Medical Internet Research* 27, e55308 (2025). DOI: 10.2196/55308 *(high confidence; not independently confirmed)*. Peer-reviewed. Not cited in this manuscript. **Not independent** — shares the senior author (Terhorst) and institutional network with the submission. Reports only modest incremental validity of smart-sensing features over EMA. Directly relevant context for the low absolute R² observed here, and its omission alongside the citation of ref. 65 from the same group is asymmetric.
+
+**8.** Zhu, N. et al. The relation between passively collected data and PTSD: a systematic review and meta-analysis. *npj Digital Medicine* 8, 413 (2025). DOI: 10.1038/s41746-025-01825-6 *(verified)*. Peer-reviewed. Cited as ref. 65. **Not independent** — first author and two co-authors are authors of the present submission. Legitimate as a citation, but self-authorship should be evident to reviewers given its use to support the claim that existing systems are insufficiently personalized.
+
+**9.** McNeish, D. A practical guide to selecting and blending approaches for clustered data: Clustered errors, multilevel models, and fixed-effect models. *Psychological Methods* 31, 225–251 (2026). DOI *not independently verified*. Peer-reviewed. Cited as ref. 24. Authors independent. Provides the framework against which the proposed decomposition should be positioned; the manuscript cites it once for a general claim but never uses it to justify why a two-stage residualization is preferable to joint estimation.
+
+**10.** Digital phenotyping of affect and stress in emerging adults. *Frontiers in Digital Health* (2026). DOI: 10.3389/fdgth.2026.1799541 *(verified)*. Peer-reviewed. Not cited. Authors independent. Compares idiographic and nomothetic XGBoost models for daily affect and stress with sleep, activity, mobility, and phone-use features. A near-identical application with a tree-based rather than neural treatment; its inclusion would let the authors address whether gradient boosting with random effects — repeatedly found superior to neural approaches on tabular clustered data — would outperform the proposed framework. That comparison is currently absent and is a foreseeable reviewer objection.
+
+067390
+# Editorial Report — Manuscript 067390 (v2, condensed)
+
+**Title:** ECG-informed pretraining enables precise cardiac assessment from wearable photoplethysmography
+**Corresponding authors:** H. Zhou (Samsung Research America / UT Dallas); S. Arcot Desai (Samsung Research America)
+**Venue considered:** *Nature Communications* (Digital Health)
+
+---
+
+## Editorial Integrity Alert — Confidential, Handling Editor Only
+
+**1. Undisclosed peer-reviewed status of the foundational prior work (material).** Reference 27 (Zhou et al., "Physiology-aware masked cross-modal reconstruction for biosignal representation learning") is cited only as *arXiv:2605.00973*. Independent search confirms this paper was accepted to ICML 2026 and has been publicly announced as such by Samsung Research America. The submitted manuscript describes its own architecture as "our previously introduced xMAE architecture and directional reconstruction objective, extended from 10 seconds to 30 seconds, while leaving the underlying architecture unchanged." The novel model contribution of the present submission is therefore an input-length change to an already peer-reviewed and accepted model. The authors should be required to disclose the ICML acceptance, supply the accepted version, and state explicitly and quantitatively what is new here relative to that paper.
+
+**2. Probable salami-slicing across a coordinated release.** The ICML paper reports xMAE across 19 downstream tasks including cardiovascular outcome prediction and demographic inference; the present manuscript reports HRV, rhythm, hypertension and age. Public materials from the same group also describe a companion model (HiMAE) released in the same announcement cycle. The overlap in pretraining corpus (MC-MED), architecture, objective, and at least two task families is substantial. The authors must supply a full list of submitted, in-press, and published companion manuscripts and a task-by-task overlap statement.
+
+**3. Selective statistical testing favouring the authors' model.** All comparisons against SL-baseline and NeuroKit2 carry Benjamini–Hochberg-adjusted *P* values. No inferential comparison is reported against PaPaGei or AnyPPG. In Extended Data Table 2 — the only like-for-like (linear-probing) comparison — AnyPPG achieves lower MAE than xMAE-LP on four of five HRV measures (SDNN 0.3701 vs 0.3966; RMSSD 0.4720 vs 0.4754; pNN50 6.6101 vs 7.0802; SD1/SD2 0.1978 vs 0.2031), with xMAE-LP superior only on pNN20. The manuscript text (lines 220–222) states that xMAE "outperformed or performed comparably to" these models. This ordering misrepresents the tabulated result and requires correction before reviewers see the paper.
+
+**4. Apples-to-oranges baseline configuration.** The headline model is fully fine-tuned xMAE, whereas PaPaGei and AnyPPG were evaluated by linear probing only (Methods, lines 974–981). Fine-tuned external baselines are not reported.
+
+**5. Abstract figure not traceable to the Results.** The abstract claims a three-class rhythm AUROC of 0.808 and a 19.4% relative improvement under limited annotations. The Results report only AFib-versus-rest at 64 labelled segments (0.9060 vs 0.7439, a 21.8% relative gain). Neither the 0.808 value nor the 19.4% figure appears in the main text or tables.
+
+**6. Large, unexplained participant exclusions.** 559 participants were excluded from Samsung-Cardio-2 (54.5% of that cohort) and 391 from Samsung-Rhythm-4 (15.5%), attributed to protocol non-compliance and signal quality. No comparison of excluded versus retained participants is provided. Signal-quality screening in PPG correlates with skin tone, adiposity, motion and age, so this is a plausible route to selection bias affecting every reported estimate.
+
+**7. Citation hygiene.** Reference 30 (PaPaGei) is given as "pages 48230–48261, 2025" with no venue; it is an ICLR 2025 conference paper. References 19 and 40 cite *Nature Communications* 2026 with no volume or article number. Reference 4 cites *Nature Medicine* "pages 1–9, 2026." Reference 31 (AnyPPG) is correctly identified as an arXiv preprint.
+
+**8. Competing interests and data access — adequately disclosed.** Samsung employment, funding, and a pending patent naming H.Z., C.T., M.M.R. and S.A.D. are declared. No undisclosed conflict was identified. IRB approval and informed consent are asserted, though no IRB identifiers or protocol numbers are given.
+
+---
+
+## 1. Overall Assessment
+
+The claim is that pretraining a PPG encoder to reconstruct masked, synchronised ECG yields wrist-PPG representations recovering ECG-referenced HRV and three-class rhythm better than pulse-rate-variability proxies or supervised training. The problem is real. Execution is careful across six cohorts and 5,541 participants. Two concerns dominate: the conceptual contribution is not new, and the external-baseline comparison is reported inaccurately.
+
+## 2. Strengths
+
+Pretraining–evaluation separation is cleanly enforced: MC-MED contributed nothing to evaluation, partitions and 2,000-resample bootstraps are participant-level, and thresholds were fixed on validation participants within fold.
+
+The xMAE-shuffle ablation is the most informative experiment. Randomly mismatched ECG–PPG pairs, with architecture and data volume held constant, degrade all five HRV measures (RMSSD 0.5415 vs 0.4754), isolating physiological synchrony from multimodal exposure.
+
+Label efficiency addresses the real bottleneck: at 64 expert-labelled segments per participant, AFib AUROC is 0.9060 versus 0.7439. On-device reporting is candid — 42% and 28% hourly battery, 828.3 ms latency — with continuous inference conceded impractical.
+
+## 3. Weaknesses
+
+Novelty is thin. The architecture is unchanged from reference 27 apart from input duration, and AnyPPG established ECG-guided pretraining at ten times the scale. Abbaspourazad et al. (ICLR 2024, ~141,000 Apple Watch participants) is uncited.
+
+The HRV reference is Galaxy Watch single-lead ECG, not clinical ECG, and its beat-detection error is never quantified. The MC-MED-to-wrist domain shift is unexamined.
+
+The AFib analysis gives 14.8% sensitivity and 10.4% PPV on eight events; the 4.74-fold enrichment framing obscures both. Fairness strata include N=3 and N=2, with a 54.5% exclusion rate in Samsung-Cardio-2 unexplained. Five of six datasets are proprietary. Hypertension and age transfer show fully overlapping intervals with no testing.
+
+## 4. Editorial Decision
+
+**Send for Review**, contingent on the authors first correcting Alert items 1, 3 and 5 — the undisclosed ICML acceptance, the inverted reading of Extended Data Table 2, and the untraceable abstract figures. Reviewers should adjudicate: whether the input-length extension plus new evaluations constitute a contribution distinct from the ICML paper; whether the data-efficiency defence against AnyPPG survives fine-tuned baselines or a matched-data scaling test; whether consumer single-lead ECG is an acceptable reference for sub-50-ms metrics such as pNN20; and whether the AFib section warrants retention as more than exploratory.
+
+**Steelman against this decision.** I still prefer reject with transfer to *npj Digital Medicine*. Neither decisive problem is revisable by peer review: the architecture is peer-reviewed elsewhere, and no external party can reproduce any evaluation number. The counter-case is that this is a measurement-fidelity paper, not a foundation-model paper, and on that framing it is close to best-in-class — the pNN20 result is mechanistically predicted rather than merely observed, and the shuffle ablation excludes the trivial explanation.
+
+## 5. Suggested Reviewer Expertise
+
+Self-supervised and masked-reconstruction pretraining for physiological time series, specifically cross-modal ECG–PPG objectives and the design of ablations that isolate temporal correspondence from multimodal exposure. Benchmarking methodology for PPG foundation models, including fine-tuning versus linear-probing protocol fairness, matched-compute scaling comparisons, and evaluation against PaPaGei, AnyPPG, and Apple Heart and Movement Study encoders. Signal processing for pulse rate variability versus heart rate variability, covering beat-detection algorithm error, reference-standard uncertainty in single-lead wearable ECG, and the sensitivity of RMSSD, pNN20 and SD1/SD2 to timing jitter. Optical physiology and PPG signal quality, particularly skin-pigmentation and perfusion effects on reflective green-LED wrist sensing and the selection bias induced by quality-control exclusion pipelines. Clinically, cardiac electrophysiology with direct experience of consumer-wearable AFib screening trials, competent to adjudicate the ectopy-versus-AFib discrimination claim, the positive predictive value of opportunistic flagging in low-prevalence ambulatory populations, and the downstream burden of false alerts.
+
+## 6. State-of-the-Art Literature Review (Past 3 Years)
+
+The relevant landscape has consolidated rapidly around PPG foundation models. Abbaspourazad et al. (ICLR 2024) trained participant-level contrastive PPG and ECG encoders on approximately 141,000 Apple Heart and Movement Study participants over three years — by an order of magnitude the largest consumer-wearable PPG pretraining effort, and directly comparable in deployment setting to the present work. Pillai et al. introduced PaPaGei (ICLR 2025), the first openly released PPG foundation model, pretrained on 57,000 hours with a morphology-aware objective and validated across ten downstream datasets. Nie et al. released AnyPPG (arXiv:2511.01747, 2025), which pretrains PPG with explicit ECG guidance on over 100,000 hours from six synchronised sources including MC-MED, reporting state-of-the-art results across eleven physiological tasks and screening 1,014 ICD-10 categories. Saha et al.'s Pulse-PPG (IMWUT 2025) contributed field-trained rather than laboratory-trained pretraining, and Narayanswamy et al.'s LSM (ICLR 2025) established scaling behaviour for multimodal wearable sensor models. On the measurement-fidelity side, Charlton et al. (*Proceedings of the IEEE*, 2022; *Physiological Measurement*, 2022) provide the benchmark characterisation of open-source PPG beat detection and its error structure, and Mejía-Mejía et al. (*npj Digital Medicine*, 2021) documented how blood-pressure state dissociates PRV from HRV — the precise physiological mechanism this manuscript invokes.
+
+Situated against that landscape, the manuscript's contribution narrows considerably. Its core premise, that ECG supervision during pretraining yields better PPG timing representations, is AnyPPG's premise, published roughly nine months earlier and at ten times the data scale; the manuscript treats it as an external baseline rather than as prior art establishing the idea. The specific masked cross-modal reconstruction mechanism is the authors' own ICML 2026 contribution, extended here only in input duration. What is genuinely additive is the downstream evaluation design: no prior work has systematically measured ECG-referenced HRV recovery across five variability-sensitive metrics with participant-level bootstrap inference on ambulatory wrist PPG, nor characterised label efficiency for three-class rhythm assessment at 64 to 512 expert-labelled segments per participant, nor reported honest on-device power and latency. That is a real but incremental contribution. The authors must engage directly with Abbaspourazad et al., which is absent from the reference list despite being the closest precedent, and must reframe AnyPPG as prior art rather than as a competitor whose superiority on four of five endpoints goes unremarked. They should also address why the AHMS-scale precedent does not undermine their framing of 20,884 pretraining participants as large-scale.
+
+## 7. Suggested Reviewer Names
+
+**Self-supervised cross-modal biosignal pretraining.** *Arvind Pillai* (Dartmouth College) — first author of PaPaGei (ICLR 2025), the directly comparable open PPG foundation model and one of this manuscript's own baselines. *Mohammad Malekzadeh* (Nokia Bell Labs, Cambridge) — senior author of PaPaGei, with specific expertise in evaluation protocol fairness across probing and fine-tuning regimes. *Dimitris Spathis* (Nokia Bell Labs / University of Cambridge) — PaPaGei co-author with a longer track record in self-supervised wearable sensing and transfer evaluation. *Maxwell A. Xu* (University of Illinois Urbana-Champaign) — author of RelCon and related work on contrastive objectives for wearable time series, well placed to adjudicate the shuffle ablation.
+
+**PPG foundation-model benchmarking and ECG guidance.** *Guangkun Nie* (Peking University) — first author of AnyPPG (arXiv:2511.01747), the ECG-guided PPG foundation model that is both the closest prior art and the strongest baseline; ideally suited to assess whether the manuscript's characterisation of Extended Data Table 2 is accurate. *Shenda Hong* (Associate Professor, National Institute of Health Data Science, Peking University) — senior author of AnyPPG and of multiple ECG foundation models; note the direct competitive relationship and consider as an alternative if the editor prefers distance. *Mithun Saha* (University of Memphis) — first author of Pulse-PPG (IMWUT 2025), with specific expertise in field- versus laboratory-collected PPG and the domain-shift question this manuscript leaves open.
+
+**PRV/HRV measurement fidelity and PPG signal quality.** *Peter H. Charlton* (University of Cambridge) — author of the benchmark study on open-source PPG beat-detection algorithms (*Physiological Measurement* 43:085007, 2022), cited by this manuscript; the correct reviewer for whether NeuroKit2 defaults constitute a fair rule-based baseline and for reference-standard error. *Elisa Mejía-Mejía* (City, University of London) — first author on the differential effects of blood-pressure state on PRV versus HRV (*npj Digital Medicine* 4:82, 2021), the mechanistic foundation of the manuscript's motivating argument. *Berken Utku Demirel* (ETH Zürich) — work on temporal cardiovascular dynamics for PPG-based heart-rate estimation, competent on timing-error propagation into RMSSD and pNN metrics.
+
+**Clinical cardiac electrophysiology and wearable rhythm screening.** *Shaan Khurshid* (Assistant Professor, Massachusetts General Hospital / Harvard Medical School) — co-author on consumer wearable cardiac sensor adoption in primary care (*Circulation: Cardiovascular Quality and Outcomes*, 2022, this manuscript's reference 1) and on large-scale AF screening; the right person to assess the 10.4% PPV and false-alert burden. *Arunashis Sau* (NIHR Clinical Lecturer, Imperial College London) — AI-ECG for AF and arrhythmia phenotyping, with a clinical trials perspective on opportunistic screening thresholds. *Marco V. Perez* (Associate Professor, Stanford University) — principal investigator of the Apple Heart Study (*NEJM* 2019, reference 3), authoritative on what constitutes adequate evidence for wearable AFib detection claims.
+
+---
+
+## Further Literature — 10 Papers of Similar Scope, Past Three Years
+
+**1.** Pillai, A., Spathis, D., Kawsar, F. & Malekzadeh, M. PaPaGei: Open foundation models for optical physiological signals. *The Thirteenth International Conference on Learning Representations (ICLR)*, 2025. arXiv:2410.20542.
+*Peer-review status:* Peer-reviewed conference paper (ICLR 2025). *Cited by manuscript:* Yes, reference 30, but with the venue omitted and given only as page numbers. *Independence:* Independent (Nokia Bell Labs / Dartmouth College).
+*Relevance:* The only open-weight comparator and one of the manuscript's two external baselines. Pretrained on 57,000 hours of public PPG with a morphology-aware objective. Directly tests whether ECG guidance is necessary or whether PPG-only pretraining with a strong inductive bias suffices. The citation must be corrected, and PaPaGei must be fine-tuned rather than only linear-probed if the comparison is to be fair.
+
+**2.** Nie, G., Tang, G., Xiao, Y., Li, J., Huang, S., Zhang, D., Zhao, Q. & Hong, S. AnyPPG: An ECG-guided PPG foundation model trained on over 100,000 hours of recordings for holistic health profiling. arXiv:2511.01747, 2025.
+*Peer-review status:* **arXiv preprint — not peer-reviewed.** *Cited by manuscript:* Yes, reference 31, correctly identified as a preprint. *Independence:* Independent (Peking University).
+*Relevance:* The single most consequential item. Establishes ECG-guided PPG pretraining as prior art at roughly ten times the scale, also draws on MC-MED, and beats xMAE-LP on four of five HRV measures in the manuscript's own Extended Data Table 2. Its preprint status is a caveat for citation weight, not for priority of the idea.
+
+**3.** Abbaspourazad, S., Elachqar, O., Miller, A. C., Emrani, S., Nallasamy, U. & Shapiro, I. Large-scale training of foundation models for wearable biosignals. *The Twelfth International Conference on Learning Representations (ICLR)*, 2024. arXiv:2312.05409.
+*Peer-review status:* Peer-reviewed conference paper (ICLR 2024). *Cited by manuscript:* **No — a material omission.** *Independence:* Independent (Apple).
+*Relevance:* Trains PPG and ECG encoders on approximately 141,000 Apple Watch participants over three years — the closest precedent in device class, deployment setting and scale, roughly seven times this manuscript's pretraining cohort. Its absence props up the paper's framing of 20,884 participants as large-scale.
+
+**4.** Zhou, H., Lee, S. A., Tanade, C., Chun, K. S., Lee, J., Gwak, M., Thukral, M., Sung, J., Hwang, E., Bin Morshed, M., Zhu, L., Nathan, V., Rahman, M. M., Venkatraman, S. & Arcot Desai, S. Physiology-aware masked cross-modal reconstruction for biosignal representation learning. *International Conference on Machine Learning (ICML)*, 2026 (accepted). arXiv:2605.00973.
+*Peer-review status:* Accepted at ICML 2026; cited by the manuscript only as an arXiv preprint. *Cited by manuscript:* Yes, reference 27, with peer-review status undisclosed. *Independence:* **Same submitting group — overlapping author list.**
+*Relevance:* Defines the xMAE architecture and objective reused unchanged here apart from input duration, and reports 19 downstream tasks including cardiovascular outcome prediction and demographic inference. Reviewers must be given this paper alongside the submission.
+
+**5.** Chen, Z. et al. GPT-PPG: a GPT-based foundation model for photoplethysmography signals. *Physiological Measurement* 46(5), 055004 (2025). DOI: 10.1088/1361-6579/add988.
+*Peer-review status:* Peer-reviewed. *Cited by manuscript:* No. *Independence:* Independent.
+*Relevance:* An autoregressive rather than masked-reconstruction pretraining objective for PPG, published in the same period. Establishes that the design space of PPG pretraining objectives is broader than the manuscript's masked-versus-contrastive framing acknowledges, and provides an additional reference point for AFib detection performance from PPG alone.
+
+**6.** Saha, M., Xu, M. A., Mao, W., Neupane, S., Rehg, J. M. & Kumar, S. Pulse-PPG: An open-source field-trained PPG foundation model for wearable applications across lab and field settings. *Proceedings of the ACM on Interactive, Mobile, Wearable and Ubiquitous Technologies (IMWUT)* 9 (2025). arXiv:2502.01108.
+*Peer-review status:* Peer-reviewed (IMWUT). *Cited by manuscript:* No. *Independence:* Independent.
+*Relevance:* Directly addresses laboratory-to-field generalization, the question this manuscript raises through its MC-MED-to-free-living transfer but never tests. Relevant to the claim that gains hold across diverse real-world wearable environments, currently asserted from subgroup consistency alone.
+
+**7.** Narayanswamy, G., Liu, X., Ayush, K., Yang, Y., Xu, X., Liao, S., Garrison, J., Tailor, S., Sunshine, J., Liu, Y. et al. Scaling wearable foundation models (LSM). *The Thirteenth International Conference on Learning Representations (ICLR)*, 2025. arXiv:2410.13638.
+*Peer-review status:* Peer-reviewed conference paper. *Cited by manuscript:* No. *Independence:* Independent (Google).
+*Relevance:* Establishes scaling laws for multimodal wearable sensor foundation models across imputation, interpolation and extrapolation. Pertinent because the manuscript's defence against AnyPPG is a data-efficiency argument (10,000 versus 100,000 hours) that is asserted but never demonstrated; a scaling analysis in this style is what would substantiate it.
+
+**8.** Gruwez, H. et al. FibriCheck detection capabilities for atrial fibrillation (FDA–AF): a multicenter validation study. *npj Digital Medicine* (2025). DOI: 10.1038/s41746-025-02059-2.
+*Peer-review status:* Peer-reviewed. *Cited by manuscript:* No. *Independence:* Independent.
+*Relevance:* A prospective multicentre validation of PPG-based AFib detection against clinical reference, and the appropriate evidentiary benchmark for this manuscript's rhythm claims. Critically, it reports reduced sensitivity in individuals with darker skin tones and higher BMI — the exact fairness axis the present manuscript cannot address because its race strata contain as few as two participants and its quality-control pipeline may remove affected participants before analysis.
+
+**9.** Nie, G., Zhao, Q., Tang, G., Li, Y. & Hong, S. Artificial intelligence-derived photoplethysmography age as a digital biomarker for cardiovascular health. *Communications Medicine* 5, 481 (2025). DOI: 10.1038/s43856-025-01188-9.
+*Peer-review status:* Peer-reviewed. *Cited by manuscript:* No. *Independence:* Independent (Peking University).
+*Relevance:* PPG-derived age estimation on UK Biobank (N = 212,231) with external validation in a MIMIC-III-derived cohort, with the age gap linked to major cardiovascular events. The manuscript presents age estimation (MAE 6.03 years in N = 370) as evidence of transfer without engaging this far larger, outcome-anchored precedent, and without acknowledging that age-gap magnitude, not age MAE, is the clinically meaningful quantity.
+
+**10.** Miller, A. C., Futoma, J., Abbaspourazad, S., Heinze-Deml, C., Emrani, S., Shapiro, I. & Sapiro, G. A wearable-based aging clock associates with disease and behavior. *Nature Communications* 16, 9264 (2025).
+*Peer-review status:* Peer-reviewed (*Nature Communications*). *Cited by manuscript:* No. *Independence:* Independent (Apple).
+*Relevance:* Establishes what a *Nature Communications*-tier wearable phenotyping claim currently looks like — population-scale, outcome-linked, and behaviourally validated. A useful calibration point for the editor and for reviewers assessing whether the hypertension and age sections here, resting on a single 370-participant cohort with overlapping confidence intervals and no significance testing, meet that standard.
+
+*Note on the pretraining corpus:* MC-MED is described in Kansal, A., Chen, E., Jin, B. T., Rajpurkar, P. & Kim, D. A., *Scientific Data* 12, 1094 (2025), DOI 10.1038/s41597-025-05419-5 (peer-reviewed; cited as references 25 and 26). It comprises 118,385 adult emergency-department visits recorded on Philips IntelliVue bedside monitors. Reviewers should be pointed to this when assessing the unexamined shift from ED fingertip transmissive PPG to ambulatory wrist reflective PPG.
+
+---
+
+*Report prepared for internal editorial use. The Confidential Editorial Integrity Alert should not be transmitted to authors or reviewers.*
+
+068295
+# Editorial Report — Manuscript 068295
+
+**Title:** Automated language impairment screening in acute stroke using connected speech
+**Authors:** L. S. Pugalenthi (Rice University), T. T. Schnur (UTHealth Houston; corresponding)
+**Venue considered:** *Nature Communications*, Digital Health
+**Handling editor assessment date:** 20 August 2026
+
+---
+
+## Editorial Integrity Alert (confidential — handling editor only)
+
+Several matters require resolution before this manuscript proceeds, whatever the eventual decision.
+
+**Citation misattribution, high severity.** On page 11 the authors describe "Local Interpretable Model-agnostic Explanations (LIME^30)" and cite reference 30 as Lundberg & Lee (2017), *A Unified Approach to Interpreting Model Predictions*. That paper introduces SHAP, not LIME; LIME is Ribeiro, Singh & Guestrin (2016). The authors then propose to use "LIME" to highlight word-level impairments. SHAP and LIME are different methods with different theoretical properties, and the substituted citation cannot support the sentence. This is not a typographical slip: the acronym is expanded in full and attached to the wrong primary source.
+
+**Second citation misattribution.** Reference 20 (Huang, Pareek, Seyyedi, Banerjee & Lungren, 2020, *npj Digital Medicine*) is a review of multimodal fusion of imaging and EHR data. It is used on page 3 to support the general claim that ensemble modelling boosts predictive accuracy, on pages 17 and 19 to support "late-fusion" ensembling, and on page 20 to support scikit-learn's `permutation_importance`. It cannot support the last of these at all, and is a weak authority for the first two. In the Results (page 6, line 10) permutation importance is instead cited to reference 21 (Breiman, 2001). The manuscript therefore attributes the same method to two different and largely inappropriate sources in different sections.
+
+**Systematic off-by-one citation shift in the Introduction and Methods.** Page 4 cites "GloVe^21" and "(BERT, Mistal, and OpenAI)^22-24", whereas the reference list assigns GloVe = 22, BERT = 23, Mistral = 24, OpenAI = 25, and the Results sections use the correct numbering. The same shift appears on page 13, where dynamic aphasia is cited to reference 34 (Walker et al., naming test) rather than reference 35 (Robinson et al., dynamic aphasia). At least two independent numbering systems appear to have been merged. Every in-text citation requires re-verification, not only the instances identified here.
+
+**Uncited reference.** Reference 61 (Jiang et al., *Mistral 7B*) does not appear to be cited anywhere in the main text; Mistral is cited to reference 24 (Choi et al., Linq-embed-mistral technical report). Uncited entries are a routine marker of reference-manager contamination and reinforce the concern above.
+
+**Undisclosed author overlap with a cited work.** Reference 28 (Hilsabeck et al., 2025, *Alzheimer's & Dementia: TRCI*) lists "Pugalenthi, L." among its authors — the first author of the present submission. It is cited twice as third-party evidence: once as an example of "screening apps in other clinical populations" (page 11) and once as the source of "code adapted from previous studies" (page 15). Neither instance is marked as self-citation. This is not misconduct, but the second use has methodological consequence: if feature-extraction code is shared with a prior study by the same author, its provenance and validation status must be stated.
+
+**Cohort reuse and salami-slicing risk.** The Methods state the cohort is drawn from "a larger prospective project" (R01DC014976). References 10 (Ding, Martin, Hamilton & Schnur, 2020, *Brain*), 11 (Martin & Schnur, 2019, *Cortex*) and 12 (Schnur & Lei, 2022, *Neuropsychology*) are all acute-stroke connected-speech or naming studies from the senior author's group. Reference 12 supplies the identical 69-item confrontation naming battery used here to define one of the three ground-truth criteria, and the Methods state explicitly that the present study departs from Schnur & Lei only in how articulatory errors are scored. The degree of participant overlap with these prior publications is not disclosed anywhere. A participant-level overlap statement should be requested before any review.
+
+**Self-citation density.** The senior author is an author on at least five of the 65 references (7, 8, 10, 11, 12), plus the shared cohort. This is within normal bounds for a specialised sub-field, but combined with the absence of an overlap statement it warrants notice.
+
+**Non-standard source for a methodological choice.** Reference 59 (Bedrick, 2024) is a lecture-series webpage, not a citable publication, and is the sole authority for the ROC threshold-selection procedure that determines every headline number in the paper. The procedure must be described in full in the Methods rather than delegated to a URL.
+
+**Undisclosed preprint.** Searches did not surface a preprint of this manuscript on medRxiv, bioRxiv or arXiv. The Acknowledgements disclose presentation of portions of this work at the 2025 Cognitive Neuroscience Society meeting, which is adequate.
+
+**Absent statements.** There is no data availability statement, no code availability statement, and no reporting-guideline adherence statement (STARD and TRIPOD+AI both apply). Race and ethnicity are not reported at all for a Houston-based cohort, despite the Discussion invoking "culture diversity" as future work. These are mandatory before any *Nature*-portfolio decision.
+
+**Numerical inconsistency, main text.** Page 8, lines 2–4: independent embedding classifiers are said to range from "72-83% balanced accuracy," followed immediately by the statement that Mistral achieved the highest at 84%. One of these numbers is wrong. The downstream claim that the ensemble beat independent classifiers "by ≥6%" is consistent with 84 and inconsistent with 83.
+
+---
+
+## §1 Overall Assessment
+
+The manuscript transcribes acute stroke story retellings (n=86) with Whisper large-v3, derives linguistic features and GloVe/BERT/Mistral/OpenAI embeddings, and stacks classifiers into ensembles reaching 90% balanced accuracy (79% sensitivity, 100% specificity) for impaired-versus-unimpaired acute stroke patients. The target problem is right; execution doesn't support the claim. Algorithm selection, ROC threshold, and stacking all reuse the same LOOCV predictions later reported as performance, so 90% is an unquantified upper bound. No WER is reported for Whisper, and articulatory errors are scored as naming errors, so the classifier may detect dysarthria and ASR degradation rather than language impairment.
+
+---
+
+## §2 Strengths
+
+The impaired-versus-unimpaired-within-stroke comparison, recruited consecutively across four sites, is the clinically correct design, unlike prior stroke-versus-control work (refs 13–17). Test timing to the reference standard is documented (mean 4 days post-stroke; NIHSS Item 9 within 0.2 days), meeting a STARD standard most papers skip. The embeddings-vs-discrete-features comparison runs against a most-frequent-class baseline; embeddings gain entirely in specificity (74%→100%) at constant sensitivity, a real result. Permutation importance across ensemble members (OpenAI 16%, Mistral 13%, GloVe 6%, BERT 3%) tests complementarity directly.
+
+---
+
+## §3 Weaknesses
+
+Algorithm, threshold, and stacking selection all reuse the same LOOCV outputs later reported as performance — the near-identical balanced-accuracy/AUC pairs (90/90) are consistent with this. No WER is reported, and articulatory scoring is built into the naming-error criterion, so dysarthria can independently drive both transcription failure and a positive label. The reference standard is heterogeneous (40/63 positives meet only one of three criteria) and partly circular via NIHSS Item 9; 9 participants were excluded post hoc using that same standard. The claim that false negatives cluster in mild cases is arithmetically wrong (9/13 observed vs. 8.3 expected). No trustworthy confidence intervals, no calibration, no subgroup or race/ethnicity reporting, and no comparison against NIHSS Item 9 alone.
+
+---
+
+## §4 Editorial Decision
+
+**Reject**, with offer of transfer. The unquantified performance inflation and the unexcluded dysarthria confound are design-level flaws, not fixable by re-analysis alone; reviewers cannot currently adjudicate the central claim.
+
+**Steelman.** The within-stroke design and test timing are above field norms, and the specificity gain is informative even under an inflated scale. If manual transcripts and dysarthria ratings exist, Major Revision would be more proportionate; I don't adopt this because the ASR confound can't be pre-adjudicated without corrected results.
+
+**Transfer:** *npj Digital Medicine* or *Communications Medicine*, conditional on correcting the LIME/SHAP misattribution and citation numbering.
+
+---
+
+## §5 Suggested Reviewer Expertise
+
+Reviewers should be sought across five areas, weighted roughly seventy percent technical to thirty percent clinical. First, automatic speech recognition for disordered and pathological speech, specifically Whisper-family model behaviour on aphasic and dysarthric speech, word error rate characterisation, and the effect of ASR normalisation on paraphasia preservation — this is the axis on which the manuscript's central confound lives. Second, sentence and document embedding methods for clinical text classification, covering CLS-token versus mean-pooled representations, embedding model selection, and dimensionality reduction under small-sample regimes. Third, machine learning methodology for small clinical cohorts, specifically nested cross-validation, stacked generalisation and its leakage modes, decision-threshold selection, calibration, and confidence interval construction under dependent resampling; a reviewer with TRIPOD+AI or STARD adjudication experience is preferred. Fourth, quantitative connected-speech and discourse analysis in aphasia, covering core lexicon, main concept, informativeness and global coherence measures, and the psychometrics of discourse-derived indices. Fifth, clinical acute stroke care with direct speech-language pathology experience in the first week post-stroke, including NIHSS Item 9 administration and its known ceiling behaviour, differential diagnosis of aphasia from dysarthria and apraxia of speech, and the referral pathways the authors propose to influence.
+
+---
+
+## §6 State-of-the-Art Literature Review (Past 3 Years)
+
+The sub-field has moved in three directions since 2023, and the manuscript engages with only one of them. The first is the systematic characterisation of ASR failure on pathological speech. Sanguedolce, Naylor & Geranmayeh (ACL Clinical NLP Workshop, 2023) established that Whisper's word error rate in post-stroke aphasia is approximately 38.5% against 10.3% in age-matched controls, that WER scales with expressive and receptive impairment severity, and that left frontal lesions specifically degrade performance; the follow-up Interspeech 2024 work and the SONIVA database (approximately 1,000 stroke survivors) extend this substantially. Davudova et al. (2025) further show that baseline Whisper performs poorly on short clinical utterances and generalises badly out of domain. None of this work is cited. Its omission is not a bibliographic oversight: it is the literature that establishes the alternative explanation for the present results, and the manuscript's sole justification for choosing Whisper — one sentence citing Cong et al. (2024) in chronic stroke — does not engage with it.
+
+The second direction is the fusion of transformer embeddings with handcrafted linguistic features, which is precisely the manuscript's third aim. Agbavor & Liang (2022, *PLOS Digital Health*) and Llaca-Sánchez et al. (2025) are cited; the more directly comparable LLMCARE work of Zolnour et al. (2025, *Frontiers in Artificial Intelligence*) is not, and it reaches the opposite conclusion — that integrating transformer embeddings with handcrafted features improves detection of cognitive impairment from speech, whereas here the addition degrades balanced accuracy. A submission whose stated aim is to test complementarity must engage with a contemporaneous contrary result. The third direction is detection of mild and subclinical language impairment, where Bunker et al. (2025, *AJSLP*) show that discourse measures capture deficits the WAB-R Aphasia Quotient misses, and Stark, Dalton & Lanzi (2025, *Frontiers in Human Neuroscience*) characterise latent aphasia through context-specific lexical-semantic access during discourse. Both are cited but neither is used as a benchmark, and neither informs the composite reference standard, which is where their contribution would have been most valuable.
+
+Situating the manuscript: its genuine advance is the within-acute-cohort contrast on a consecutively recruited multi-site sample, a real step beyond the stroke-versus-control designs of Boucher et al. (2022) and the chronic-stage classification of Cong et al. (2024) and Wagner, Zusag & Bloder (2023). Its claim to be first to differentiate acute patients with and without impairment at the individual level appears defensible on current evidence. Where it replicates rather than advances is in the embedding-versus-discrete-feature comparison, run repeatedly in neurodegenerative cohorts with broadly the same answer, and in the observation that ensembling helps. The competing work it must engage with before publication anywhere is the Imperial College ASR-validation series, because that literature is what turns the present results from a screening finding into an open question.
+
+---
+
+## §7 Suggested Reviewer Names
+
+For automatic speech recognition in pathological speech, **Giulia Sanguedolce** (Imperial College London), first author of *Uncovering the Potential for a Weakly Supervised End-to-End Model in Recognising Speech from Patients with Post-Stroke Aphasia* (ACL Clinical NLP Workshop, 2023) and of the SONIVA database, is the single most relevant reviewer available and is not cited by the authors. **Dragos C. Gruia** (Imperial College London), co-author on *When Whisper Listens to Aphasia* (Interspeech 2024) and on the IC3 post-stroke cognition programme, is a suitable alternative from the same methodological tradition. **Laurin Wagner** or **Marc Zusag**, authors of *Careful Whisper* (Interspeech 2023; the manuscript's reference 14), can adjudicate whether Whisper's normalisation behaviour erases the paraphasic evidence the embeddings are assumed to encode.
+
+For embeddings and LLM-based clinical text classification, **Yan Cong** (Purdue University), first author of *Clinical efficacy of pre-trained large language models through the lens of aphasia* (*Scientific Reports*, 2024; the manuscript's reference 15 and the entire basis for its Mistral recommendation), is the direct comparator and should be asked whether the present comparison is like-for-like. **Maryam Zolnoori** (Columbia University), senior author of LLMCARE (*Frontiers in Artificial Intelligence*, 2025), has run the embedding-plus-handcrafted-feature fusion experiment in a neurodegenerative cohort and reached the opposite result. **Kathleen C. Fraser** (National Research Council Canada), author of the automated PPA subtype classification work cited as reference 54, brings long experience of exactly this feature-set comparison.
+
+For small-sample clinical ML methodology and computational aphasiology, **Steven Bedrick** (Oregon Health & Science University) is the natural choice given that the manuscript's threshold-selection procedure is attributed to him; note as a mild conflict consideration that the attribution is to an unpublished lecture and may indicate prior contact. **Charalambos Themistocleous** (University of Oslo), author of the automatic aphasia subtyping work cited as reference 52, is an unconflicted alternative with directly comparable classification experience.
+
+For mild and subclinical impairment detection and acute clinical context, **Lisa D. Bunker** (Johns Hopkins University), first author of *Discourse Measures From the Modern Cookie Theft Picture Description Are Sensitive to Mild Communication Deficits Not Captured by the Western Aphasia Battery–Revised Aphasia Quotient* (*AJSLP*, 2025; reference 17), directly addresses the manuscript's weakest construct — what counts as mild impairment and how it should be labelled. **Brielle C. Stark** (Indiana University), first author of the 2025 latent aphasia paper (reference 44), is the closest analogue to the present classification target and should be asked specifically about the adequacy of the three-criterion composite reference standard.
+
+Reviewers should be selected so that at least one is asked explicitly to adjudicate the leakage question, at least one the ASR-confound question, and at least one the adequacy of the ground-truth label. Note that Bunker, Stark, Fraser, Themistocleous, Cong and Bedrick are all cited by the manuscript; this is not disqualifying but should be weighed when balancing the panel. **Hanjie Chen** (Rice University) is thanked in the Acknowledgements for suggesting the multi-LLM evaluation and must be excluded on conflict grounds.
+
+---
+
+## Further Literature (Past 3 Years, Annotated)
+
+**1.** Bunker, L. D., Berube, S. K., Neal, V., Kelly, L., Kelly, C., Meier, E. L., & Hillis, A. E. (2025). Discourse Measures From the Modern Cookie Theft Picture Description Are Sensitive to Mild Communication Deficits Not Captured by the Western Aphasia Battery–Revised Aphasia Quotient. *American Journal of Speech-Language Pathology*, 34(3), 1100–1120. DOI: 10.1044/2024_AJSLP-24-00322. *Peer-reviewed.* Cited by the manuscript (ref. 17). Authors independent of the submitting group. Establishes that discourse-derived measures detect deficits standardised batteries miss — the premise on which this submission rests. Cited but never used as a benchmark; the authors should be asked why their discrete linguistic feature set does not overlap with Bunker's validated measures.
+
+**2.** Cong, Y., LaCroix, A. N., & Lee, J. (2024). Clinical efficacy of pre-trained large language models through the lens of aphasia. *Scientific Reports*, 14(1), 15573. *Peer-reviewed.* Cited (ref. 15). Independent. The manuscript's sole justification both for choosing Whisper and for recommending Mistral-based embeddings in future work. Because the entire "prioritize Mistral" recommendation rests on consistency with this one chronic-stage study, reviewers should verify that the embedding models, task, and cohort stage are genuinely comparable.
+
+**3.** Sanguedolce, G., Naylor, P. A., & Geranmayeh, F. (2023). Uncovering the Potential for a Weakly Supervised End-to-End Model in Recognising Speech from Patients with Post-Stroke Aphasia. *Proceedings of the 5th Clinical Natural Language Processing Workshop*, ACL, 182–190. DOI: 10.18653/v1/2023.clinicalnlp-1.24. *Peer-reviewed (workshop proceedings).* **Not cited.** Independent. Reports Whisper WER of 38.5% in post-stroke aphasia versus 10.3% in controls, scaling with severity and worsening with left frontal lesions. This is the single most consequential omission in the reference list and is the basis of the ASR-confound weakness above.
+
+**4.** Sanguedolce, G., Brook, S., Gruia, D. C., Naylor, P. A., & Geranmayeh, F. (2024). When Whisper Listens to Aphasia: Advancing Robust Post-Stroke Speech Recognition. *Proceedings of Interspeech 2024*, 1995–1999. *Peer-reviewed (conference proceedings).* **Not cited.** Independent. Demonstrates that Whisper requires fine-tuning to reach acceptable WER on stroke speech (approximately 21.5% after adaptation). Directly undermines the manuscript's one-sentence justification for using off-the-shelf Whisper large-v3 without validation.
+
+**5.** Sanguedolce, G., et al. (2025). SONIVA: Speech recOgNItion Validation in Aphasia. *medRxiv*. DOI: 10.1101/2025.06.03.25328889. **Preprint — not peer-reviewed; flagged accordingly.** Not cited. Independent. Approximately 1,000 stroke survivors with orthographic and IPA transcription. Relevant chiefly because the manuscript claims to represent "the largest acute stroke cohort to date"; that claim is defensible only under a narrow definition of "acute," and the authors should state the definition explicitly rather than leave the superlative unqualified.
+
+**6.** Davudova, M., Cai, Z., Giunchiglia, V., Gruia, D. C., Sanguedolce, G., Hampshire, A., & Geranmayeh, F. (2025). Application of Whisper in Clinical Practice: the Post-Stroke Speech Assessment during a Naming Task. *arXiv:2507.17326*. **arXiv only — not peer-reviewed; flagged accordingly.** Not cited. Independent. Shows baseline Whisper performs poorly on short utterances and generalises poorly out of domain (TORGO). Useful as a caution rather than as evidence, given its preprint status.
+
+**7.** Zolnour, A., Azadmaleki, H., Haghbin, Y., et al. (2025). LLMCARE: early detection of cognitive impairment via transformer models enhanced by LLM-generated synthetic data. *Frontiers in Artificial Intelligence*, 8, 1669896. DOI: 10.3389/frai.2025.1669896. *Peer-reviewed.* **Not cited.** Independent. Reports that integrating transformer embeddings with handcrafted linguistic features *improves* detection of cognitive impairment from speech — the opposite of the present finding. A submission whose third aim is complementarity must engage with a contemporaneous contrary result.
+
+**8.** Merhbene, G., Lecron, F., Fortemps, P., Dickerson, B. C., Kurpicz-Briki, M., & Rezaii, N. (2026). Detecting Primary Progressive Aphasia (PPA) from Text: A Benchmarking Study. *Findings of the ACL: EACL 2026*, 355–374. DOI: 10.18653/v1/2026.findings-eacl.19. *Peer-reviewed (conference findings).* Cited (ref. 31). Independent. Invoked to support the proposed LIME-based interpretability extension — the same sentence containing the LIME/SHAP misattribution. Reviewers should confirm which attribution method this benchmarking study actually employs before the authors' future-work plan is accepted as coherent.
+
+**9.** Stark, B. C., Dalton, S. G., & Lanzi, A. M. (2025). Access to context-specific lexical-semantic information during discourse tasks differentiates speakers with latent aphasia, mild cognitive impairment, and cognitively healthy adults. *Frontiers in Human Neuroscience*, 18, 1500735. DOI: 10.3389/fnhum.2024.1500735. *Peer-reviewed.* Cited (ref. 44). Independent. The closest published analogue to the present classification target, since "latent aphasia" is operationally similar to the single-criterion subgroup that supplies most of this model's false negatives. Should have informed the composite reference standard rather than appearing only as a feature-derivation citation.
+
+**10.** Hilsabeck, R. C., Keller, J. N., Henry, M. L., Li, J. J., **Pugalenthi, L.**, Toprac, P., et al. (2025). Development and classification accuracy of an automated cognitive screening tool combining working memory and connected speech tasks for early detection of cognitive impairment in primary care. *Alzheimer's & Dementia: Translational Research & Clinical Interventions*, 11(3), e70145. DOI: 10.1002/trc2.70145. *Peer-reviewed.* Cited (refs. 28, 48). **Author overlap: the submitting first author is a co-author; this is not disclosed as self-citation in either instance, including where it is cited as the source of feature-extraction code.** Independent verification of that code's provenance and validation status should be requested.
+
+068534
+# Editorial Report — Manuscript 068534
+
+**Title:** Retinal boundary-context modulation enables signed contextual adjustment of edge evidence
+**Corresponding authors:** Baoqi Zheng, Shumao Xu (Fudan University)
+**Handling venue:** *Nature Communications*
+
+---
+
+## Editorial Integrity Alert (Confidential — Handling Editor Only)
+
+**1. Competing-interests declaration appears incomplete.** The authors state "The authors declare no competing interests." Two co-authors hold commercial affiliations: Mengrong Zhang (Lizhi Biotechnology Co., Ltd., Shanghai) and Zhicai Lv (Bioprofile Biotechnology Co., Ltd., Shanghai). Nature Portfolio policy requires disclosure of employment by, or financial interest in, commercial entities regardless of whether the authors judge the interest to be material. A corrected declaration should be requested, together with a statement of what role, if any, either company played in funding, hardware provision, or data generation. The omission is more consequential because the Author Contributions statement assigns "investigation, data curation, validation and resources" to M.Z. and Z.L., the two industry-affiliated authors.
+
+**2. Affiliation 5 is non-specific and likely inaccurate.** "Max Planck Institute, Stuttgart, 70569, Germany" does not name an institute. Postcode 70569 corresponds to the Heisenbergstraße campus, which hosts the Max Planck Institute for Intelligent Systems and the Max Planck Institute for Solid State Research. The corresponding author S.X. lists this alongside Fudan University but uses a fudan.edu.cn address. The specific institute, and the nature and dates of the appointment, should be confirmed directly.
+
+**3. Internal figure-citation error.** In Results, the text states that "each direction comprised 21 nested conditions (3 preparations × 7 grid scales) (Fig. 2d), and each grid scale comprised 24 conditions (3 preparations × 8 directions) (Fig. 2e)." The Figure 2 legend defines panel **d** as grid-scale stability (24 conditions per scale) and panel **e** as directional stability (21 conditions per direction). The two panel calls are transposed.
+
+**4. Apparent numerical discrepancy between Table 1 and Figure 4c.** Table 1 reports same-domain NYUDv2 ODS of 0.8320 (Anchor) and 0.8425 (H-RBCM). The NYUDv2 row of the Fig. 4c ODS heatmap appears to read approximately 83.3 (Plain) and 83.4 (Main). If both refer to the NYUDv2-source model on NYUDv2, the H-RBCM values differ by roughly 0.85 percentage points. The submitted copy is a low-resolution scan, so this reading is provisional; the authors should be asked to reconcile the two or to state explicitly that Fig. 4c derives from a different checkpoint or scalar configuration.
+
+**5. Metric ordering anomaly in Table 1.** For MultiCue, H-RBCM reports ODS 0.9019 with OIS 0.8993 — OIS below ODS. This is the only such inversion among the twelve rows. OIS is not strictly bound to exceed ODS under a per-image-F-averaging definition, but the pattern is atypical, and it occurs on the same dataset where AP simultaneously degrades. The exact OIS aggregation formula should be disclosed and the value confirmed as not a transcription error.
+
+**6. Benchmark values substantially exceed published state of the art, with the official-matcher numbers withheld.** Reported BIPED ODS is 0.9426 for H-RBCM and **0.9296 for the untuned plain HED-lite anchor**. Published BIPED results cluster far lower: PiDiNet trained on BIPED reports ODS ≈ 0.868, DexiNed ≈ 0.857, and diffusion-based methods ≈ 0.892–0.896. A 6.64M-parameter HED variant with no contextual operator therefore exceeds published SOTA by roughly four points *before* the paper's contribution is applied. The Methods concede a local evaluator with non-standard distance tolerances (0.0035 of the image diagonal for BIPED, versus the conventional 0.0075) and state that local-evaluator values are not combined with official leaderboard scores. Critically, the Methods also state that BIPED and BSDS500 "were additionally evaluated with the official Berkeley bipartite matcher" — **yet no official-matcher value appears anywhere in the main text, tables, or figure legends.** Either those numbers were computed and omitted, or the claim is inaccurate. This is the most serious issue in the submission and must be resolved before any review.
+
+**7. No undisclosed preprint located.** Searches for "retinal boundary-context modulation," H-RBCM, and the title string returned no arXiv, bioRxiv, or conference version. The GitHub release (liukaiming6563/RBCM-Edge, commit 9a8326a110be12d6fa088d1839a9ad03859a196f) was not independently accessible during preparation of this report and should be confirmed by the editorial office.
+
+**8. No evidence of salami-slicing or cohort reuse.** Three retinas, single institution, no overlapping prior publication identified. Cited references 9, 10 and 16 were independently verified as accurate, including page ranges (MatchED, CVPR 2026, 42093–42103; Huang et al., *Nat. Commun.* **10**, 2431, 2019). Reference-list hygiene is good.
+
+---
+
+## 1. Overall Assessment
+
+The manuscript pairs a retinal observation with a vision contribution and declines to connect them causally. Three mice, unbalanced UME/CME blocks, no cell matching: condition "remains inseparable from block, elapsed time, adaptation and drift." What survives is a three-animal between-block difference used only as a sign constraint motivating a hand-built filter — not mechanism, despite the abstract's causal verb "enables." Cluster yields differ sharply between paired blocks (e.g., 382/652 units), a composition shift sufficient alone to produce the reported differences, undetectable by the within-bin permutation test.
+
+The vision contribution is a fixed post-hoc logit correction improving oracle ODS 0.78–2.22 points while degrading AP up to 4.24 points, conceded but unresolved. More critically, the plain anchor alone reports BIPED ODS 0.9296, exceeding published SOTA (≈0.857–0.896) before any contribution, and the promised official Berkeley-matcher results never appear.
+
+## 2. Strengths
+
+The shared-anchor design correctly isolates the output transformation from backbone capacity. Evaluation freezing is rigorous: scalars fixed on source validation before target inference, seeds recorded, one 30-image UDED set reused throughout. The spatial-localization check (Δz_RBCM +0.291 higher at edges than background, positive in all 30 images, P = 9.31 × 10⁻¹⁰) is a genuine, non-circular mechanism verification.
+
+## 3. Weaknesses
+
+Benchmarks are irreconcilable with the literature and the promised matcher numbers are withheld. The retinal design cannot isolate a surround effect; yield asymmetry alone explains the difference. RBCM's biology is decorative — annuli, weights, and the gate are conceded "engineering hypotheses," fitted to nothing retinal. Gains are oracle-only, with no fixed-threshold results despite the deployment framing. No clinical content fits this venue.
+
+## 4. Editorial Decision
+
+**Reject**, transfer recommended. Benchmark inflation, an unsupportable retinal framing, and a self-withdrawn biological rationale are independent, non-remediable. Best fit: **Communications Engineering**; secondarily **npj Artificial Intelligence** if reframed around post-hoc adjustment. **Steelman**: the disclosed-confound honesty exceeds field norms, and read as a pure vision contribution it is more rigorous than much published work; if matcher results confirm the margins, revisit.
+
+## 5. Suggested Reviewer Expertise
+
+Reviewer one should be an expert in deep edge and boundary detection benchmarking, specifically the ODS, OIS and AP evaluation protocol, the Berkeley bipartite matching implementation, and the sensitivity of reported scores to distance tolerance, non-maximum-suppression settings and precision–recall integration rules; the central task is to adjudicate whether the reported BIPED, MultiCue and NYUDv2 values are comparable to the published literature. Reviewer two should work on crisp and uncertainty-aware edge detection architectures — HED, RCF, BDCN, PiDiNet, EDTER, UAED, DiffusionEdge, RankED, MuGE — and should assess whether a deterministic post-hoc logit correction is a contribution distinct from learned refinement, and whether the shared-anchor controls suffice. Reviewer three should be a retinal electrophysiologist using high-density multi-electrode arrays and Kilosort-family spike sorting in ex vivo mouse retina, competent to judge whether independently sorted, sequentially acquired blocks with large differences in cluster yield can support any population-level comparison. Reviewer four should be a statistician or computational neuroscientist specialising in permutation inference and nested pseudoreplication, able to evaluate whether unit-label permutation within spatial bins provides a valid null when block composition itself differs, and whether Benjamini–Hochberg correction across 168 non-independent re-analyses of three animals is interpretable. Reviewer five, if sought, should work on centre–surround and non-classical receptive-field computation in early vision, to assess whether the square-annular formulation bears a defensible relationship to measured retinal surround organisation.
+
+## 6. State-of-the-Art Literature Review (Past 3 Years)
+
+The edge-detection sub-domain has moved decisively toward modelling annotation ambiguity, crispness and end-to-end differentiability, and this manuscript engages the first only superficially and the second not at all. Zhou et al.'s uncertainty-aware edge detector (UAED, CVPR 2023) reframed multi-annotator disagreement as learned uncertainty; MuGE (CVPR 2024) extended this to controllable multi-granularity outputs; SAUGE (AAAI 2025) adapted SAM for uncertainty-aligned multi-granularity prediction. The manuscript cites UAED and SAUGE but omits MuGE, which is the closest competitor to its central conceptual move, since both attempt to make the granularity or strength of a boundary decision explicit and controllable. More seriously, the ambiguity gate U(P) = [4P(1−P)]^γ is a fixed function of anchor probability, and the authors state it is not an uncertainty estimate. Against UAED and MuGE, which estimate ambiguity from data, a hand-specified parabola in probability space is a step backwards, and the manuscript does not argue otherwise. On crispness, Cetinkaya, Kalkan and Akbas's RankED (CVPR 2024) and MatchED (CVPR 2026) show that one-pixel-wide edges can be obtained through differentiable matching-based supervision with roughly 21,000 additional parameters, eliminating the non-differentiable NMS-and-thinning pipeline entirely. The submitted work depends on a source-frozen NMS setting throughout and cites MatchED only in passing; a direct comparison against a MatchED-augmented HED-lite anchor is the obvious missing experiment, since both are lightweight plug-in modules applied to an existing detector. Generative approaches now define the upper end of the BIPED and NYUDv2 leaderboards at roughly 0.892–0.896 and 0.800 ODS respectively, which is the baseline against which this manuscript's 0.9426 and 0.8425 must be justified.
+
+On the retinal side the field has advanced well past what this manuscript demonstrates, and the omissions here are the more damaging. Huang, Rangel, Briggman and Wei (*Nat. Commun.* **10**, 2431, 2019), cited as reference 16, is the direct precedent: it established contextual modulation of direction-selective ganglion cells by moving-contour discontinuities and identified the responsible starburst and wide-field amacrine circuit motifs using synapse-specific genetic manipulation, patch-clamp recording and connectomics. That study answered, causally and at cell resolution, the question this manuscript approaches with three confounded block comparisons; the manuscript cites it as background rather than confronting it as the standard its own experiment must meet. Two further works should have been engaged and are absent. Karamanlis et al. (*Nature*, 2024) showed that nonlinear receptive-field pooling drives correlated, redundant ganglion-cell responses to natural scenes in both marmoset and mouse, which bears directly on whether averaging heterogeneous units within an n×n bin yields an interpretable population "context" signal. Riccitelli et al. (*PNAS*, 2025) demonstrated that non-direction-selective mouse ganglion cells exhibit asymmetric, direction-tuned responses to stimuli crossing regions far beyond the classical receptive field, mediated by glycinergic amacrine cells — an extraclassical mechanism that would produce the reported bidirectional differences without any of the surround structure the CME stimulus manipulates, and therefore a competing explanation the authors do not address. Within bio-inspired computer vision, the manuscript cites the Lin group's DPED, XYW and lightweight contour work (references 19 to 22) but omits COS-net (*Digital Signal Processing*, 2025) and Huang, Lin and Peng's bio-inspired lightweight edge network (*SIViP*, 2025), both of which implement surround-modulation operators on overlapping benchmarks and would provide the like-for-like comparison the PiDiNet contrast — which the authors concede cannot isolate an RBCM effect — does not.
+
+## 7. Suggested Reviewer Names
+
+**Edge-detection benchmarking and evaluation protocol.** *Emre Akbaş*, Associate Professor, Middle East Technical University — senior author of MatchED (CVPR 2026), which introduces an evaluation-aware matching formulation and is directly comparable to the present operator as a lightweight plug-in module. *Bedrettin Çetinkaya*, doctoral researcher, METU — first author of both RankED (CVPR 2024) and MatchED (CVPR 2026), the most directly comparable published work on modifying edge-detector outputs without retraining the backbone. *Xavier Soria Poma*, Universidad Nacional de Chimborazo — creator of BIPED, DexiNed, TEED and UDED, that is three of the five datasets used here, and therefore the best-placed reviewer to judge whether the reported BIPED ODS is attainable under the standard protocol.
+
+**Crisp and uncertainty-aware edge architectures.** *Mengyang Pu*, Associate Professor, North China Electric Power University — first author of EDTER (CVPR 2022) and MuGE (CVPR 2024); MuGE is the closest published competitor to the manuscript's controllable-adjustment framing. *Caixia Zhou*, postdoctoral researcher, Beijing Jiaotong University — first author of UAED (CVPR 2023), the reference point against which the deterministic ambiguity gate must be assessed. *Zhuo Su*, postdoctoral researcher, University of Oulu — first author of PiDiNet (ICCV 2021), the manuscript's external comparator in Fig. 4f, and best placed to judge whether that comparison is fair. *Yunfan Ye*, Hunan University — first author of DiffusionEdge (AAAI 2024), for the generative-refinement comparison the manuscript omits.
+
+**Retinal MEA electrophysiology and population coding.** *Dimokratis Karamanlis*, postdoctoral researcher, Göttingen — first author of the 2024 *Nature* study on nonlinear receptive fields and redundant retinal coding of natural scenes, using large-scale mouse and marmoset MEA recordings; directly qualified to judge spatial-bin pooling of heterogeneous units. *Xiaolin Huang* — first author of *Nat. Commun.* **10**, 2431 (2019) on contextual modulation in the retinal direction-selective circuit, the manuscript's own reference 16 and the causal study this work does not match. *Serena Riccitelli*, postdoctoral researcher, Weizmann Institute (Rivlin-Etzion laboratory) — first author of the 2025 *PNAS* study on extraclassical direction-tuned ganglion-cell responses, which supplies the competing explanation for the reported bidirectional differences.
+
+**Permutation inference and nested pseudoreplication.** *Philipp Berens*, Professor, University of Tübingen — proposed as a last-resort senior reviewer given the scarcity of researchers combining retinal population statistics with machine-learning evaluation; a group member working on retinal functional classification would be an acceptable junior substitute. The specific charge is whether within-bin unit-label permutation is a valid null when block composition differs, and whether Benjamini–Hochberg correction across 168 re-analyses of three animals is interpretable.
+
+---
+
+## Further Literature (Past 3 Years, Annotated)
+
+**1.** Cetinkaya, B., Kalkan, S. & Akbas, E. MatchED: Crisp Edge Detection Using End-to-End, Matching-based Supervision. *Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit.* 42093–42103 (2026).
+*Peer-reviewed (CVPR main track). Cited by the manuscript as reference 10. Authors independent of the submitting group.* A 21,000-parameter plug-in module achieving crisp edges without NMS or thinning. The correct head-to-head comparator for a lightweight post-hoc operator appended to a fixed anchor; its existence makes the manuscript's dependence on a source-frozen NMS setting harder to defend. Cited only as background.
+
+**2.** Cheng, J., Wu, Y. & Zhou, Y. MEMO: Human-like Crisp Edge Detection Using Masked Edge Prediction. *Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit.* 27740–27749 (2026).
+*Peer-reviewed (CVPR main track). Cited as reference 9. Authors independent.* Addresses boundary thickness and train–evaluation alignment. Directly relevant to the manuscript's crispness analysis in Supplementary Fig. 5, which is benchmarked against no crisp-edge method.
+
+**3.** Cetinkaya, B., Kalkan, S. & Akbas, E. RankED: Addressing Imbalance and Uncertainty in Edge Detection Using Ranking-based Losses. *Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit.* 3239–3249 (2024).
+*Peer-reviewed (CVPR). Not cited. Authors independent.* Ranking-based losses that target precisely the AP and confidence-ordering degradation the manuscript reports and does not remedy (−0.92 on MultiCue, −4.24 on MultiCue-to-BSDS500). A serious omission given that AP loss is the manuscript's central acknowledged failure mode.
+
+**4.** Zhou, C., Huang, Y., Pu, M., Guan, Q., Deng, R. & Ling, H. MuGE: Multiple Granularity Edge Detection. *Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit.* (2024).
+*Peer-reviewed (CVPR). Not cited. Authors independent.* Controllable multi-granularity edge prediction, conceptually the closest competitor to "signed contextual adjustment," since both make the strength or scale of the boundary decision explicit and tunable. Its absence from the introduction materially weakens the novelty claim.
+
+**5.** Zhou, C. et al. The Treasure Beneath Multiple Annotations: An Uncertainty-aware Edge Detector. *Proc. IEEE/CVF Conf. Comput. Vis. Pattern Recognit.* 15507–15517 (2023).
+*Peer-reviewed (CVPR). Cited as reference 6. Authors independent.* The benchmark for data-driven ambiguity estimation. The fixed gate U(P) = [4P(1−P)]^γ should be compared against a learned uncertainty estimate on identical anchors; no such ablation is reported.
+
+**6.** Liufu, X. et al. SAUGE: Taming SAM for Uncertainty-Aligned Multi-Granularity Edge Detection. *Proc. AAAI Conf. Artif. Intell.* **39**, 5766–5774 (2025).
+*Peer-reviewed (AAAI). Cited as reference 7. Authors independent.* Foundation-model-based uncertainty-aligned edge detection, establishing the current ceiling for ambiguity-aware methods and the scale at which the field now operates.
+
+**7.** Ye, Y., Xu, K., Huang, Y., Yi, R. & Cai, Z. DiffusionEdge: Diffusion Probabilistic Model for Crisp Edge Detection. *Proc. AAAI Conf. Artif. Intell.* **38**, 6675–6683 (2024).
+*Peer-reviewed (AAAI). Cited as reference 8. Authors independent.* Generative refinement defining the upper end of BIPED performance in the published literature. The manuscript's reported 0.9426 requires explicit reconciliation against this line of work under a common evaluator.
+
+**8.** Karamanlis, D. et al. Nonlinear receptive fields evoke redundant retinal coding of natural scenes. *Nature* (2024). doi:10.1038/s41586-024-08212-3
+*Peer-reviewed. Not cited. Authors independent.* Large-scale MEA recordings in marmoset and mouse showing that nonlinear pooling of ganglion-cell inputs produces correlated, redundant responses under natural gaze dynamics. Directly undermines the assumption that averaging heterogeneous units within an n×n spatial bin yields an interpretable local population signal.
+
+**9.** Riccitelli, S. et al. Retinal ganglion cells encode the direction of motion of stimuli far beyond their receptive field. *Proc. Natl Acad. Sci. USA* (2025).
+*Peer-reviewed. Not cited. Authors independent. DOI not independently confirmed during preparation of this report; editorial office should verify.* Demonstrates glycinergic-amacrine-mediated extraclassical direction-tuned responses in non-direction-selective mouse ganglion cells. Supplies a competing mechanistic account of the reported UME/CME differences that does not require the manipulated surround structure.
+
+**10.** Huang, K., Lin, C. & Peng, J. Bio-inspired visual mechanism lightweight network for edge detection. *Signal Image Video Process.* **19**, 450 (2025). doi:10.1007/s11760-025-04050-6
+*Peer-reviewed. Not cited. Same research lineage as the manuscript's references 19–22 but no co-authorship overlap with the submitting group.* A recent surround-modulation lightweight edge network on overlapping benchmarks. Together with COS-net (*Digital Signal Processing* **159**, 104994, 2025; doi:10.1016/j.dsp.2025.104994) it provides the like-for-like bio-inspired comparison the manuscript lacks.
+
+*Note on peer-review status: all ten entries are peer-reviewed journal or main-track conference publications. No arXiv-only preprints are included. Where arXiv versions exist (entries 1, 3, 4), the peer-reviewed proceedings version is cited.*
+
+068766
+# Editorial Report — Manuscript 068766
+
+**Title:** GaitEncoder: A Foundation Model of Gait Kinematics for Diverse Clinical Applications and Pathologies
+**Authors:** R. D. Magruder, S. Gilon, A. Falisse, S. D. Uhlrich (University of Utah; Model Health Inc.)
+**Venue considered:** *Nature Communications* — Digital Health
+
+---
+
+## Editorial Integrity Alert — Confidential, Handling Editor Only
+
+**1. Undisclosed preprint.** A version of this manuscript is publicly posted on medRxiv (posted 7 July 2026, DOI 10.64898/2026.07.07.26357479), under the identical title and abstract. The submitted manuscript contains no preprint declaration. This is not disqualifying under Nature Communications policy but must be recorded, and the authors should be asked to confirm the version relationship and any differences.
+
+**2. Undisclosed self-benchmarking.** The manuscript's principal comparator throughout Section 2.1 and the Discussion — reference 17, "clinician-informed hand-engineered features" (Ruth et al., *NEJM AI* 2025) — is co-authored by Scott D. Uhlrich and Antoine Falisse, two of the four authors of this submission. The text consistently frames this comparison as though it were against an external clinical standard ("models using clinician-informed, hand-engineered features"). The authors should be required to state this relationship explicitly in the main text.
+
+**3. Cohort reuse across publications.** The myotonic dystrophy (n=55) and FSHD (n=26) cohorts used for the headline "unseen pathology" evaluation are drawn from the same Stanford collection reported in Ruth et al. 2025 (58 DM, 28 FSHD). Both the evaluation data and the comparator method therefore originate from the authors' own prior study. This is not fraud, but it materially weakens the claim of independent out-of-distribution validation and should be disclosed. There is a genuine salami-slicing question the authors should answer directly: what is the incremental unit of new data here?
+
+**4. Selective reporting in the Discussion.** The Results report that hand-engineered features using nine activities achieved 0.75 accuracy for myotonic dystrophy and 0.67 for FSHD — comparable to, and in one case not statistically distinguishable from, the fine-tuned GaitEncoder (0.81 and 0.75; FSHD comparison p=0.066). The Discussion then states that hand-engineered features "did not accurately differentiate myotonic dystrophy or FSHD from controls (44–53% accuracy)," citing only the walking-only baseline and omitting the nine-activity results entirely. This is a material misrepresentation of the authors' own data and must be corrected regardless of the decision.
+
+**5. Citation status error.** Reference 28 (Cotton et al., Self-Supervised Learning of Gait-Based Biomarkers) is cited as an arXiv preprint; it was published in the peer-reviewed MICCAI PRIME 2023 proceedings (DOI 10.1007/978-3-031-46005-0_24). Reference 16 (Gilon, Miller & Uhlrich, OpenCap Monocular) is a self-cited arXiv preprint used to support a claim about clinical measurement feasibility.
+
+**6. Commercial entanglement in the evaluation path.** Competing interests are declared (SDU and AF are co-founders of Model Health Inc.), but the declaration understates the entanglement: the kinematics for the sole longitudinal clinical demonstration (Section 2.3) were computed using the Model Health commercial platform rather than open-source OpenCap, and the DMU score is deployed on the authors' own platform. This should be surfaced to reviewers.
+
+**7. Ethics coverage.** IRB approval and informed consent are stated only for the single post-stroke participant. No ethics statement covers the eight aggregated datasets or the secondary use of the DM/FSHD cohorts. A blanket statement is required.
+
+**8. Numerical consistency.** Table 1 participant counts sum correctly to 657 once the 91 post-arthroplasty returners are recognised as a subset of the 105 hip osteoarthritis participants. Training (381), validation (155) and testing (121) sum to 657. No arithmetic errors detected. The cerebral palsy cohort is n=6 (4 in training), which is not adequately signposted against the abstract's claim of "seven unique pathologies."
+
+---
+
+## 1. Overall Assessment
+
+A weakly-supervised VAE compresses 32 joints × 24 time points into 16 latent dimensions, trained on 381 individuals across four pathologies, and is claimed to transfer to four downstream tasks and three withheld conditions. The problem is well posed and the data aggregation is useful, but the foundation-model framing is not earned at this scale, and every downstream claim thins precisely where it becomes clinical.
+
+## 2. Strengths
+
+Eight heterogeneous sources harmonised around a single Rajagopal model, ages 8–86, seven conditions, released on SimTK — infrastructure that does not currently exist.
+
+Serious out-of-distribution design: Parkinson's, myotonic dystrophy and FSHD withheld entirely, reconstruction MAE quantified per condition (4.8°, 4.3°, 5.1° vs 3.5°), tested across marker-based and video modalities.
+
+Excluding diagnostic labels from the loss and supervising on gait speed keeps the latent space usable for unseen conditions.
+
+The surgical effect predictor is the strongest result: frozen encoder/decoder, correct average-treatment-effect baseline (4.7±1.0° vs 5.9±2.5°, p=.004, d=.60), modest 1.2° gain honestly reported.
+
+## 3. Weaknesses
+
+DMU is confounded by construction — normed on ages 18–65 with speed ≥1.2 m/s while gait speed is the supervision target, then applied to cohorts aged 44–86. Never age-adjusted, never tested against speed alone.
+
+Zero-shot and fine-tuned results conflict. True zero-shot accuracies (0.68, 0.62) fall below the nine-activity baselines (0.75, 0.67). FSHD DMU separation is non-significant zero-shot (p=.267), significant only after fine-tuning on that cohort and testing on it — circular.
+
+Statistics are permissive: one-sided t-tests, correction only in §2.2, no confidence intervals or calibration anywhere, n=13 controls, and no demographic subgroup analysis of any kind.
+
+Section 2.3 is n=1 with no testing — less evidence than Felius et al. 2024, cited in its own reference list on the same question.
+
+No modern learned baseline. GaitDynamics, self-supervised embeddings and plain PCA are all absent; the only comparator is a 2008 linear decomposition.
+
+## 4. Editorial Decision
+
+**Send for Review, after two mandatory pre-review corrections.** These flaws are largely revisable and turn on an open question reviewers are better placed to settle: whether pathology-diverse pretraining beats healthy-only pretraining at greater scale. But integrity items 2 and 4 must be fixed first. The authors must disclose that reference 17 is their own prior work, and correct the Discussion's 44–53% baseline claim to the 67–75% their Results report. Reviewers cannot fairly judge a comparison misrepresented as external against a baseline understated by twenty points. Reviewers should then adjudicate: does DMU survive age adjustment and beat gait speed alone; is the fine-tuned separation test circular; does a 16-dimensional MLP autoencoder at n=381 warrant "foundation model" given GaitDynamics and AddBiomechanics; can §2.3 support any claim at n=1.
+
+**Steelman (the case for rejection).** The DMU confound is a design decision baked into the normative cohort, not an analysis error, and no revision short of reweighting that cohort repairs it. The circular separation test cannot be fixed by further experiment — it must be withdrawn. Two of four downstream tasks therefore cannot survive review intact, and a paper whose headline claims require deletion rather than strengthening has not yet been done. Adding the missing subgroup analyses, intervals and baselines approaches a new study. Transfer to *Communications Medicine* would return a decision in weeks instead of consuming two reviewers for a probable reject-after-review. The counterweight is that the dataset and the surgical predictor are real contributions, and the scale-versus-diversity question deserves expert adjudication rather than an editor's guess.
+
+## 5. Suggested Reviewer Expertise
+
+Reviewers should collectively cover five areas. First, generative and self-supervised representation learning for human movement time series — specifically variational autoencoders, diffusion models and transformer architectures applied to joint-angle trajectories, with the ability to judge whether a 16-dimensional bottleneck trained on n=381 warrants the foundation-model designation. Second, markerless and smartphone-based motion capture validation, including OpenCap, AddBiomechanics, Theia3D and the propagation of pose-estimation error into inverse-kinematic joint angles across capture modalities. Third, biostatistics for clinical prediction models: cross-validation design under severe class imbalance, calibration and confidence-interval reporting, multiplicity correction, and the distinction between within-distribution and held-out evaluation. Fourth, clinical outcome measurement in neuromuscular disease, particularly myotonic dystrophy type 1 and FSHD, including the psychometric requirements (reliability, minimal detectable change, responsiveness) that a candidate digital endpoint must meet for trial use. Fifth, movement disorders and rehabilitation medicine, covering UPDRS-II/III construct validity, subacute post-stroke recovery trajectories and compensation versus true recovery, and hip osteoarthritis surgical outcome prediction.
+
+## 6. State-of-the-Art Literature Review (Past 3 Years)
+
+The relevant field has moved decisively toward large, harmonised, multi-study biomechanics corpora and generative models trained on them. The AddBiomechanics dataset (Werling et al., ECCV 2024) harmonised fifteen studies into more than 70 hours of physics-consistent motion, and GaitDynamics (Tan et al., *Nature Biomedical Engineering* 2026) trained a diffusion transformer on it, demonstrating flexible-input inference, inpainting under missing kinematics, and — critically for the present manuscript — generalisation to osteoarthritis despite training exclusively on healthy participants. In parallel, movement-language models have emerged: BiomechGPT (Yang, Abilitylab, Kennedy & Cotton, arXiv 2025) tokenises biomechanical motion for a multimodal foundation model over clinically relevant tasks, building on Cotton's earlier self-supervised gait biomarkers (MICCAI PRIME 2023). On the measurement side, OpenCap (Uhlrich et al., *PLOS Computational Biology* 2023) established smartphone-video musculoskeletal analysis, Stenum et al. (*PLOS Digital Health* 2024) surveyed the clinical validity of video pose estimation for gait, and Ruth et al. (*NEJM AI* 2025) showed that clinician-informed video features discriminate neuromuscular diseases across nine activities. For latent gait representations specifically, Felius et al. (*PLOS ONE* 2024) established the psychometric template — reliability, group discrimination, responsiveness — that this literature now expects.
+
+Against that landscape, this manuscript advances on exactly one axis: pathological diversity in the training distribution. Every prior gait foundation model was trained overwhelmingly on unimpaired movement, and the question of whether pathology-diverse pretraining improves transfer to unseen conditions is genuinely open and worth answering. But the paper does not answer it, because it never compares against a model pretrained on the larger healthy corpus. Where it replicates rather than advances: latent-space reduction of pathological gait with weak clinical supervision is essentially the Felius design at larger scale, and impairment scoring against a normative embedding is the Gait Deviation Index with a nonlinear encoder. The authors should be required to engage substantively with GaitDynamics and AddBiomechanics as pretraining alternatives rather than as background citations, to benchmark against BiomechGPT-style tokenised representations, and to explain why nine-activity assessment — which their own comparator shows outperforms walking-only analysis for FSHD — was excluded from a model whose stated limitation is that it sees only walking.
+
+## 7. Suggested Reviewer Names
+
+*Ranks and current affiliations should be verified by the editorial office before invitation; conflict notes are flagged where I identified them.*
+
+**Representation learning for gait kinematics.** R. James Cotton (Assistant Professor, Northwestern University / Shirley Ryan AbilityLab) — directly comparable work in *Self-Supervised Learning of Gait-Based Biomarkers* (MICCAI PRIME 2023) and *BiomechGPT* (2025); best-placed reviewer for the foundation-model claim. **Conflict note:** he has co-authored markerless motion capture methods papers with S. Uhlrich (2023 EMBC/ICORR), which the editorial office should weigh. Robert Felius (Vrije Universiteit Amsterdam) — first author of *Exploring unsupervised feature extraction of IMU-based gait data in stroke rehabilitation using a variational autoencoder* (*PLOS ONE* 2024), the single closest published analogue to this submission's latent-representation and responsiveness claims, and independent of both Utah and Stanford. Sina David (Assistant Professor, Vrije Universiteit Amsterdam) — senior author on convolutional VAE latent gait representations across IMU, markerless and optical capture modalities (2026), directly comparable on the cross-modality generalisation claim.
+
+**Generative gait modelling and benchmarking.** Tian Tan (Stanford University) — first author of *GaitDynamics* (*Nature Biomedical Engineering* 2026), the direct competitor model. **Conflict note:** Stanford Neuromuscular Biomechanics Lab, S. D. Uhlrich's former group; likely excluded, but named because his review would be the most substantive available on the scale-versus-diversity question. Eni Halilaj (Associate Professor, Carnegie Mellon University) — machine learning for musculoskeletal movement analysis and video-based knee loading estimation; independent of the Utah and Stanford groups.
+
+**Clinical outcome measurement — neuromuscular disease.** Karlien Mul (neurologist, Radboud University Medical Center) — FSHD clinical outcome measures including the FSHD-COM; the right reviewer to judge whether DMU meets the psychometric bar for a trial endpoint. **Exclusion note:** Tina Duong and Parker Ruth (Stanford) are the natural clinical experts for the DM/FSHD cohorts but are co-authors of reference 17 and should not be invited.
+
+**Clinical outcome measurement — movement disorders and rehabilitation.** Martina Mancini (Associate Professor, Oregon Health & Science University) — instrumented gait and mobility assessment in Parkinson's disease; appropriate for the UPDRS-II/III construct validity claims in Section 2.2 and for judging whether r=.63–.65 constitutes clinically useful agreement.
+
+---
+
+
+---
+
+## Further Literature (Past 3 Years, Similar Scope)
+
+Ten papers sharing this manuscript's scope: learned representations of gait kinematics, video-based clinical gait analysis, and digital gait outcome measures in movement-disordered populations. Peer-reviewed work is prioritised; preprints are flagged explicitly.
+
+**1.** Tan, T., Van Wouwe, T., Werling, K. F., Liu, C. K., Delp, S. L., Hicks, J. L. & Chaudhari, A. S. *GaitDynamics: a generative foundation model for analyzing human walking and running.* Nature Biomedical Engineering 10, 1659–1671 (2026). DOI: 10.1038/s41551-025-01565-8.
+**Peer-reviewed. Cited (ref 29). Independent** — Uhlrich is not an author, though the Stanford NMBL lineage overlaps.
+*Relevance:* the direct competitor. A diffusion transformer on 10,352 trials from 178 AddBiomechanics participants, with flexible inputs, inpainting under missing kinematics, and — decisively for this submission — generalisation to osteoarthritis from healthy-only training. The submission dismisses it in one clause. Reviewers should require a head-to-head against a GaitDynamics-derived representation, since it directly tests whether pathological diversity or raw scale drives transfer.
+
+**2.** Werling, K. et al. *AddBiomechanics Dataset: Capturing the Physics of Human Motion at Scale.* Computer Vision – ECCV 2024, LNCS 15146, 490–508 (2025). DOI: 10.1007/978-3-031-73223-2_27.
+**Peer-reviewed (conference). NOT cited** — the manuscript cites the AddBiomechanics *tool* (ref 51) but not the dataset. **Independent.**
+*Relevance:* the pretraining corpus the authors did not use. They ran their marker data through the AddBiomechanics pipeline yet ignored the 70-hour, 270-participant harmonised corpus attached to it. The obvious ablation — pretrain here, fine-tune on pathology — is missing and must be requested.
+
+**3.** Ruth, P. S., Uhlrich, S. D., de Monts, C., Falisse, A., Muccini, J., Covitz, S., Vogt-Domke, S., Day, J., Duong, T. & Delp, S. L. *Video-Based Biomechanical Analysis Captures Disease-Specific Movement Signatures of Different Neuromuscular Diseases.* NEJM AI 2(9) (2025). DOI: 10.1056/AIoa2401137.
+**Peer-reviewed. Cited (ref 17). NOT independent** — Uhlrich and Falisse co-author both papers.
+*Relevance:* supplies both the comparator features and the DM/FSHD evaluation cohorts. Its nine-activity results (0.75 DM, 0.67 FSHD) are the honest baseline omitted from the Discussion. Also establishes that multi-activity assessment outperforms walking-only for FSHD — which undercuts the submission's walking-only design more than its stated limitation admits.
+
+**4.** Felius, R. A. W. et al. *Exploring unsupervised feature extraction of IMU-based gait data in stroke rehabilitation using a variational autoencoder.* PLoS ONE 19, e0304558 (2024). DOI: 10.1371/journal.pone.0304558.
+**Peer-reviewed. Cited (ref 33). Independent.**
+*Relevance:* the closest published analogue — a VAE reducing post-stroke gait to twelve latent features, evaluated with test–retest ICC, group discrimination and responsiveness during rehabilitation in a proper cohort. Sets the psychometric bar that Section 2.3 fails at n=1. The submission cites it as background rather than as the comparator it plainly is.
+
+**5.** Uhlrich, S. D., Falisse, A., Kidziński, Ł., Muccini, J., Ko, M., Chaudhari, A. S., Hicks, J. L. & Delp, S. L. *OpenCap: Human movement dynamics from smartphone videos.* PLOS Computational Biology 19, e1011462 (2023). DOI: 10.1371/journal.pcbi.1011462.
+**Peer-reviewed. Cited (ref 18). NOT independent** — Uhlrich and Falisse co-author both.
+*Relevance:* the measurement substrate for all video-derived cohorts and the deployment platform for DMU. Reviewers should check whether OpenCap's own joint-angle error is small relative to the 3.5–5.1° reconstruction MAE reported here; if it is not, the reconstruction metric is partly measuring the capture pipeline rather than the model.
+
+**6.** Cotton, R. J. et al. *Self-Supervised Learning of Gait-Based Biomarkers.* Predictive Intelligence in Medicine (MICCAI PRIME 2023), LNCS, 277–291. DOI: 10.1007/978-3-031-46005-0_24.
+**Peer-reviewed — miscited by the manuscript as an arXiv preprint (ref 28). Cited, incorrectly. Independent.**
+*Relevance:* prior self-supervised gait representation learning with clinical evaluation, and the nearest precedent for the submission's core method. Should function as a benchmark, not a background citation. The miscitation matters because it understates how much of this territory is already peer-reviewed.
+
+**7.** Yang, R., Abilitylab, S. R., Kennedy, A. & Cotton, R. J. *BiomechGPT: Towards a Biomechanically Fluent Multimodal Foundation Model for Clinically Relevant Motion Tasks.* arXiv:2505.18465 (2025).
+**arXiv only — NOT peer reviewed; flagged as unreviewed evidence. Cited (ref 35). Independent.**
+*Relevance:* the tokenised-movement route to gait foundation models, and the most direct challenge to the submission's architectural choice. Useful for situating the work, but its preprint status means it cannot settle priority or serve as a validated comparator.
+
+**8.** *Deep learning-enabled accurate assessment of gait impairments in Parkinson's disease using smartphone videos.* npj Digital Medicine 8 (2025). DOI: 10.1038/s41746-025-02150-8.
+**Peer-reviewed. NOT cited. Independent.**
+*Relevance:* directly parallel to Section 2.2 and a serious omission. Reports micro-average AUC 0.87 and F1 0.806 for PD severity from smartphone video, comparable to three clinical specialists, and discriminates medication effects at a resolution finer than UPDRS. The submission's r=.63–.65 UPDRS correlations must be positioned against this, not against the absence of prior work.
+
+**9.** *3D pose estimation for scalable remote gait kinematics assessment.* npj Digital Medicine 8 (2025). DOI: 10.1038/s41746-025-02211-y.
+**Peer-reviewed. NOT cited. Independent.**
+*Relevance:* establishes markerless pose estimation for pathological gait analysis outside the clinic, identifying reduced hip and knee flexion as biomarkers. Overlaps the submission's remote-monitoring premise and its joint-level interpretability claim in Figure 5d, and should be engaged with when arguing that DMU's joint attribution is novel.
+
+**10.** Stenum, J., Hsu, M. M., Pantelyat, A. Y. & Roemmich, R. T. *Clinical gait analysis using video-based pose estimation: Multiple perspectives, clinical populations, and measuring change.* PLOS Digital Health 3, e0000467 (2024). DOI: 10.1371/journal.pdig.0000467.
+**Peer-reviewed. Cited (ref 13). Independent.**
+*Relevance:* addresses head-on whether video-derived kinematics can detect longitudinal change in clinical populations — the exact claim of Section 2.3. Provides the measurement-error framework against which a single patient's 16-week DMU trajectory should be judged, and the reason an n=1 demonstration cannot carry that claim.
