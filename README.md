@@ -1,281 +1,5 @@
 # Trackrad202512456
 
-067671
-Editorial Report — Manuscript 067671
-
-"Addressing challenges in agentic retrieval of structured data from biomedical databases" (BioChirp)
-
-1. Overall Assessment
-
-The manuscript presents BioChirp, an interpretation–execution-separated retrieval system for curated biomedical databases. LLMs handle question interpretation, schema-field mapping, and synonym resolution; a deterministic Steiner-tree planner and executor then perform table selection, joins, and record retrieval. Reported results are substantial: median cross-run Jaccard similarity of 1.0 across three backends, 85.4% versus 44.6% table-hit rate against agentic NL2SQL across 910 BioASQ-derived evaluations, and a 45-fold undercount by an MCP-connected Claude Sonnet 4.5 configuration on an exhaustive Open Targets query.
-
-That empirical case is now moot. Independent verification identifies a bioRxiv preprint (2026.04.25.720782, posted 25 April 2026) describing the identical system, with overlapping authorship, the same GitHub repository and the same deployment URL, neither cited nor disclosed. The preprint declares that D. Sengupta and M. Farooq are GeneSilico shareholders; the submission declares no competing interests despite Farooq's stated GeneSilico affiliation.
-
-2. Strengths
-
-The deterministic Steiner-tree planner (Mehlhorn, 1988) addresses a real failure mode the manuscript itself demonstrates: Sonnet 4.5 returning 99 of 4,473 associations without any operational error signal.
-
-The 910-evaluation BioASQ comparison against a LangChain–Qwen-2.5-7B-instruct baseline is appropriately scaled, and the re-audit of all 157 FAIL verdicts (60 database coverage gaps, 29 genuine misses) interrogates the system's own failures rather than only its wins.
-
-The field-mapping experiment shows that mapper agreement conceals 11/150 HCDT and 8/150 TTD shared errors — a limitation stated plainly rather than hidden behind the 92.7–94.0% headline.
-
-3. Weaknesses
-
-Completeness is bounded by entity-resolution recall, which peaks at 0.40–0.42 precision for SapBERT on diseases and is worse for drugs; no sensitivity analysis links this upstream ceiling to downstream association-level loss.
-
-Claude Sonnet 5 serves as all three graders plus adjudicator in the BioASQ evaluation. This is circular self-assessment; PASS/PARTIAL/FAIL rates require a human-annotated subsample.
-
-Cross-database MCP workflows are two illustrative examples, yet support a generalized interoperability claim in the Discussion.
-
-4. Editorial Decision
-
-Reject. The undisclosed prior disclosure and undisclosed competing interest are each independently disqualifying and are not revisable within this submission. Recommend transfer to npj Artificial Intelligence or Communications Biology, contingent on both integrity issues being resolved with the editorial office first.
-
-Steelman: both omissions could be administrative oversights correctable by author response, and the underlying contribution — quantifying silent evidence loss in agentic biomedical retrieval — is novel enough to warrant revision rather than rejection. Not accepted here: GeneSilico's commercial interest bears directly on a corresponding author's incentive to overstate BioChirp's advantage over commercial-LLM baselines, which is the manuscript's central empirical claim.
-
-067660
-# Editorial Report (Condensed)
-
-**Manuscript:** "The choice of large language model reverses the simulated go/no-go decision in digital mental-health trial planning: a four-axis credibility assessment of synthetic-patient simulation across 12 models"
-**Authors:** Woo, H.J. & Kim, M.-G.
-
-## 1. Overall Assessment
-
-The manuscript operationalizes ASME V&V 40 into four credibility axes for LLM synthetic patients across 12 models and 623 personas, then re-seeds the simulator on 266 real Brighten iPST enrollees and tests simulated against observed PHQ-9 change. This is a substantive advance rather than a repackaging: the field stops at face plausibility, and this paper supplies the missing ground-truth step, returning a replicated negative result (trajectory drifts upward, individual-level Spearman ρ ≈ 0). Two concerns dominate: the capstone claim rests on one trial, and much of the machinery is inherited from the authors' companion study.
-
-## 2. Strengths
-
-The IPD-seeded validation converts plausibility into falsifiability and replicates across four architecturally distinct models and a held-out Brighten wave. The return-map analysis (Fig. 5d) localizes the trajectory failure to a specific architectural choice — distress re-elicited from the pre-intervention value, never carried forward — rather than a vague model deficit. Cross-generator replication (ρ = 0.95) with a strict-schema runner logging 739,802 provenance records and no imputation sets an unusually high auditability standard. The anchor analysis is self-critical: in-sample recalibration succeeds, out-of-sample transport fails, and the authors report the failure.
-
-## 3. Weaknesses
-
-The predictive-failure claim rests on a single trial whose comparator arm changed as much as iPST. The Type A–C anchors are between-group, full-course meta-analytic estimates reapplied as within-person single-check-in reductions, so the headline 1.7–2.8-fold overestimate is partly a unit-conversion artifact. Pre-specification rests on internal dated logs, not public registration — a weak standard for a paper about quantitative trust. Core architecture, phenotype rules, and anchors are carried over from the companion Scientific Reports paper.
-
-## 4. Editorial Decision
-
-**Send for Review.** The ground-truth test and its mechanistic diagnosis clear the bar. Reviewers must adjudicate: whether a second real-outcome cohort is required; whether the anchor unit conversion invalidates the Axis-2 headline; and whether novelty over the companion study is sufficient standalone.
-
-## 5. Suggested Reviewer Expertise
-
-Reviewers should cover: LLM-based patient/agent simulation and fidelity evaluation; extension of V&V 40-style credibility frameworks to non-physics-based generative and AI/ML models; digital mental-health trial methodology and remote-RCT engagement/adherence measurement (Brighten-type designs); Bayesian and equivalence-testing statistics (bootstrap TOST, effect-size standardization); and clinical psychiatry/psychology expertise in depression and anxiety digital interventions and PHQ-9/GAD-7 measurement-based care.
-
-## 6. State-of-the-Art Literature Review (Past 3 Years)
-
-The dominant recent thread evaluates LLM synthetic patients by perceived realism or downstream training utility: PATIENT-Ψ (Wang et al., EMNLP 2024) builds CBT-cognitive-model-grounded patients for trainee practice; Roleplay-doh (Louie et al., EMNLP 2024) elicits domain-expert principles to constrain simulated patients; Reichenpfader & Denecke (2024) generate diverse patient vignettes; a December 2025 Communications Medicine paper on LLM-agent simulated patients for medical education and a January 2026 JMIR systematic review of LLM virtual-patient systems both confirm the field still measures fidelity via expert or automated realism scores, not real-outcome recovery. A closely analogous December 2025 in-silico PROM pre-validation study (cataract PROMs, Journal of Clinical Medicine) stress-tests instruments on an LLM-generated synthetic cohort but, like the rest of this literature, never checks the simulation against real enrolled patients' actual outcomes — the exact gap this manuscript closes. On the credibility-framework side, Pathmanathan and colleagues' extension of V&V 40 to patient-specific computational models (PLOS Computational Biology) is the nearest methodological precedent and is not cited; the authors should engage it directly. The manuscript should also more explicitly contrast its non-carry-forward architecture against autoregressive digital-twin EHR simulators (e.g., recent arXiv work on timeline-based patient digital twins) that do propagate state forward, since that comparison bears directly on the authors' own stated next step.
-
-## 7. Suggested Reviewer Names
-
-*LLM patient simulation:* Ruiyi Wang (CMU, PATIENT-Ψ lead), Stephanie Milani (Assistant Professor, Johns Hopkins CS; PATIENT-Ψ co-lead), Jocelyn Shen (MIT Media Lab, simulated-agent evaluation) — verify current rank/affiliation for the latter before contacting.
-
-*V&V/credibility frameworks:* Pras Pathmanathan (FDA/OSEL, patient-specific V&V 40 extension) — his regulatory affiliation should be checked for conflict-of-interest screening given the manuscript's regulatory framing.
-
-*Digital mental-health trial methodology:* Abhishek Pratap (co-author, Brighten Sci Data release; verify current institutional position), a Brighten-adjacent adherence/engagement methodologist.
-
-*Statistics/calibration:* a biostatistician with published TOST/equivalence-testing work in digital-therapeutics effect-size estimation — specific name not independently verified; flagged as a gap rather than fabricated.
-
----
-
-## Further Literature (10 papers, scope-matched)
-
-**1.** Wang, R. et al. PATIENT-Ψ: Using Large Language Models to Simulate Patients for Training Mental Health Professionals. *Proceedings of EMNLP 2024*, 12772–12797. Peer-reviewed conference proceedings. **Not cited.** Authors independent (CMU/Princeton/Pitt/Stanford). The canonical LLM-simulated-mental-health-patient framework; its evaluation is expert-perceived realism, which is precisely the standard this manuscript argues is insufficient. Its absence from the reference list is a material omission.
-
-**2.** Simulated patient systems powered by large language model-based AI agents offer potential for transforming medical education. *Communications Medicine* 5 (2025). DOI: 10.1038/s43856-025-01283-x. Peer-reviewed. **Not cited.** Independent. Contemporary Nature-portfolio treatment of LLM simulated patients; establishes the current publication bar in this exact sub-domain and demonstrates that outcome-anchored validation is still absent from the field.
-
-**3.** Callies, A., Bodinier, Q., Ravaud, P. et al. Real-world validation of a multimodal LLM-powered pipeline for high-accuracy clinical trial patient matching. *Communications Medicine* 5, 536 (2025). DOI: 10.1038/s43856-025-01256-0. Peer-reviewed. **Not cited.** Independent (Université Paris Cité / AP-HP). Adjacent scope — LLMs in trial operations validated against real cohorts (n2c2, 485 real patients). A useful contrast: real-world validation is achievable in this space, which strengthens rather than weakens the reviewers' demand for a second validation cohort here.
-
-**4.** Warner, A., LeDue, J., Cao, Y., Tham, J. & Murphy, T.H. Synthetic patient and interview transcript creator: an essential tool for LLMs in mental health. *Frontiers in Digital Health* 7 (2025). PMC12460306. Peer-reviewed. **Not cited.** Independent (UBC). Directly comparable synthetic-mental-health-patient generation; validates against demographic distributions only, illustrating the plausibility-versus-accuracy distinction this manuscript formalizes.
-
-**5.** Moëll, B. & Aronsson, F.S. High-accuracy prediction of mental health scores from English BERT embeddings trained on LLM-generated synthetic self-reports. *Frontiers in Digital Health* (2026). DOI: 10.3389/fdgth.2025.1694464. Peer-reviewed. **Not cited.** Independent (KTH/Karolinska). Synthetic-only PHQ-9/GAD-7-adjacent method development with no real-patient outcome check — an instance of the failure mode this manuscript documents, and a natural citation for the discussion.
-
-**6.** Using Large Language Models for In Silico Development and Simulation of a Patient-Reported Outcome Questionnaire for Cataract Surgery. *Journal of Clinical Medicine* 15(1), 283 (2026). DOI: 10.3390/jcm15010283. Peer-reviewed (MDPI; note the lower editorial threshold). **Not cited.** Independent. Closest structural analogue outside mental health: LLM-generated synthetic cohort (n = 500, structured JSON personas) used for instrument pre-validation without real-outcome anchoring.
-
-**7.** Galappaththige, S., Gray, R.A., Costa, C.M., Niederer, S. & Pathmanathan, P. Credibility assessment of patient-specific computational modeling using patient-specific cardiac modeling as an exemplar. *PLOS Computational Biology* 18(10), e1010541 (2022). DOI: 10.1371/journal.pcbi.1010541. Peer-reviewed. **Not cited.** Independent (FDA CDRH / KCL). *Note: October 2022 — marginally outside the three-year window, retained because it is the single most relevant methodological precedent for extending V&V 40 beyond its original scope, which is this manuscript's central framing claim.*
-
-**8.** Review: Large Language Model–Based Virtual Patient Systems for Medical History-Taking — a PRISMA systematic review of 39 studies (search window to August 2025). *JMIR Medical Informatics* 12, e79039 (2026). Peer-reviewed. **Not cited.** Independent. Establishes the field-wide evaluation landscape; the authors' claim that "none has quantified how much trust the simulation warrants" should be tested against this review's evidence synthesis rather than asserted.
-
-**9.** Park, J.S., Zou, C.Q., Shaw, A. et al. Generative Agent Simulations of 1,000 People. arXiv:2411.10109 (2024). DOI: 10.48550/arXiv.2411.10109. **PREPRINT — not peer-reviewed; flag as unreviewed if cited.** Independent (Stanford/Google DeepMind/Northwestern). The strongest existing individual-level LLM-simulation-fidelity result (agents reproduce GSS responses at ~85% of participants' own two-week test–retest reliability). This directly contradicts the manuscript's implied generality: individual-level accuracy has been achieved elsewhere with interview-grounded conditioning, suggesting the failure reported here may be an artifact of thin persona conditioning rather than a property of LLM simulation. The authors must engage this.
-
-**10.** Argyle, L.P. et al. Out of One, Many: Using Language Models to Simulate Human Samples. *Political Analysis* 31(3), 337–351 (2023). DOI: 10.1017/pan.2023.2. Peer-reviewed. **Not cited.** Independent (BYU). Origin of "algorithmic fidelity" and silicon sampling; the conceptual parent of persona-conditioned LLM simulation. The manuscript's four axes substantially reinvent vocabulary already established in this literature without acknowledgment.
-
-**Editorial note (not for the authors):** Reference 6 — Woo, H.J. & Kim, M.-G., *Scientific Reports* 16, 64139 (2026) — is the companion study supplying this manuscript's architecture, anchors, and phenotype rules. I could not independently verify this citation via search; the volume/article numbering should be confirmed against the publisher record before the manuscript proceeds, and the degree of methodological overlap should be assessed for salami-slicing at the same time.
-
-**Counterargument to the "Send for Review" decision (steelmanned):** A reasonable editor would reject. Item 9 above is the strongest case — if interview-grounded agents already achieve near-test-retest individual fidelity, then this manuscript's headline negative finding is a statement about one under-specified simulator, not about LLM synthetic patients as a class, and the abstract's generalization ("LLM synthetic-patient simulation as implemented here therefore has qualified credibility") is doing heavy lifting via the qualifier. Combined with a single validation cohort, an uncontrolled comparator arm, unregistered pre-specification, and heavy inheritance from the companion paper, the residual novelty may reduce to "we ran the authors' prior pipeline in English against one trial and it failed" — a finding better matched to *Communications Medicine* or *npj Digital Medicine* than to this journal. I weigh against rejection because the return-map mechanism (Fig. 5d) is a genuine, transferable architectural insight that survives even if the generality claim is trimmed, but the margin is narrow and reviewers should be told so explicitly.
-
-067388
-# Editorial Report — Manuscript 067388
-**Title:** Lead-conditioned diffusion generates multilead electrocardiograms from single-lead recordings
-**Authors:** Anonymous
-
----
-
-## 1. Overall Assessment
-
-ECG-DDPM is a conditional diffusion model that estimates Lead II and V1–V6 from an observed Lead I signal, with Leads III, aVR, aVL, aVF then computed by fixed limb-lead algebra. It is trained on paired PTB-XL recordings and transferred, without paired ground truth, to PhysioNet/CinC 2017 for four-class rhythm classification. The claimed advance — lead-conditioned diffusion recovering multiview ECG structure from a single wearable lead more accurately than VAE/GAN baselines — does not survive scrutiny of the literature. This is a populated subfield, and at least one directly comparable PTB-XL Lead I→12-lead study, published in a Nature-family journal, reaches a contradictory conclusion; it is not cited. Compounding this, four of eight reported leads are not independently generated but deterministic transforms of Lead II, so error propagates silently through half the lead set — precisely where the paper's own correlations are weakest.
-
-## 2. Strengths
-
-The bias/noise-prediction two-network split is a sound way to handle cross-lead amplitude and morphology differences within one diffusion framework, and is documented with reproducible specificity. Evaluation is properly multi-layered — pointwise error, distributional divergence, named waveform features, lead-wise correlation, and downstream classification across five PTB-XL superclasses — and candidly shows reconstruction fidelity and diagnostic utility do not always track together. The PhysioNet/CinC transfer experiment is honestly scoped: the authors state plainly that only classification utility, not anatomical accuracy, is supported there.
-
-## 3. Weaknesses
-
-Joo et al. (MICCAI 2023, GAN on the identical task), Presacan et al. (*Communications Medicine*, 2025, GAN on the identical PTB-XL task, concluding poor clinical accuracy), and SSSD-ECG (Alcaraz & Strodthoff, 2023) are all uncited despite direct relevance. The four algebraically derived limb leads inflate aggregate metrics without separation from genuinely generated channels. No clinician-in-the-loop evaluation exists; utility rests on generic classifier features, well below the bar set by cardiologist-adjudicated comparators (Mason et al., *npj Digital Medicine*, 2024). Validation is single-source, unstratified, with no external paired cohort, and Table 1's 10 ms median QRS-duration gap against a 1.84 ms mean gap suggests an uninvestigated skewed error distribution.
-
-## 4. Editorial Decision
-
-**Reject.** The unaddressed, directly contradictory prior art and the algebraic-lead confound are not revisable without substantial re-framing and new head-to-head comparisons. Counterargument: the architecture and transfer experiment are real if incremental contributions that could clear a lower-tier bar with added baselines, separated metrics, and clinician evaluation — better served by transfer than review here. **Suggested transfer:** *Communications Medicine* or *npj Digital Medicine*.
-
----
-
-## 5. Suggested Reviewer Expertise
-
-Conditional/denoising diffusion architectures for physiological time series (noise-prediction U-Nets, DDPM/DDIM sampling) specifically applied to ECG; generative adversarial and autoencoder baselines for lead reconstruction and their known failure modes; PTB-XL benchmarking methodology and diagnostic superclass evaluation; signal-processing validation of derived limb-lead algebra and propagated error; clinical electrophysiology of inferior-lead and precordial morphology (Brugada pattern, AVNRT, bundle branch block) relevant to what is lost when leads are estimated rather than measured.
-
----
-
-## 6. State-of-the-Art Literature Review (Past 3 Years)
-
-Single-lead-to-12-lead ECG reconstruction has moved from patient-specific and GAN-based approaches toward diffusion and masked-modeling frameworks over the last three years, largely using PTB-XL as the common benchmark. Alcaraz and Strodthoff's SSSD-ECG (2023) established structured-state-space diffusion for conditional 12-lead ECG generation. Joo et al. (MICCAI 2023) reconstructed 12-lead ECGs from Lead I with a dual-generator GAN and a 1D U-Net discriminator, evaluating CVD-relevant characteristics via a downstream classifier — methodologically close to this manuscript's own GAN baseline and evaluation design. A masked-autoencoder approach (*npj Cardiovascular Health*, 2024) generalized reconstruction to arbitrary single-lead inputs with more extensive lead-wise evaluation. Mason et al. (*npj Digital Medicine*, 2024) reconstructed 12-lead ECGs from three leads and validated STEMI detectability with three cardiologists, setting a clinical-evaluation standard this manuscript does not meet. Most consequential for this submission, Presacan et al. (*Communications Medicine*, 2025) directly replicated the Lead I(/I+II)-to-12-lead task on PTB-XL with a GAN and concluded reconstruction accuracy was clinically inadequate — a negative result on essentially the same problem that this manuscript's positive framing must, at minimum, address and did not. Against this landscape, ECG-DDPM's contribution is an architectural variant (diffusion in place of GAN/VAE, with a learned lead-bias term) rather than a demonstrated advance in what the field has already identified as the harder problem: whether any current architecture reconstructs unmeasured leads to clinical fidelity.
-
----
-
-## 7. Suggested Reviewers' Names
-
-**Technical (diffusion/generative modeling for ECG):**
-Nils Strodthoff (University of Oldenburg) — co-developer of SSSD-ECG and PTB-XL deep-learning benchmarking.
-Juan Miguel Lopez Alcaraz — co-author, diffusion-based conditional ECG generation with structured state space models.
-Hyeonseung Im (Kangwon National University) — corresponding author, MICCAI 2023 GAN-based Lead I-to-12-lead reconstruction.
-Vajira Thambawita (SimulaMet) — co-author, Communications Medicine reconstruction-feasibility study on PTB-XL.
-
-**Clinical (electrophysiology / wearable cardiac monitoring):**
-Arun R. Sridhar (University of California, San Francisco / Communications Medicine reconstruction study) — cardiac electrophysiology.
-Jørgen K. Kanters (University of Copenhagen) — ECG morphology and clinical ECG measurement.
-
----
-
-## Editorial Integrity Alert (Handling Editor Only)
-
-The omission of Presacan et al. (*Communications Medicine*, 2025) is flagged specifically: it is the closest possible prior-art match (same dataset, same Lead I→12-lead task, GAN architecture) and reaches a conclusion — poor reconstruction accuracy — that directly contradicts this manuscript's positive framing. Whether this reflects an incomplete literature search or a scoping choice made to present the method more favorably cannot be determined from the manuscript alone, but the omission should be raised explicitly with the authors rather than treated as an ordinary literature-review gap. No other integrity concerns (undisclosed preprint status, salami-slicing, author overlap with cited comparators, competing interests) were identified; the manuscript is anonymized for review and author affiliations could not be independently checked.
-
-067316
-# Editorial Report: "Deep learning-derived electrocardiogram markers predict atrial cardiomyopathy in patients with coronary heart disease"
-
-## 1. Overall Assessment
-
-This manuscript reports an external validation of a previously developed deep-learning model (DL-AtCM) that infers left atrial structural and functional phenotypes from 12-lead ECG, applied without retraining to 3,797 digitized ECGs from INTERASPIRE, a 14-country coronary heart disease (CHD) cohort. The central claim is that DL-AtCM-derived predictors improve discrimination for incident AF (AUC 0.713 vs. 0.616 for CHARGE-AF simple score) and heart failure hospitalization (AUC 0.705 vs. 0.679 for the Ho et al. clinical score) when layered onto conventional risk scores, and that this holds even when the ECGs originate from heterogeneous paper/photograph scans requiring digitization.
-
-The technical contribution — bridging a waveform-trained model to 2D-scanned ECGs across 3×4, 6×2, and 12×1 layouts — is a genuine and underexplored problem. However, the clinical claim rests on 44 AF events and 63 HF events, producing AUC confidence intervals that overlap substantially with the comparator scores, and no formal test (e.g., DeLong) of the AUC differences is reported. The underlying DL-AtCM model itself is, as of this review, an unpublished, non-peer-reviewed medRxiv preprint (Deseoe et al., posted January 2026) authored by overlapping personnel (Deseoe, Wegener, Lip) on this manuscript. These two issues — statistical fragility and dependence on an unreviewed proprietary model — will dominate the decision.
-
-## 2. Strengths
-
-The digitization and layout-robustness analysis is the manuscript's most substantive contribution. Applying Open-ECG-Digitizer (Stenhede et al., npj Digital Medicine 2026) across three distinct display formats, and showing endpoint-specific recalibration was broadly preserved in the larger 3×4 and 6×2 groups, directly addresses a real deployment barrier: most clinical ECG archives exist as paper or photographed records, not raw waveforms.
-
-The perturbation-based explainability analysis (lead masking and beat-aligned windowing) is methodologically sound and clinically interpretable. Convergence of model sensitivity on lead II, V1, and the P-wave region (peak contribution −20% to −10% of the RR interval) is physiologically coherent with known P-wave morphology markers of atrial cardiomyopathy, and strengthens the case that the model is not exploiting layout artifacts.
-
-The echocardiographic concordance analysis, while modest in magnitude, is an honest attempt at biological validation given that INTERASPIRE lacks CMR. Reporting both same-day (rho=0.297, n=117) and 30-day window (rho=0.196, n=202) correlations, rather than only the more favorable comparison, reflects appropriate transparency.
-
-## 3. Weaknesses
-
-The primary AUC comparisons are underpowered to the point of fragility. With 44 AF events, the DL-enhanced CHARGE-AF AUC (0.713, CI 0.621–0.804) and the simple CHARGE-AF AUC (0.616, CI 0.522–0.707) have overlapping confidence intervals; the manuscript states differences were assessed by bootstrap but never reports the resulting p-value or a reclassification metric (NRI/IDI). The abstract and discussion assert the DL model "outperformed" and "achieved the strongest signal," language not supported by the interval overlap shown in Figure 2A.
-
-The core predictive engine is an unpublished preprint. Reviewers cannot independently verify architecture, training procedure, or internal calibration of DL-AtCM without access to non-peer-reviewed material from the same author group, which is a circularity concern for external validation claims.
-
-No subgroup analysis is presented despite recruitment across 14 countries and documented sex imbalance (~20% female). A model validated in aggregate on a CHD population cannot be assumed to generalize across sex or region without testing; this is a standard failure mode for AI-cardiology papers and is not addressed even qualitatively.
-
-HF ascertainment was not adjudicated, and follow-up duration varied widely (56–1,313 days) without landmark analysis or time-dependent AUC framing, raising immortal-time and follow-up-heterogeneity concerns for the HF endpoint specifically.
-
-## 4. Editorial Decision
-
-**Send for Review**, contingent on the authors substantially reworking the statistical framing before reviewers are engaged. Reviewers should be asked to adjudicate: (1) whether formal significance testing (DeLong, bootstrap p-values, NRI) supports the claimed superiority given n=44/63 events; (2) whether validation against an unpublished companion model constitutes adequate independent verification, and whether the editors should require the companion preprint's peer-review status prior to acceptance; (3) whether country- or sex-stratified performance should be mandatory given the multinational recruitment.
-
-**Steelman counterargument**: one could argue rejection is premature — external validation studies are inherently constrained by event counts in the source cohort, and the paper's own limitations section candidly acknowledges this. The digitization-robustness finding stands independently of the AUC significance question and may itself be publishable as a methods contribution. A reviewer round focused on tightening statistical claims, rather than a preprint desk-reject, may be the more proportionate response.
-
-## 5. Suggested Reviewer Expertise
-
-Deep learning models for ECG-based cardiac phenotype prediction (waveform-to-imaging translation); statistical methodology for external validation of prediction models with small event counts (calibration, DeLong testing, reclassification metrics); ECG digitization and signal-processing pipelines for paper/scanned records; clinical epidemiology of atrial cardiomyopathy and AF risk prediction in secondary-prevention CHD populations; cardiovascular imaging (echocardiography/CMR) correlation with ECG-derived atrial biomarkers.
-
-## 6. State-of-the-Art Literature Review (Past 3 Years)
-
-DL-ECG AF prediction has matured rapidly. Brant et al. (Circ Arrhythm Electrophysiol, 2025) validated a deep neural network for AF risk across FHS, UK Biobank, and ELSA-Brasil, explicitly reporting DeLong-based significance testing against clinical scores — a methodological bar this manuscript does not meet. Khurshid et al. (Circulation, 2022) and Raghunath et al. (Circulation, 2021) established large-cohort DL-ECG AF prediction with tens of thousands of events, dwarfing the 44-event INTERASPIRE cohort used here. The companion DL-AtCM preprint (Deseoe et al., medRxiv 2026) itself reports external validation in a Brazilian primary-care cohort (n=64,851) and a stroke cohort, which is far better powered than the present CHD analysis; the current manuscript would benefit from direct comparison of effect sizes against that companion work rather than treating INTERASPIRE in isolation. Ahmad et al. (Circ Arrhythm Electrophysiol, 2021) previously validated an AI-ECG AF model specifically in coronary microvascular disease, a directly comparable high-risk cardiac population the authors cite but do not benchmark against numerically. The manuscript's genuine advance — layout-heterogeneous digitized-ECG robustness — is not directly addressed in any of these predecessor studies and is the strongest basis for eventual publication.
-
----
-
-## Suggested Reviewer Names
-
-**DL-ECG methodology:** Luisa C.C. Brant (Universidade Federal de Minas Gerais) — multinational DL-ECG AF prediction, Circ Arrhythm Electrophysiol 2025; Antônio H. Ribeiro (Uppsala University) — DL-ECG model development and validation infrastructure.
-
-**Statistical/validation methodology:** a biostatistician with published work on external validation and recalibration of clinical prediction models in low-event cohorts (target assistant/associate professor level in clinical epidemiology; specific candidate not independently verifiable from available search — flag as a gap for the handling editor to fill via institutional biostatistics contacts).
-
-**Clinical CHD/AF context:** a cardiologist with published AI-ECG validation work in coronary or microvascular disease populations, comparable to Ahmad et al. 2021 — no INTERASPIRE-affiliated or DL-AtCM-affiliated individual should be used given direct conflict.
-
----
-
-### Editorial Integrity Alert (handling editor only)
-
-The manuscript's core predictive model (DL-AtCM) is validated in this paper but was itself first described in a non-peer-reviewed medRxiv preprint (Deseoe et al., 2026.01.12.26343962) sharing three authors with the present submission (Deseoe, Wegener, Lip). This is not disclosed as a companion-paper relationship in the competing-interests or acknowledgments sections. Recommend requiring authors to explicitly state the peer-review status of the source model and its relationship to this submission, and consider whether acceptance should be contingent on the companion preprint completing peer review first, given that this paper's entire predictive apparatus is inherited from it without independent methodological scrutiny.
-
-067295
-## 1. Overall Assessment
-
-The manuscript formalizes Sepsis-3 as a measuring model with six implementation dimensions, enumerates 2,520 variants, and decomposes labeling variance via linear mixed-effects models across SepsisExp, MIMIC-III, and eICU. It then benchmarks variants against GTSQ expert labels and shows models trained on Sepsis-3 labels underperform expert-trained models by up to 18 AUROC and 13 F1 points. The claim that Sepsis-3 implementations are not interchangeable is well-evidenced and materially extends Cohen et al. (2024), who varied onset definitions alone on a single dataset.
-
-## 2. Strengths
-
-The measurement-theoretic separation of fundamental measurements, derived functions, and axioms gives the field usable vocabulary, and Table 1 is the most complete catalogue of Sepsis-3 implementation heterogeneity published to date. Anchoring Experiment 2 to GTSQ expert labels (Krippendorff's α = 0.94) rather than to another consensus variant converts a combinatorial exercise into a clinically grounded one. Experiment 3 closes the loop to downstream transformer-based prediction, demonstrating that label-definition variance propagates into measurable model degradation.
-
-## 3. Weaknesses
-
-Expert ground truth exists only for SepsisExp (1,961 patients, one German ICU); α was assessed on 126 patients, roughly 5% of the analytic cohort. Claims about which implementation "best matches ground truth" cannot be separated from site-specific annotation culture. Experiment 3's nine variants are selected by K-means on BLUP-estimated F1 against ground truth, then used to show that Implementation F1 predicts Prediction F1 — a correlation partly guaranteed by construction. The interaction LMEM showing pronounced OD-Function × Sepsis-Onset coupling is deferred entirely to Supplementary Information despite qualifying the independent-effects narrative. Tables 2–6 report no confidence intervals; BLUP point estimates carry no uncertainty at all.
-
-## 4. Editorial Decision
-
-**Send for Review.** The flaws are revisable, not structural. Reviewers should adjudicate whether single-center ground truth supports field-level claims, whether the Experiment 3 selection circularity weakens its central result, and whether the interaction model belongs in the main text.
-
-*Steelmanned counterargument:* a reviewer favoring rejection could argue that an empirical anchor drawn from one hospital's annotation practice documents a Mannheim-specific labeling artifact rather than a general property of Sepsis-3, and that the Lancet Digital Health bar requires multi-site expert ground truth before the Abstract's conclusions are drawn this strongly.
-
-## 5. Suggested Reviewer Expertise
-
-Reviewers are needed with: (1) hands-on experience implementing Sepsis-3 SOFA/suspected-infection pipelines on EHR data (e.g., MIMIC/eICU cohort construction); (2) linear mixed-effects modeling and variance-component estimation applied to clinical measurement data; (3) transformer-based clinical time-series forecasting and sequence classification for ICU prediction tasks; (4) label noise, circularity, and consensus-definition validity in clinical machine learning; and (5) critical care medicine with direct ICU sepsis diagnosis and SOFA-scoring experience, ideally with exposure to SOFA-2 or Sepsis-3 revision efforts.
-
-## 6. State-of-the-Art Literature Review (Past 3 Years)
-
-The field has moved rapidly on two fronts relevant here. First, definitional sensitivity: Cohen et al. (Sci Rep, 2024) showed sepsis-onset definition choice alone shifts AUROC by up to 6% on MIMIC-III; Alrawashdeh et al. (Crit Care Med, 2024) showed SOFA-calculation variants have negligible labeling impact, a finding this manuscript corroborates and extends. Second, ground-truth-based validation: Lindner et al. (J Transl Med, 2022) established the GTSQ expert-labeling framework this manuscript reuses, and Centner et al. (PLOS ONE, 2020) is the same Mannheim group's earlier probabilistic approach to consensus-definition validation. The October 2025 JAMA publication of SOFA-2 (Ranzani et al.) is current and correctly cited; the manuscript's finding that SOFA version contributes negligible variance is a timely, testable claim against this revision. Tranchellini et al. (npj Digital Medicine, 2026) recently examined distribution shift in deployed sepsis models across sites, a complementary but distinct problem from the label-definition variability addressed here. This manuscript's distinguishing contribution is combining the full six-dimension implementation space with expert-anchored validation and downstream model training in one study; competing work has addressed onset-definition sensitivity or SOFA-version sensitivity in isolation, not the joint decomposition offered here. The authors should more directly engage the Centner et al. and Alrawashdeh et al. lines, both from closely related groups, to clarify incremental positioning beyond restating them in the Discussion.
-
-## 7. Suggested Reviewer Names
-
-**Sepsis-3/EHR implementation methodology:** Michael Moor; Supreeth P. Shashikumar; Franz-Simon Centner (Mannheim group, close prior-art overlap — disclose if invited); Marzyeh Ghassemi (broader clinical-AI label-validity relevance).
-
-**Mixed-effects / measurement-theoretic statistics:** Erin Craig; a biostatistics-track assistant professor with applied LMEM/variance-components publication record in clinical epidemiology (name not independently verifiable from available search; flag to editorial staff for direct database query).
-
-**Transformer/time-series clinical forecasting:** Sindhu Tipirneni; Satya Narayan Shukla; Michael Staniek is a co-author and excluded.
-
-**Critical care / SOFA and sepsis diagnosis:** Manu Shankar-Hari (SOFA-2 consensus author); Hallie C. Prescott (sepsis definition and epidemiology); Christopher W. Seymour (original Sepsis-3 clinical-criteria co-author, full professor — last-resort option per reviewer-seniority preference).
-
----
-
-## Further Literature (2023–2026)
-
-1. **Dutta S, McMurry R, Tasi MC, et al. Performance of a Sepsis Prediction Model Across Different Sepsis Definitions. *JAMA Network Open* 9(4):e265599 (2026).** DOI: 10.1001/jamanetworkopen.2026.5599. Peer-reviewed. **Not cited by the manuscript.** Fully independent. The most important omission. A 198,494-encounter, nine-hospital silent deployment of a commercial gradient-boosted sepsis model evaluated against Sepsis-3, SEP-1, and CDC Adult Sepsis Event, with AUROC ranging 0.85–0.94 and AUPRC 0.11–0.24 depending on outcome definition alone. This is the deployed-model analogue of the manuscript's Experiment 3, at two orders of magnitude greater scale, and it demonstrates that definition-induced performance swings persist in production systems. The authors must engage it.
-
-2. **Cohen SN, et al. Subtle variation in sepsis-III definitions markedly influences predictive performance within and across methods. *Scientific Reports* 14:1–10 (2024).** DOI: 10.1038/s41598-024-51989-6. Peer-reviewed. Cited (ref. 41). Independent. The closest direct precedent: three onset-definition interpretations on MIMIC-III, showing 0–6% AUROC variation exceeding inter-model variation. The manuscript's incremental claim rests on generalizing from one axis to six and adding expert ground truth.
-
-3. **Alrawashdeh M, Klompas M, Rhee C. The Impact of Common Variations in Sequential Organ Failure Assessment Score Calculation on Sepsis Measurement Using Sepsis-3 Criteria. *Critical Care Medicine* 52:1380–1390 (2024).** DOI: 10.1097/CCM.0000000000006338. Peer-reviewed. Cited (ref. 19). Independent. Directly corroborates the manuscript's finding that data-imputation and SOFA-calculation choices contribute negligible variance, and should be used to sharpen rather than merely echo that result.
-
-4. **Ranzani OT, Singer M, Salluh JIF, et al. Development and Validation of the Sequential Organ Failure Assessment (SOFA)-2 Score. *JAMA* 334(23):2090–2103 (2025).** DOI: 10.1001/jama.2025.20516. Peer-reviewed. Cited (ref. 14). Independent. Federated analysis across 1,319 ICUs in nine countries. The manuscript's claim that SOFA-1 versus SOFA-2 contributes trivial labeling variance is a strong, falsifiable statement against this revision and deserves explicit framing as such.
-
-5. **Cabitza F, Jurman G, Molinari F, Bellazzi R. Why almost all ML models for medicine are wrong — and what we need for evidence-based medical AI. *International Journal of Medical Informatics* 219:106538 (2026).** DOI: 10.1016/j.ijmedinf.2026.106538. Peer-reviewed. Cited (ref. 18). Independent. Provides the conceptual scaffolding the manuscript invokes (variability as structural, not exceptional). Currently cited in passing; it warrants substantive engagement given how closely its thesis matches the manuscript's.
-
-6. **Moor M, et al. Predicting sepsis using deep learning across international sites: a retrospective development and validation study. *eClinicalMedicine* 62:102124 (2023).** DOI: 10.1016/j.eclinm.2023.102124. Peer-reviewed. Cited (ref. 43). Independent. Source of the *Multiple Antibiotics* SI-Definition used for eICU. Also the strongest existing multi-site external-validation design in this space — a useful contrast against the manuscript's single-site ground truth.
-
-7. **Tranchellini F, et al. Evaluating deep learning sepsis prediction models in ICUs under distribution shift: a multi-centre retrospective cohort study. *npj Digital Medicine* 9:306 (2026).** DOI: 10.1038/s41746-026-02364-4. Peer-reviewed. Cited (ref. 59). Independent. *Citation details taken from the manuscript's reference list; not independently confirmed against the publisher record — verify before use.* Addresses covariate/label shift across sites, the complementary failure mode to the label-definition variance studied here.
-
-8. **Staniek M, Fracarolli M, Hagmann M, Riezler S. Early Prediction of Causes (not Effects) in Healthcare by Long-Term Clinical Time Series Forecasting. *PMLR* 252:1–29, MLHC (2024).** DOI: 10.48550/arXiv.2408.03816. Peer-reviewed conference proceedings (MLHC 2024); an arXiv version also exists. Cited (ref. 56). **Not independent** — Staniek and Riezler are authors on the submitted manuscript, and this supplies the transformer architecture for Experiment 3. Self-citation of the model backbone is legitimate but should be flagged in the competing-interests review, and reviewers should confirm the architecture transfer is described sufficiently for independent reproduction.
-
-9. **Sepsis prediction combining machine learning and physiological network models. *Frontiers in Network Physiology* 6 (2026).** DOI: 10.3389/fnetp.2026.1852577. Peer-reviewed. Not cited. Independent. *Author list not independently verified — confirm before citing formally.* Explicitly frames incomparability and limited reproducibility arising from undisclosed and heterogeneous task definition and preprocessing as the field's central obstacle — the same diagnosis the manuscript makes, reached from a different methodological direction.
-
-10. **Bomrah S, et al. A scoping review of machine learning for sepsis prediction — feature engineering strategies and model performance: a step towards explainability. *Critical Care* 28:180 (2024).** DOI: 10.1186/s13054-024-04948-6. Peer-reviewed. Cited (ref. 8). Independent. One of the four reviews used to construct the 68-publication screening frame. Reviewers should verify that the 30-of-68 inclusion decision is reproducible from these four sources, since Table 1 — the manuscript's taxonomic foundation — depends entirely on it.
-
-**Editorial integrity note (handling editor only).** Two items warrant checking. First, the manuscript is not flagged as a preprint anywhere in the submitted text; the GitHub repository `StatNLP/sepsis3-inconsistent-measuring-model` could not be resolved through search, so its public availability and any accompanying preprint deposit should be confirmed before review. Second, the SepsisExp cohort (Lindner et al. 2022; Schamoni et al. 2022) has now supported at least three publications from overlapping author groups; reviewers should be asked whether the present analysis constitutes an independent contribution or an extension within a single-cohort publication series.
-
 067148
 ## Editorial Report — LOVEKIDS: Infant Motor Assessment and Multi-Domain Clinical Prediction via 3D Pose Estimation from Monocular Video
 
@@ -1335,3 +1059,73 @@ Ten papers sharing this manuscript's scope: learned representations of gait kine
 **10.** Stenum, J., Hsu, M. M., Pantelyat, A. Y. & Roemmich, R. T. *Clinical gait analysis using video-based pose estimation: Multiple perspectives, clinical populations, and measuring change.* PLOS Digital Health 3, e0000467 (2024). DOI: 10.1371/journal.pdig.0000467.
 **Peer-reviewed. Cited (ref 13). Independent.**
 *Relevance:* addresses head-on whether video-derived kinematics can detect longitudinal change in clinical populations — the exact claim of Section 2.3. Provides the measurement-error framework against which a single patient's 16-week DMU trajectory should be judged, and the reason an n=1 demonstration cannot carry that claim.
+
+067316
+
+# Editorial Report (Condensed): "Deep learning-derived electrocardiogram markers predict atrial cardiomyopathy in patients with coronary heart disease"
+
+### Editorial Integrity Alert (handling editor only)
+
+The core predictive model (DL-AtCM) originates in a non-peer-reviewed medRxiv preprint (Deseoe et al., 2026.01.12.26343962) sharing three authors with this submission (Deseoe, Wegener, Lip). This companion-paper relationship is not disclosed. Require explicit statement of the source model's peer-review status; consider making acceptance contingent on that preprint completing review, since this paper's entire predictive apparatus is inherited without independent scrutiny. Separately, the closest competing work — Zeidaabadi et al., Heart Rhythm 2025, image-based AI-ECG for incident AF — is uncited despite direct scope overlap.
+
+### 1. Overall Assessment
+
+The manuscript externally validates DL-AtCM, a model inferring CMR-derived left atrial phenotypes from 12-lead ECG, applied without refitting to 3,797 digitized ECGs from INTERASPIRE, a 14-country CHD cohort. Claimed gains: incident AF AUC 0.713 versus 0.616 (CHARGE-AF simple), HF hospitalization 0.705 versus 0.679. The digitization contribution is real and underexplored. The clinical claim rests on 44 AF and 63 HF events, with confidence intervals that overlap the comparators and no reported significance test.
+
+### 2. Strengths
+
+Layout-robustness across 3×4, 6×2, and 12×1 formats using Open-ECG-Digitizer (Stenhede et al., npj Digital Medicine 2026) addresses a genuine deployment barrier. Perturbation analysis localizing sensitivity to lead II, V1, and the P-wave window (−20% to −10% RR) is physiologically coherent and argues against layout artifact. Echocardiographic concordance is reported honestly, including the weaker 30-day window (rho 0.196) alongside same-day (rho 0.297).
+
+### 3. Weaknesses
+
+The primary comparisons are underpowered. Bootstrap testing is mentioned but no p-value, NRI, or IDI is reported; the abstract's "outperformed" language exceeds what Figure 2A supports. Validating against an unpublished companion model is circular. No sex or country stratification is presented despite 14-country recruitment and 20% female representation. HF outcomes were unadjudicated with follow-up spanning 56–1,313 days and no landmark or time-dependent analysis.
+
+### 4. Editorial Decision
+
+**Send for Review**, contingent on statistical reframing. Reviewers should adjudicate: formal significance of the AUC differences at n=44/63; adequacy of validation against a non-peer-reviewed source model; necessity of stratified performance. **Steelman:** event counts are constrained by the source cohort, limitations are candidly stated, and the digitization finding stands independently — a reviewer round is more proportionate than desk rejection.
+
+---
+
+## 5. Suggested Reviewer Expertise
+
+Deep learning models for ECG-based cardiac phenotype prediction (waveform-to-imaging translation); statistical methodology for external validation of prediction models with small event counts (calibration, DeLong testing, reclassification metrics); ECG digitization and signal-processing pipelines for paper/scanned records; clinical epidemiology of atrial cardiomyopathy and AF risk prediction in secondary-prevention CHD populations; cardiovascular imaging (echocardiography/CMR) correlation with ECG-derived atrial biomarkers.
+
+## 6. State-of-the-Art Literature Review (Past 3 Years)
+
+DL-ECG AF prediction has matured rapidly. Brant et al. (Circ Arrhythm Electrophysiol, 2025) validated a deep neural network for AF risk across FHS, UK Biobank, and ELSA-Brasil, explicitly reporting DeLong-based significance testing against clinical scores — a methodological bar this manuscript does not meet. Khurshid et al. (Circulation, 2022) and Raghunath et al. (Circulation, 2021) established large-cohort DL-ECG AF prediction with tens of thousands of events, dwarfing the 44-event INTERASPIRE cohort used here. The companion DL-AtCM preprint (Deseoe et al., medRxiv 2026) itself reports external validation in a Brazilian primary-care cohort (n=64,851) and a stroke cohort, which is far better powered than the present CHD analysis; the current manuscript would benefit from direct comparison of effect sizes against that companion work rather than treating INTERASPIRE in isolation. Ahmad et al. (Circ Arrhythm Electrophysiol, 2021) previously validated an AI-ECG AF model specifically in coronary microvascular disease, a directly comparable high-risk cardiac population the authors cite but do not benchmark against numerically. The manuscript's genuine advance — layout-heterogeneous digitized-ECG robustness — is not directly addressed in any of these predecessor studies and is the strongest basis for eventual publication.
+
+## 7. Suggested Reviewer Names
+
+**DL-ECG methodology:** Luisa C.C. Brant (Universidade Federal de Minas Gerais) — multinational DL-ECG AF prediction, Circ Arrhythm Electrophysiol 2025; Antônio H. Ribeiro (Uppsala University) — DL-ECG model development and validation infrastructure.
+
+**Statistical/validation methodology:** a biostatistician with published work on external validation and recalibration of clinical prediction models in low-event cohorts (target assistant/associate professor level in clinical epidemiology; specific candidate not independently verifiable from available search — flag as a gap for the handling editor to fill via institutional biostatistics contacts).
+
+**Clinical CHD/AF context:** a cardiologist with published AI-ECG validation work in coronary or microvascular disease populations, comparable to Ahmad et al. 2021 — no INTERASPIRE-affiliated or DL-AtCM-affiliated individual should be used given direct conflict.
+
+---
+
+## Further Literature (10 entries, past 3 years, scope-matched)
+
+**1. Zeidaabadi B, Patlatzoglou K, Barker J, Pastika L, Khattak GR, Gurnani M, Machado XDSA, Peters NS, Kramer DB, Waks JW, Ng FS, Sau A. Image-based artificial intelligence-enhanced electrocardiogram prediction of incident atrial fibrillation. *Heart Rhythm*. 2025. DOI 10.1016/j.hrthm.2025.09.048.** Peer-reviewed. **Not cited by the manuscript — this is the single most damaging omission.** Trains directly on ECG images (1,163,401 BIDMC ECGs; 70,655 UK Biobank), achieving C-statistics of 0.754 (0.747–0.761) and 0.723 (0.704–0.741) for incident AF — matching or exceeding the submission's 0.713 with two orders of magnitude more events. Author-independent (Imperial/BIDMC). The authors' claim to provide "the strongest evidence to date" for image-derived AI-ECG AF prediction is not tenable against this paper and must be either engaged with or withdrawn.
+
+**2. Brant LCC, Ribeiro AH, Eromosele OB, Pinto-Filho MM, Barreto SM, Duncan BB, Larson MG, Benjamin EJ, Ribeiro ALP, Lin H. Prediction of atrial fibrillation from the ECG in the community using deep learning: a multinational study. *Circ Arrhythm Electrophysiol*. 2025;18(10):e013734. DOI 10.1161/CIRCEP.125.013734.** Peer-reviewed. Cited (ref 10). Author-independent. The methodological template the submission should follow: DeLong testing and NRI reported explicitly against clinical scores across three cohorts. Direct evidence that the submission's statistical reporting is below current field standard.
+
+**3. Brody JA, Yogeswaran V, Wiggins KL, Sitlani CM, Bis JC, Chen LY, Heckbert SR, Lima JAC, Longstreth WT, Soliman EZ, Tison GH, Ye T, Psaty BM, Shojaie A, Floyd JS. Deep learning prediction of left atrial structure and function from 12-lead electrocardiograms. *medRxiv* 2025.09.29.25336490.** **arXiv/medRxiv preprint — unreviewed; flag as such.** Not cited. Author-independent. Nearly identical premise to DL-AtCM: ECG-AI trained on 21,749 CMR-paired ECGs predicting LA structure/function, validated against new-onset AF, HF, and ischemic stroke in two external cohorts, plus subclinical AF from 14-day monitoring. Establishes that the submission's underlying concept is being pursued in parallel by an independent group; direct engagement is required for any priority claim.
+
+**4. Stenhede E, Bjørnstad AM, Ranjbar A. Digitizing paper ECGs at scale: an open-source algorithm for clinical research. *npj Digit Med*. 2026;9:145. DOI 10.1038/s41746-025-02327-1.** Peer-reviewed. Cited (ref 18). Author-independent. The digitization tool the submission depends on; validated on 37,191 images with mean SNR 19.65 dB. Reviewers should confirm the authors report digitization quality metrics (SNR, NaN-lead rate) for the INTERASPIRE scans rather than assuming transfer of published performance.
+
+**5. Khurshid S, Friedman S, Reeder C, Di Achille P, Diamant N, Singh P, Harrington LX, Wang X, Al-Alusi MA, Sarma G, et al. ECG-based deep learning and clinical risk factors to predict atrial fibrillation. *Circulation*. 2022;145(2):122–133. DOI 10.1161/CIRCULATIONAHA.121.057480.** Peer-reviewed. Cited (ref 5). Author-independent. Benchmark for combining DL-ECG output with CHARGE-AF covariates — precisely the submission's design — at far greater scale. Provides the reference effect size against which the submission's 0.097 AUC increment should be judged.
+
+**6. Jabbour G, Nolin-Lapalme A, Tastet O, Corbin D, Jordà P, Sowa A, Delfrate J, Busseuil D, Hussin JG, Dubé MP, et al. Prediction of incident atrial fibrillation using deep learning, clinical models, and polygenic scores. *Eur Heart J*. 2024;45(46):4920–4934. DOI 10.1093/eurheartj/ehae595.** Peer-reviewed. Cited (ref 11). Author-independent. Establishes the current multi-modal ceiling (DL-ECG + clinical + polygenic). The submission tests only DL + clinical, and does not discuss why polygenic or biomarker augmentation was excluded.
+
+**7. Sau A, Ibrahim S, Ahmed A, Handa B, Kramer DB, Waks JW, Arnold AD, Howard JP, Qureshi N, Koa-Wing M, et al. Prediction of incident atrial fibrillation: a comprehensive evaluation of conventional and AI-enhanced approaches. *Heart Rhythm*. 2025. DOI 10.1016/j.hrthm.2025.05.021.** Peer-reviewed. Cited (ref 9). Author-independent. Systematic head-to-head of conventional versus AI-enhanced AF prediction; supplies the comparator taxonomy the submission's Discussion lacks.
+
+**8. Ahmad A, Corban MT, Toya T, Sara JD, Lerman B, Park JY, Lerman LO, Lerman A. Coronary microvascular dysfunction and the risk of atrial fibrillation from an artificial intelligence-enabled electrocardiogram. *Circ Arrhythm Electrophysiol*. 2021;14(8):e009947. DOI 10.1161/CIRCEP.121.009947.** Peer-reviewed. Cited (ref 20). Author-independent. Marginally outside the 3-year window but retained: the only prior AI-ECG AF validation in a coronary-disease population. The submission dismisses it as "smaller, single center" without reporting its numbers — a comparison reviewers should demand.
+
+**9. Vad OB, Paludan-Müller C, Christophersen IE, et al. Atrial cardiomyopathy: markers and outcomes. *Eur Heart J*. 2026;47(2):235–246.** Peer-reviewed. Cited (ref 2). Author-independent. Contemporary reference standard for what constitutes a validated AtCM marker. Reviewers should use it to test whether ECG-inferred LA indices, correlating with echo LA diameter at rho 0.15–0.30, meet any established threshold for calling a marker an AtCM measure — the submission's title asserts this and the data do not clearly support it.
+
+**10. Goette A, Corradi D, Dobrev D, Aguinaga L, Cabrera JA, Chugh SS, Farre J, Guenancia C, Hatem SN, Jalife J, et al. Atrial cardiomyopathy revisited — evolution of a concept: a clinical consensus statement of EHRA/HRS/APHRS/LAHRS. *Europace*. 2024;26(9):euae204. DOI 10.1093/europace/euae204.** Peer-reviewed. Cited (ref 1). Author-independent. Defines the diagnostic construct the paper claims to screen for. Relevant because the submission validates against AF and HF *outcomes*, not against AtCM itself — a definitional gap between the title and the evidence that reviewers should be asked to rule on.
+
+---
+
+**What you did not ask but should:** the title claims the model "predicts atrial cardiomyopathy," yet no AtCM endpoint is measured anywhere in the paper — only AF and HF outcomes plus weak echo-diameter correlations. Entries 9 and 10 make this a title-versus-evidence mismatch, not a stylistic quibble. Combined with the uncited Zeidaabadi paper (entry 1), which reports better-powered results on the same problem, the "Send for Review" decision is weaker than it looked in the full report. If the authors cannot distinguish their contribution from Zeidaabadi et al., the case for reject-with-transfer to *Communications Medicine* becomes the stronger reading.
