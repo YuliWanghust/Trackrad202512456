@@ -622,3 +622,58 @@ The dominant recent trend in automated GMA is multimodal sensor fusion rather th
 Flagging for your review before any further processing: (1) Undisclosed cohort/author overlap with Gao, Q., Yao, S., Tian, Y. et al., *Nat Commun* 14, 8294 (2023) — Siqiong Yao (co-first author here) and Hui Lu / Guangjun Yu (corresponding/senior authors here) are co-authors of that prior paper, which performs the same FM-based CP-screening task on the same institutional network with near-identical external AUC. The current manuscript cites this only as ref. 24, framed as third-party related work, with no statement of author overlap, competing-interest disclosure, or cohort-reuse accounting. This should be resolved directly with the corresponding author before proceeding. (2) The GitHub repository cited for code availability (github.com/tylerzhang77/LOVEKIDS) could not be located via search; verify it is live and public prior to any acceptance decision. (3) The prospective trial registration number "2024087" does not conform to ChiCTR or ClinicalTrials.gov formatting conventions; request the full registry and accession format from the authors. (4) The n=99 prospective CP cohort has only 6 positive cases; the reported sensitivity of 1.000 ± 0.000 should be scrutinized for overstatement given this base rate before it is permitted to stand as a headline result.
 
 
+## 1. Overall Assessment
+
+The manuscript presents Dynomap, an end-to-end framework that converts unordered biomedical tabular data into task-optimized two-dimensional maps through feature gating, trainable spatial coordinates, differentiable Gaussian rendering, and a CNN predictor. It is tested across circulating RNA, platelet RNA, TCGA-BRCA, Parkinson’s voice measurements, Tabula Muris single-cell RNA-seq, and 13 additional tabular datasets.
+
+The contribution is more substantial than a routine benchmark because spatial organization is learned jointly with prediction rather than imposed from fixed feature similarity. The main concerns are validation independence and whether the claimed advance holds against the closest recent tabular-to-image methods.
+
+## 2. Strengths
+
+Dynomap integrates feature selection, spatial arrangement, rendering, and downstream prediction within one differentiable objective. Moran’s I, k-nearest-neighbour spatial coherence, and Integrated Gradients provide explicit analysis of learned structure.
+
+The evaluation is broad. Reported results include 93.0% binary cancer-versus-control accuracy with 4,000 highly variable genes, 92.0% multiclass cancer-subtype accuracy using the 622-gene panel, and 93.7% Parkinson classification accuracy. Comparisons include logistic regression, random forest, XGBoost, SVM, MLP, ModernNCA, TabM and TabPFN.
+
+## 3. Weaknesses
+
+Most biomedical results remain retrospective and internally cross-validated, with no independent external cohort establishing robustness to institution, assay, or batch shifts. The Parkinson dataset contains repeated recordings per participant, yet the manuscript does not clearly document participant-grouped folds; recording-level splitting would create subject leakage. Similar donor-level safeguards should be explicit for single-cell experiments.
+
+The closest tabular-to-image baselines are incomplete. HACNet, MRep-DeepInsight, LM-IGTD, NCTD and recent systematic tabular-to-image benchmarks provide direct tests of whether task-adaptive cartography is genuinely superior. Calibration, confidence intervals and AUROC/PR-AUC are also inconsistently reported.
+
+## 4. Editorial Decision
+
+**Send for Review.** The differentiable, task-adaptive feature cartography is sufficiently distinctive for external assessment. Reviewers should determine whether subject/donor-disjoint validation preserves performance and whether direct comparison with contemporary tabular-to-image methods supports the novelty claim.
+
+## 5. Suggested Reviewer Expertise
+
+Suitable expertise includes deep learning and foundation models for tabular data; differentiable tabular-to-image representation learning and CNN architectures; explainability and spatial-statistical analysis of learned representations; computational genomics and cfRNA liquid biopsy; and machine-learning analysis of Parkinsonian speech biomarkers.
+
+## 6. State-of-the-Art Literature Review — Past 3 Years
+
+The tabular-learning field has advanced rapidly through TabR at ICLR 2024, TabPFN in *Nature* 2025, TabM at ICLR 2025 and TabICL at ICML 2025. These methods establish increasingly strong retrieval, ensemble and foundation-model baselines. Concurrently, NCTD and LM-IGTD have extended tabular-to-image learning, while recent systematic benchmarking questions whether image conversion consistently improves upon strong tabular learners. Dynomap advances this literature by making feature placement task-adaptive and differentiable. Its novelty therefore rests less on tabular-to-image conversion itself than on demonstrating that learned cartography provides reproducible gains over both modern tabular models and the strongest image-conversion alternatives.
+
+## 7. Suggested Reviewer Names
+
+Yury Gorishniy would provide expertise in modern tabular architectures through TabR and TabM. Francisco J. Lara-Abelenda is directly relevant through recent biomedical tabular-to-image and LM-IGTD work. Amir Momen-Roknabadi provides clinically relevant expertise in AI-based cell-free RNA cancer detection with independent-cohort validation. Juan Rafael Orozco-Arroyave is highly relevant to Parkinsonian speech modeling and cross-cohort generalization. A targeted search identified no obvious coauthorship between these candidates and the submitting author group.
+
+## Further Literature — 10 Closely Related Papers Published in the Past 3 Years
+
+1. **Bragilovski M, Kapri Z, Rokach L, Levy-Tzedek S. “TLTD: Transfer Learning for Tabular Data.” *Applied Soft Computing* 147, 110748 (2023). DOI: 10.1016/j.asoc.2023.110748.** Peer-reviewed. **Cited by manuscript:** No, not identified in references 1–98. **Independence:** no submitting-author overlap identified. **Relevance:** converts tabular data to images and combines the representation with transfer learning and knowledge distillation across 25 structured datasets. It is a direct conceptual predecessor for exploiting image-network inductive biases on non-image data.
+
+2. **Medeiros Neto L, Rogerio da Silva Neto S, Endo PT. “A comparative analysis of converters of tabular data into image for the classification of Arboviruses using Convolutional Neural Networks.” *PLOS ONE* 18, e0295598 (2023). DOI: 10.1371/journal.pone.0295598.** Peer-reviewed. **Cited by manuscript:** No. **Independence:** no author overlap identified. **Relevance:** directly compares IGTD and alternative tabular-to-image converters in a biomedical classification setting and therefore provides an important benchmark for Dynomap’s representation claims.
+
+3. **Matsuda T, Uchida K, Saito S, Shirakawa S. “HACNet: End-to-end learning of interpretable table-to-image converter and convolutional neural network.” *Knowledge-Based Systems* 284, 111293 (2024). DOI: 10.1016/j.knosys.2023.111293.** Peer-reviewed. **Cited by manuscript:** No. **Independence:** no author overlap identified. **Relevance:** probably the closest methodological comparator. HACNet jointly trains a hard-attention table-to-image converter and CNN using prediction loss, making the absence of a direct Dynomap-versus-HACNet experiment particularly notable.
+
+4. **Sharma A, López Y, Jia S, Lysenko A, Boroevich KA, Tsunoda T. “Enhanced analysis of tabular data through Multi-representation DeepInsight.” *Scientific Reports* 14, 12851 (2024). DOI: 10.1038/s41598-024-63630-7.** Peer-reviewed. **Cited by manuscript:** No. **Independence:** no author overlap identified. **Relevance:** extends DeepInsight through multiple spatial representations and evaluates single-cell RNA-seq, ATAC-seq and Alzheimer’s molecular data using ResNet-50 and EfficientNet-B6, closely overlapping Dynomap’s high-dimensional biomedical use case.
+
+5. **Lara-Abelenda FJ, Chushig-Muzo D, Peiro-Corbacho P, Gómez-Martínez V, Wägner AM, Granja C, Soguero-Ruiz C. “Transfer learning for a tabular-to-image approach: A case study for cardiovascular disease prediction.” *Journal of Biomedical Informatics* 165, 104821 (2025). DOI: 10.1016/j.jbi.2025.104821.** Peer-reviewed. **Cited by manuscript:** No. **Independence:** no author overlap identified. **Relevance:** applies LM-IGTD to clinical tabular data and explicitly compares CNN-based tabular-to-image learning with TabPFN and conventional models. It is highly relevant to Dynomap’s biomedical generalizability claims.
+
+6. **Alenizy HA, Berri J. “Transforming tabular data into images via enhanced spatial relationships for CNN processing.” *Scientific Reports* 15, 17004 (2025). DOI: 10.1038/s41598-025-01568-0.** Peer-reviewed. **Cited by manuscript:** **Yes, reference 32.** **Independence:** no author overlap identified. **Relevance:** introduces NCTD and benchmarks it against IGTD, DeepInsight, REFINED, TINTO, HACNet and Fotomics on ten datasets. Although cited, it is not included as an experimental comparator and therefore remains directly relevant to the novelty assessment.
+
+7. **Lee J, Kim B. “Zero inflated high dimensional compositional data with DeepInsight.” *PLOS ONE* 20, e0320832 (2025). DOI: 10.1371/journal.pone.0320832.** Peer-reviewed. **Cited by manuscript:** No. **Independence:** no author overlap identified. **Relevance:** adapts tabular-to-image representation learning to zero-inflated high-dimensional biomedical compositional data and validates the approach on paediatric inflammatory bowel disease data, providing another genomics-adjacent comparator.
+
+8. **Selke WD, Sung H, Lee C, Whooley M, Kim W. “Exploring Tabular-to-Image Algorithms for Applying CNNs to Tabular Data.” *IEEE International Conference on Bioinformatics and Biomedicine (BIBM)*, 5066–5073 (2025). DOI: 10.1109/BIBM66473.2025.11356899.** Peer-reviewed conference paper. **Cited by manuscript:** No. **Independence:** no author overlap identified. **Relevance:** systematically evaluates seven tabular-to-image CNN methods against seven conventional/non-CNN classifiers across 14 datasets, including medical and gene-expression tasks, and finds that tabular-to-image approaches are not uniformly superior. This is a particularly important challenge to Dynomap’s broad performance framing.
+
+9. **Lin Y-R, Wu H-M. “Image generator for tabular data based on non-Euclidean metrics for CNN-based classification.” *PLOS ONE* 21, e0340005 (2026). DOI: 10.1371/journal.pone.0340005.** Peer-reviewed. **Cited by manuscript:** No. **Independence:** no author overlap identified. **Relevance:** extends IGTD using correlation, geodesic, Jensen–Shannon, Wasserstein and tropical distances to encode nonlinear feature relationships. Its genomics experiments make it a direct contemporary alternative to Dynomap’s learned spatial organization.
+
+10. **Mamdouh A, El-Melegy M, Ali S, Kikinis R. “Tab2Visual: Deep learning for limited tabular data via visual representations and augmentation.” *Pattern Recognition* 176, 113173 (2026). DOI: 10.1016/j.patcog.2026.113173.** Peer-reviewed. **Cited by manuscript:** No. **Independence:** no author overlap identified. **Relevance:** transforms heterogeneous tabular data into visual representations and combines them with image augmentation and transfer learning, specifically targeting small datasets common in healthcare. It provides a very recent comparison point for Dynomap’s claims regarding data efficiency and CNN-based tabular representation.
