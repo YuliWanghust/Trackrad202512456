@@ -396,3 +396,371 @@ Early-career researchers are listed first. Comparator-model authors are flagged;
 ## Confidential Editorial Integrity Alert (handling editor only)
 
 First, UK Biobank test-cohort reuse in pretraining (Table S1 entries 45) must be clarified before any further consideration. Second, below-chance RETFound AUCs suggest a pipeline error affecting published comparator claims. Third, RetiZero is a comparator from co-author Fu's group, and this is not disclosed. Fourth, the manuscript contains no ethics or IRB statement for the private Shenzhen Eye Hospital paediatric data or the UK Biobank analysis. Fifth, reference 1 (WHO patient-safety action plan) does not support the ocular-burden claim. References 5/71, 8/82, 10/58, 13/51 and 53/84 are duplicates, and two Table S1 entries share the number 45.
+
+# Editorial Report — Manuscript 075121
+
+**Title:** Automated Non-invasive Estimation of Cardiac Hemodynamics with Deep Learning
+**Handling standard:** Nature Communications (Digital Health), calibrated to The Lancet Digital Health
+
+---
+
+## 1. Overall Assessment
+
+EchoHemodynamic classifies five catheterisation-derived pressures as elevated from echo video, trained on 2,929 UCSF pairs and applied unmodified to 740 MHI pairs. Training against invasive labels rather than echo surrogates is a genuine advance. But the headline claim — superiority over conventional echo for LV filling pressure — rests on 93 internal patients with an undefined endpoint and overlapping CIs (p=0.038), and is unsupported externally, where the model is statistically indistinguishable from conventional echo (p=0.929, p=0.216). No non-imaging baseline is reported.
+
+## 2. Strengths
+
+Training against Mac-Lab catheterisation values avoids the circularity of prior work (Akerman 2023, Pandey 2021) trained on echo-derived surrogates. The multitask design matches clinical practice, and excluding spectral Doppler supports point-of-care use. Frozen-weight external validation across country and vendor is more rigorous than most echo-AI papers attempt, and degradation is reported honestly. Most useful: model AUC held (0.687, 0.667) in the 23–44% of MHI studies where echo RVSP/RAP was unmeasurable.
+
+## 3. Weaknesses
+
+Test-set prevalence is extreme (77% LVEDP>12), yet no calibration, decision-curve, or NPV analysis supports the proposed rule-out use. The E/e' comparison (n=93) uses a categorical NRI with undisclosed threshold provenance, risking optimistic bias. No clinical/tabular baseline is tested against the video model. Reported cohort sizes and Figure 2A denominators are internally inconsistent. Code is licence-only, and the view-classifier preprocessing step (ref. 30) is an unpublished in-press paper from the same group. No subgroup analysis by sex, race, or vendor is given, despite vendor being invoked to explain degradation.
+
+## 4. Editorial Decision
+
+**Reject**, encourage transfer. The distinguishing claim is unsupported externally and fragile internally; without a baseline, calibration, and subgroup reporting the work does not meet the bar. Transfer to **npj Digital Medicine** or **Communications Medicine**, reframed around coverage where conventional echo fails.
+
+**Counterargument.** Cross-national frozen-weight validation on invasive labels is uncommon and honestly reported; every deficiency is fixable from existing data, so a resubmission dropping the superiority claim would merit reconsideration.
+
+## 5. Suggested Reviewer Expertise
+
+Five areas are needed. First, video-based deep learning for echocardiography, specifically transformer and 3D-CNN architectures with clip-level to study-level aggregation and multitask heads. Second, non-invasive estimation of intracardiac pressures by machine learning, including ECG- and CMR-based haemodynamic inference, to judge the novelty claim against modality-adjacent prior art. Third, clinical prediction model methodology, with emphasis on calibration, decision-curve analysis, the validity of categorical NRI, threshold selection and clustered resampling. Fourth, invasive haemodynamics and diastolic function in heart failure, able to assess the >12 mmHg thresholds, LVEDP–PCWP discordance and the one-day pairing window. Fifth, pulmonary hypertension imaging and echocardiographic right-heart assessment, to evaluate the RVSP/MPAP claims and the unobtainable-measurement analysis.
+
+## 6. State-of-the-Art Literature Review (Past 3 Years)
+
+The relevant landscape has moved quickly and the manuscript engages only part of it. On the imaging side, Akerman et al. (JACC Advances 2023) trained a 3D CNN on a single A4C clip for HFpEF detection; that model is now FDA-cleared as EchoGo Heart Failure and has been validated against invasive haemodynamics in a small right-heart-catheterisation cohort (PubMed 41955408, 2026), which is the closest direct competitor to the present left-sided claim and is not cited. Holste et al. (JAMA 2025) demonstrated complete multitask echocardiographic interpretation, establishing the multitask design as expected rather than novel. On the haemodynamics side, Schlesinger et al. (JACC Advances 2022) inferred elevated mean PCWP from the 12-lead ECG in 6,739 catheterised MGH encounters with an explicit unreliability score, and subsequent self-supervised metric-learning work extended this to 5.4 million unlabelled ECGs; Lehmann et al. (Lancet Digital Health 2024) estimated filling pressures from CMR. For the right heart, an npj Digital Medicine 2025 multimodal fusion model for pulmonary hypertension used 2,451 catheterised patients with a prospective cohort, an external dataset, module-level ablation and subgroup evaluation, and Us2.ai-based automated echo workflows have been benchmarked against core-laboratory readers in pulmonary arterial hypertension (CHEST 2025).
+
+Against this landscape, the manuscript's claim to be "the first echocardiographic AI model capable of estimating CC-derived parameters from standard echocardiographic videos" is too strong and should be narrowed to the joint five-parameter panel. Its genuine advances are the invasive label set and the simultaneous panel; its replication is the multitask video architecture and the single-parameter right-sided prediction. The comparators listed above set the methodological floor the authors must meet: uncertainty quantification, ablation, subgroup analysis and prospective or multi-centre evidence are now standard in this sub-domain, and none is present here.
+
+## 7. Suggested Reviewers
+
+Technical — video-based echocardiographic deep learning: Evangelos Oikonomou (Yale, assistant professor; senior author on multitask echocardiographic interpretation work), Márton Tokodi (Semmelweis University, assistant professor; echocardiographic machine learning and diastolic phenotyping), Milos Vukadinovic (Cedars-Sinai; echocardiographic foundation and video models).
+
+Technical — machine learning for intracardiac pressure estimation: Daphne Schlesinger (postdoctoral researcher; first author of RHCNet for ECG-based mPCWP inference), Aniruddh Raghu (haemodynamic inference from physiological signals), Krit Dwivedi (University of Sheffield, clinical lecturer; AI estimation of pulmonary haemodynamics from imaging).
+
+Technical — prediction model methodology and calibration: Ben Van Calster (KU Leuven, associate professor; calibration and validation of clinical prediction models), Benjamin Wessler (Tufts, associate professor; external validation of cardiovascular prediction models and echocardiographic AI), Laure Wynants (Maastricht, assistant professor; model validation and reporting standards).
+
+Clinical — invasive haemodynamics and diastolic function: Yogesh N. V. Reddy (Mayo Clinic; invasive HFpEF haemodynamics and exercise catheterisation), Masaru Obokata (Gunma University; invasive filling-pressure phenotyping), Frederik Fortuni (echocardiographic assessment of filling pressures).
+
+Clinical — pulmonary hypertension and right-heart imaging: Jan Stassen (echocardiographic right-heart assessment and outcomes), Jennifer Arthur Ataam or an equivalent early-career pulmonary vascular specialist with right-heart catheterisation expertise, Samuel Bernard (pulmonary hypertension imaging and haemodynamics).
+
+Reviewers from UCSF, the Montreal Heart Institute, the University of British Columbia and Ultromics should be excluded for institutional or commercial conflict.
+
+# Editorial Report — Manuscript 075879
+
+**Title:** Deep learning estimation of peak oxygen uptake from resting physiological parameters predicts cardiovascular events
+**Handling assessment:** Nature Communications, Digital Health
+
+---
+
+## 1. Overall Assessment
+
+AdaVO2Net, a sex-conditioned FiLM MLP, estimates peak VO2 from resting CPET variables (external R² 0.81, MAE 1.39 ml kg⁻¹ min⁻¹; AUROC 0.87 for peak VO2 <14 ml kg⁻¹ min⁻¹) and links predicted reserve to 180-day readmission. Two problems are decisive. Internal MAE (1.06, 4.9% of the mean) sits inside CPET's own test–retest repeatability, exceeding the closest comparator, Lee et al. (*JAHA* 2026;15:e045734, 13,535 tests, R² 0.55–0.69), uncited. The deployment premise is self-refuting: inputs require the same metabolic cart the model claims to replace.
+
+## 2. Strengths
+
+Patient-level fold assignment prevents leakage, and the external cohort (differing BMI, event rate, case mix) is a genuine distribution shift. Linking predicted reserve to readmission and therapy escalation is ambitious and rarely attempted. The audit of 35 high-discrepancy records, separating report-quality failures from genuine resting–exercise dissociation, is a real contribution. The perturbation analysis is physiologically coherent, dominated by stroke volume and O2 pulse.
+
+## 3. Weaknesses
+
+The feature set is never enumerated; Figure 3d contains undefined variables ("HRR," "Resting METs") that, if exercise-derived, invalidate every headline number, and inputs were parsed from PDFs containing the label column itself. The prognostic analysis (Figure 4 tertiles sum to 1,738) is entirely in-sample, ~85 events, no external replication, narrow IPTW adjustment, and an accrual window postdating the stated censoring date. Task 2 merely dichotomises Task 1. No calibration, no code availability, and an ethics approval number postdating enrolment by five years.
+
+## 4. Editorial Decision
+
+**Reject**, not sent for review: reviewers cannot adjudicate without the withheld feature dictionary, and the prognostic claim is unsupported by design. **Steelman:** a single-protocol resting cohort could outperform Lee et al.'s heterogeneous pooled data, and external R² 0.81 argues against simple leakage — but a shared extraction pipeline would transport across sites regardless. **Confidential note:** request the input dictionary, extraction code, and per-fold predictions before any resubmission decision.
+
+## 5. Suggested Reviewer Expertise
+
+Machine learning for cardiopulmonary exercise test data, specifically regression of peak VO2 from resting and submaximal gas-exchange variables. Tabular deep learning and conditional normalisation methods, with the ability to judge whether FiLM conditioning on a binary covariate confers anything beyond covariate inclusion, and to audit baseline tuning. Prediction-model methodology under TRIPOD+AI, covering calibration, leakage detection, clustered observations, and events-per-variable in low-event survival modelling. Automated extraction of structured variables from clinical report PDFs, for leakage provenance. Clinically, exercise physiology and CPET interpretation in cardiology and pre-operative assessment, and heart failure prognostication using peak VO2 thresholds and readmission endpoints.
+
+## 6. State-of-the-Art Literature Review (Past 3 Years)
+
+The relevant literature has converged on a consistent accuracy ceiling. Lee et al. (*JAHA* 2026;15:e045734) is the definitive comparator: 13,535 CPETs, Bayesian Ridge and LightGBM, demographic plus resting variables giving R² 0.546–0.690, rising to 0.732–0.796 only when submaximal variables are added. Khurshid, Diamant and colleagues (*Eur J Prev Cardiol* 2024;31:252) derived peak VO2 from resting 12-lead ECG in 1,891 MGH patients with external validation at BWH, reaching r = 0.552 and MAE 6.49 ml kg⁻¹ min⁻¹. Huang et al. (*npj Digit Med* 2026;9:304), cited here as reference 21, used multimodal multi-instance learning over transthoracic echocardiography and EHR to reach R² 0.603 and AUROC 0.849 for high-risk identification, itself an advance on a prior R² of 0.529. Rosoł et al. (*PLoS ONE* 2024;19:e0291706) obtained R² 0.47 from warm-up and submaximal treadmill signals. Real-time deep learning on CPET time series (Yamashita et al., *Eur J Prev Cardiol* 2024;31:448) improves on this only by consuming the exercise phase itself.
+
+Against that landscape, an external R² of 0.81 and an internal R² of 0.90 from resting data alone would be a step change of roughly 0.25 R² over the best like-for-like result, achieved with a smaller cohort and a simpler architecture. Extraordinary claims of this kind require the extraction pipeline and feature dictionary to be open, and require engagement with Lee et al., which the manuscript does not cite despite it being the closest published work on precisely this task. The genuine white space the authors could occupy is different and more defensible: prospective demonstration in patients who reach the laboratory but cannot complete a ramp protocol — the population the model is nominally for, and the population both cohorts exclude by construction. No published study has done this, and it would be a real contribution.
+
+## 7. Suggested Reviewers
+
+*All suggestions require conflict screening; none share an institution with Shenzhen, HKU or Fuwai to my knowledge, but this should be verified.*
+
+**CPET machine learning and peak VO2 regression:** Yonghun Lee (UNIST / UCLA MII Group) and Jeffrey J. Hsu (Assistant Professor, UCLA Division of Cardiology), first and senior authors of the JAHA 2026 study that is the direct comparator; Marcel Młyńczak (Associate Professor, Warsaw University of Technology), PLoS ONE 2024 submaximal VO2peak machine learning; Przemysław Seweryn Kasiak (Medical University of Warsaw), eLife 2023 VO2max prediction from submaximal CPET.
+
+**Deep learning from resting cardiac data for exercise capacity:** Shaan Khurshid (Assistant Professor, Massachusetts General Hospital) and Nathaniel Diamant (Broad Institute), co-leads of the Deep ECG-VO2 study; Timothy W. Churchill (Assistant Professor, MGH Cardiovascular Performance Program).
+
+**Prediction-model methodology and TRIPOD+AI:** Paula Dhiman (Senior Researcher, University of Oxford), TRIPOD+AI co-author; Ben Van Calster (Associate Professor, KU Leuven), calibration of clinical prediction models; Maarten van Smeden (Associate Professor, UMC Utrecht), events-per-variable and overfitting in low-event settings.
+
+**Clinical exercise physiology and heart failure prognostication:** Erik H. Van Iterson (Director of Cardiac Rehabilitation, Cleveland Clinic), CPET-based prognostication and the 14 ml kg⁻¹ min⁻¹ threshold; Jonathan Myers (Stanford / VA Palo Alto), non-exercise CRF estimation and prognosis — full-professor-equivalent seniority, to be used only if the earlier-career options decline.
+
+---
+
+## 8. Further Literature (past three years, comparable scope)
+
+*Bibliographic details verified against PubMed, publisher records and institutional repositories. Citation status refers to the reference list of manuscript 075879.*
+
+**1. Lee Y, Feng J, Rahrooh A, Bui AAT, Cooper CB, Hsu JJ. Peak oxygen uptake prediction from resting and submaximal variables of cardiopulmonary exercise testing.** *J Am Heart Assoc* 2026;15(6):e045734. DOI 10.1161/JAHA.125.045734. Peer-reviewed. **Not cited.** Fully independent (UCLA / UNIST). This is the single most important omission. It is the same task on the same input class — demographics plus resting CPET variables — at 13,535 tests, and it reports R² 0.546–0.690, rising to 0.732–0.796 only once submaximal variables are added. The authors must reconcile their R² of 0.90 against this, or explain why their cohort supports a 0.25 R² advantage at one eighth the sample size. Bayesian Ridge and LightGBM were the optimal models there, which also bears on the baseline-tuning question.
+
+**2. Khurshid S, Churchill TW, Diamant N, et al. Deep learned representations of the resting 12-lead electrocardiogram to predict at peak exercise.** *Eur J Prev Cardiol* 2024;31(2):252–262. DOI 10.1093/eurjpc/zwad321. Peer-reviewed. **Not cited.** Independent (MGH / Broad Institute). Derivation in 1,891 CPET patients with true external validation at a second institution (n = 1,076), reaching r = 0.552 and MAE 6.49 ml kg⁻¹ min⁻¹. Critically for this manuscript, it also tested the downstream step the authors claim as novel: estimated peak VO2 <14 ml kg⁻¹ min⁻¹ predicted incident atrial fibrillation, myocardial infarction, heart failure and death. The claim that linking estimated peak VO2 to events is an unmet need is therefore not accurate as written.
+
+**3. Huang Z, Pan W, Alishetti S, et al. Multimodal multi-instance learning for cardiopulmonary exercise testing performance prediction.** *npj Digit Med* 2026;9(1):304. DOI 10.1038/s41746-026-01697-w (as cited by the authors; verify at proof). Peer-reviewed. **Cited (ref 21).** Independent. Establishes the current field benchmark on the identical two-task formulation — R² 0.603 for peak VO2 and AUROC 0.849 for identifying high-risk patients — using echocardiography and EHR. The manuscript cites it but does not benchmark against it, despite having adopted its exact task structure.
+
+**4. Watanabe T, Tohyama T, Ikeda M, et al. Development of deep-learning models for real-time anaerobic threshold and peak VO2 prediction during cardiopulmonary exercise testing.** *Eur J Prev Cardiol* 2024;31(4):448–457. DOI 10.1093/eurjpc/zwad375. Peer-reviewed. **Not cited.** Independent (Kyushu University). Deep learning on breath-by-breath CPET time series in 1,472 records achieved Corr 0.87 and MAE 2.25 ml kg⁻¹ min⁻¹ for peak VO2 — while consuming data up to the anaerobic threshold. A model given strictly less information than Watanabe's cannot plausibly achieve an MAE of 1.06. This is the sharpest single-number check available to reviewers.
+
+**5. Nakayama A, Iwata T, Sakuma H, Kashino K, Tomoike H. Predicting heart rate at the anaerobic threshold using a machine learning model based on a large-scale population dataset.** *J Clin Med* 2025;14(1):21. DOI 10.3390/jcm14010021. Peer-reviewed. **Not cited.** Independent (Sakakibara Heart Institute / NTT). Gradient boosting on 78 non-exercise features drawn from 21,482 CPETs. Directly relevant to the baseline question: it demonstrates that a well-tuned GBM on non-exercise inputs at scale is the correct comparator, and that gradient boosting should not be finishing behind SVM as it does in Figure 2a–c.
+
+**6. Rosoł M, Petelczyc M, Gąsior JS, Młyńczak M. Prediction of peak oxygen consumption using cardiorespiratory parameters from warmup and submaximal stage of treadmill cardiopulmonary exercise test.** *PLoS ONE* 2024;19(1):e0291706. DOI 10.1371/journal.pone.0291706. Peer-reviewed. **Not cited.** Independent (Warsaw University of Technology). Thirteen algorithms across eleven feature sets; best R² 0.47, RMSE 5.78 ml kg⁻¹ min⁻¹ using warm-up and submaximal cardiac and respiratory features. Establishes the low end of the plausible range and quantifies how much of the signal sits in the exercise phase rather than at rest.
+
+**7. Wiecha S, Kasiak PS, Szwed P, et al. VO2max prediction based on submaximal cardiorespiratory relationships and body composition in male runners and cyclists: a population study.** *eLife* 2023;12:e86291. DOI 10.7554/eLife.86291. Peer-reviewed. **Not cited.** Independent (Medical University of Warsaw). Large athletic cohort with body-composition and submaximal CPET predictors. Useful as a spectrum contrast: this manuscript's cohort is cardiovascular-disease dominated with measured peak VO2 SD of only 5.42 ml kg⁻¹ min⁻¹, and reviewers should ask how a narrow outcome distribution coexists with R² 0.90.
+
+**8. Chaliki K, Sharma A, Sharma A, Yee C, Chaliki H, Reddy S. Key resting echocardiographic parameters for the estimation of exercise parameters of peak VO2, heart rate recovery, and ventilatory efficiency.** *J Clin Med* 2025;14(9):3013. DOI 10.3390/jcm14093013. Peer-reviewed. **Not cited.** Independent (Mayo Clinic Arizona / University of Arizona). Regression of percent-predicted peak VO2 on 19 resting echocardiographic parameters in 1,909 patients. The relevant point for this manuscript is the modest variance explained by resting haemodynamics generally, which bears directly on the plausibility of estimated stroke volume carrying as much signal as Figure 3c and 3d imply.
+
+**9. Hollmann N, Müller S, Purucker L, et al. Accurate predictions on small data with a tabular foundation model.** *Nature* 2025;637(8045):319–326. DOI 10.1038/s41586-024-08328-6. Peer-reviewed. **Not cited.** Independent (University of Freiburg / PriorLabs / ELLIS). TabPFN is now the reference method for tabular problems below 10,000 rows — precisely this manuscript's regime of 1,738 records and roughly 17 features. Its omission from a comparator set that includes TabNet, DeepTables and TabTransformer is a substantive gap, and its inclusion would test whether the FiLM architecture contributes anything beyond competent tabular modelling. Note the independent replication literature (e.g. Shaktah et al., medRxiv 2026, preprint, not peer-reviewed) finding TabPFN merely competitive with tuned GBMs on clinical tasks — which makes the 33% RMSE margin claimed here harder to attribute to architecture.
+
+**10. Kapoor S, Narayanan A. Leakage and the reproducibility crisis in machine-learning-based science.** *Patterns* 2023;4(9):100804. DOI 10.1016/j.patter.2023.100804. Peer-reviewed. **Not cited.** Independent (Princeton University). Provides the eight-category leakage taxonomy and the model info sheet instrument. Two categories apply directly to this submission: illegitimate features (undefined variables such as "HRR" and "Resting METs" in Figure 3d, parsed from reports that contain the label) and non-independence between observations (multiple records per patient treated as independent in the survival analysis). I would require a completed model info sheet with any resubmission.
+
+**Summary of the citation audit.** Eight of these ten are absent from the reference list, including the two — Lee et al. 2026 and Khurshid et al. 2024 — that most directly contest the manuscript's novelty and accuracy claims. The Introduction's assertion at lines 71–75 that existing approaches remain unvalidated against downstream clinical events is contradicted by reference 2 in this list. That is a literature-coverage failure, not a matter of emphasis.
+
+
+# Editorial Report — Manuscript 076026
+
+**Title:** Spectral Conventions Reveal Distinct Structural Signatures in Directed Congenital Cardiac Architectures
+**Handling recommendation:** Reject without external review
+
+---
+
+## 1. Overall Assessment
+
+The manuscript defines a Directed Sombor Matrix, s_ij = sqrt((d_i^+)^2+(d_j^-)^2) per arc, and compares eigenvalue-modulus energy against singular-value (nuclear-norm) energy on it, proving five properties and applying both to three directed cardiac graphs reconstructed from Lee and Chen (Sci Rep 2023): normal heart, extreme TOF with a right mBT shunt, and d-TGA with VSD. The two conventions rank these three graphs differently.
+
+The claim is true but not consequential. All five theorems specialise standard linear algebra to one weighted adjacency matrix, and the singular-value energy is already characterised for general vertex-degree-based digraphs by Monsalve and Rada and by Espinal, Monsalve and Rada. The cardiac component is one hand-built graph per condition, no patients, and contains an anatomical construction error that propagates into the reported ranking.
+
+## 2. Strengths
+
+Numerical reporting is internally consistent: every Table 1 percentage, gap and McClelland bound reproduces exactly, and Directed Sombor energies were cross-checked in MATLAB. The theorems carry an honest numerical verification suite (400–300 trials per claim), including disclosure of three 1e-6-tolerance failures correctly attributed to eigenvalue conditioning in non-normal matrices. Limitation statements are disciplined: N=1 per condition and the zero-CV weight-perturbation result are both correctly flagged as artefacts rather than robustness. The separation of numerical variability from rank preservation is a genuine point, benchmarked against a 16.7% uniform-ordering null.
+
+## 3. Weaknesses
+
+There is no mathematical novelty: the theorems are the standard nilpotency-acyclicity equivalence, McClelland's 1971 bound, the Weyl-Horn majorization inequality, condensation block-triangularity, and the nuclear-norm triangle inequality, all specialising a framework already published by Monsalve/Rada and Espinal/Monsalve/Rada. Theorem 3's proof is also defective: it invokes log-concavity where exponential convexity is needed, and anchors equality via det S = 0, degenerate for all three DSMs (numerical rank 16/17/16 of 24/25/24). The TOF topology claims pulmonary atresia yet retains PT→RPA/LPA arcs with no inflow to PT, contradicting Table 1's claim of one SCC. Internal figures conflict with the text (4.07-fold vs. 4.1-fold speedup; Fig. 3's "reversal" vs. the Results' explicit denial of one). There is no empirical content, and the deferred weighted formulation already exists in the authors' own source reference.
+
+## 4. Editorial Decision
+
+**Reject without review.** The theory specialises published VDB-digraph results, the application is three non-patient graphs with an internally contradictory TOF construction, and there is no clinical or predictive claim to evaluate — a scope deficiency, not a fixable execution flaw. Realistic homes are Scientific Reports, Journal of Complex Networks, Applied Mathematics and Computation, or MATCH; no Nature Portfolio transfer is warranted.
+
+## 5. Suggested Reviewer Expertise
+
+Technical expertise should cover spectral theory of vertex-degree-based and Sombor matrices for digraphs, specifically energy and spectral-norm characterisations of general adjacency matrices induced by symmetric bivariate degree functions; numerical linear algebra for non-normal matrices, including pseudospectra, eigenvalue conditioning and the practical meaning of stable rank against spectral radius; directed network science concerned with strongly connected component structure, condensation, trophic coherence and directed centrality; and computational benchmarking of eigendecomposition and block-decomposition strategies for sparse directed graphs. Clinical expertise should cover congenital cardiac morphology and flow, specifically tetralogy of Fallot with pulmonary atresia and systemic-to-pulmonary shunts, d-transposition physiology, and quantitative 4D-flow cardiovascular MRI in paediatric and adult congenital populations, sufficient to adjudicate whether the three reconstructed topologies are anatomically defensible.
+
+## 6. State-of-the-Art Literature Review (Past 3 Years)
+
+The relevant mathematical sub-field has consolidated rapidly since 2021. Gutman's Sombor index (MATCH 86:11, 2021) generated an immediate spectral literature, including Gutman's own treatment of the Sombor matrix spectrum, p-Sombor spectral results by Liu, You, Huang and Fang (MATCH 87:59, 2022), the empirical comparison of ordinary and Sombor energy by Redzepovic and Gutman (MATCH 88:133, 2022), and elliptic Sombor energy work in 2024. On the directed side, Monsalve and Rada established vertex-degree-based indices of digraphs (Discrete Appl. Math. 295:13, 2021) and the energy of a digraph with respect to a VDB index (Spec. Matrices 10:417, 2022); Cruz, Monsalve and Rada treated the Sombor index of directed graphs and Randic energy of digraphs in Heliyon in 2022; Espinal, Monsalve and Rada characterised the spectral norm and energy of a digraph with respect to a VDB index (Heliyon 10:e32016, 2024), including digraphs with a single non-zero singular value and with all singular values equal; and Cruz, Espinal and Rada set out a general matrix approach to VDB indices (Mathematics 12:2043, 2024). Martinez-Martinez, Mendez-Bermudez and Sigarreta (Phys. Rev. E 109:064306, 2024) provide a random-matrix treatment of degree-based matrices that supplies exactly the statistical framing this manuscript lacks.
+
+Against that landscape the manuscript replicates rather than advances. Its singular-value energy is the Sombor instance of a framework already characterised in 2022 and 2024, and its eigenvalue-modulus variant is the obvious complementary definition with no new sharp bound or extremal characterisation. The authors cite Espinal and Monsalve but do not engage with what those papers already prove, and they do not cite Gutman's Sombor matrix spectral work or the p-Sombor line at all. In directed network science, the natural comparators are trophic-coherence and giant-SCC approaches, exemplified by Liu, Hu, Wang, Liu and Zhang (Nat Commun 17:7866, 2026), which the manuscript cites only decoratively despite the paper's direct relevance to why localised feedback governs SCC structure. On the cardiac side, the field has moved to patient-specific 4D-flow quantification and cardiovascular digital twins; Lee and Chen (Sci Rep 13:11135, 2023) remains the only graph-theoretic CHD reference engaged, and its own weighted matrices are ignored. The manuscript should be evaluated against these works before any resubmission.
+
+## 7. Suggested Reviewers
+
+**Spectral theory of VDB and Sombor matrices for digraphs:** Juan D. Monsalve (Universidad de Antioquia; *Energy of a digraph with respect to a VDB topological index*, Spec. Matrices 2022); Carlos Espinal (Universidad de Antioquia; Heliyon 2024, spectral norm and energy of a digraph with respect to a VDB index); Roberto Cruz (Universidad de Antioquia; *Sombor index of directed graphs*, Heliyon 2022); Izudin Redzepovic (University of Belgrade; comparative study of ordinary and Sombor energy). Note that the first three share an institution; at most one should be invited, and Redzepovic or Zhen Lin (Qinghai Normal University, Sombor spectral radius and energy) used as the independent second.
+
+**Numerical linear algebra for non-normal matrices:** Yuji Nakatsukasa (University of Oxford; eigenvalue conditioning and low-rank matrix computation); Nicholas J. Higham group alumni working on non-normality diagnostics; Mark Embree (Virginia Tech; *Spectra and Pseudospectra*) as a last-resort senior option if junior invitations decline.
+
+**Directed network science and SCC structure:** Samuel Johnson (University of Birmingham; trophic coherence in directed networks); Xueming Liu (Huazhong University of Science and Technology; *Optimal dismantling of directed networks*, Nat Commun 2026); Giulia Cencetti or an equivalent early-career researcher working on directed and higher-order network spectra.
+
+**Congenital cardiac morphology and 4D-flow MRI:** Yao-Ting Lee (National Taiwan University Hospital; author of the source topologies and the natural adjudicator of whether the TOF and d-TGA reconstructions are faithful); Alejandro Roldan-Alzate (University of Wisconsin–Madison; 4D-flow and computational modelling in congenital heart disease); Liliana Ma (Northwestern University; 4D-flow quantification in congenital populations).
+
+Authors at Vellore Institute of Technology and co-authors of the acknowledged clinical advisers at Kauvery Hospital must be excluded.
+
+---
+
+## Editorial Integrity Alert (confidential to the handling editor)
+
+Line 903 of the submitted manuscript thanks "the anonymous reviewers and the handling editor for constructive feedback." No prior submission history is disclosed in the cover material available to me. This text indicates a previous peer-review cycle elsewhere that was not declared. Recommend querying the authors on submission history and on whether reviewer reports from that cycle exist, before any decision letter is issued. Separately, references 4, 11, 13, 14, 15, 16, 18, 19, 26, 27 and 30–33 were independently verified as real and correctly attributed; no fabricated citations were detected, and no arithmetic in Table 1 or the perturbation analysis failed verification.
+
+## Counterargument to the Recommendation
+
+The strongest case against rejection is that this manuscript is more honest than most of what reaches review. It declines every clinical overclaim available to it, correctly diagnoses its own zero-variance result as an artefact, benchmarks rank preservation against an explicit null, and pins its computational environment. A reviewer sympathetic to network science could argue that the substantive finding — that for severely non-normal degree-weighted matrices the eigenvalue and singular-value energy conventions can order the same objects differently, and that this is not a numerical curiosity but a modelling decision — is a useful corrective to a literature that reports "graph energy" as if the convention were immaterial, and that this point is made nowhere as directly. On that reading the correct action is to send the paper out with instructions to strip the cardiac framing, fix the Theorem 3 proof, and reposition it as a methods caution for the digraph-energy community.
+
+I do not adopt this view, for two reasons. The corrective is already implicit in Espinal, Monsalve and Rada's 2024 characterisation, which works with singular values precisely because the eigenvalue convention is ill-behaved for non-normal general adjacency matrices; and a paper whose only defensible contribution is a repositioning of existing theory does not belong in Nature Communications regardless of how well it is written. The honesty of the manuscript is an argument for a constructive rejection letter, not for review.
+
+
+# Editorial Report — Manuscript 076668
+
+**Title:** Distributed Lag Neural Additive Models
+**Section:** Nature Communications — Digital Health
+
+---
+
+## 1. Overall Assessment
+
+DLNAMs replace a DLNM's spline cross-basis with a neural additive component (ExU layers, Mish activations, learned subnetwork mixture) plus a last-layer Laplace/ensemble uncertainty estimate, removing basis-specification choices while preserving additive interpretability. Construction is careful, reporting candid, but the evidentiary base is thin: three of four benchmarks are author-designed simulations, and neither real-data application shows prediction, ground-truth recovery, or health utility. Two concerns dominate: the comparison is not likelihood- or tuning-matched, and this is a statistical estimator paper, not a demonstrated health advance — outside Digital Health scope.
+
+## 2. Strengths
+
+The component ablation is informative: removing ExU layers, the subnetwork mixture, or smooth activations each degrades error and coverage distinctly, supporting a genuine architectural contribution. The uncertainty derivation is rigorous — exact Jacobian, MacKay evidence fixed point, explicit handling of mixing-weight non-identifiability. The joint five-exposure experiment tests degradation under correlated exposures without a combinatorial cross-basis search. Reporting transparency exceeds the literature's norm.
+
+## 3. Weaknesses
+
+T-DLNM is fitted Gaussian on log(1+Y) while comparators are Poisson/quasi-Poisson; comparator tuning was frozen at defaults while DLNAM's budget was raised. All DGPs are self-designed "smooth," excluding the regime T-DLNM targets — and T-DLNM wins on the one non-adversarial DGP. No estimator reaches nominal coverage, undermining the calibration claim. The Chicago application is in-sample with no ground truth; the malaria application confounds estimator choice with differing adjustment specifications. Key competing methods (ACE-DLNM, SB-DLNM, mixture-DLNM) are omitted.
+
+## 4. Editorial Decision
+
+**Reject, with transfer.** Competent and honest, but the advantage rests on unmatched comparators and author-designed simulations, with no out-of-sample or health-consequential evaluation. Recommend **Communications Medicine** (with a health application) or **Communications Earth & Environment**; natural home is *Biostatistics* or *Environmental Epidemiology*.
+
+**Steelman:** Every weakness is self-disclosed, and the joint-exposure result solves a real multi-exposure problem no comparator handles cleanly — a methods-paper standard may be the wrong bar. I don't adopt this because the scope mismatch stands regardless of a corrected comparison.
+
+## 5. Suggested Reviewer Expertise
+
+Reviewers should cover, first, distributed lag non-linear modelling and cross-basis construction for time-series environmental epidemiology, including penalized and Bayesian tree-structured variants and their simulation evaluation; second, neural additive models and interpretable-by-construction deep architectures, specifically ExU parameterisation, subnetwork mixtures, and additive component identifiability; third, approximate Bayesian inference for neural networks, particularly last-layer and linearised Laplace approximations, MacKay evidence-based hyperparameter selection, deep ensembles, and frequentist coverage of the resulting intervals; fourth, simulation study design and reporting for statistical methods, covering Monte Carlo standard errors, bias–variance decomposition, and fair comparator calibration. On the clinical and applied side, reviewers should include an environmental epidemiologist working on temperature–mortality associations in multi-city time-series designs, and a climate–infectious disease epidemiologist with experience analysing DHS/MIS childhood malaria outcomes and survey-hierarchy adjustment.
+
+## 6. State-of-the-Art Literature Review (Past Three Years)
+
+The distributed-lag field has moved in three directions since 2022, none of which is neural. The first is structural flexibility: Mork and Wilson's treed DLNM (Biostatistics 2022) and its multi-exposure and monotone extensions, now consolidated in the dlmtree package (R Journal 2025), and the penalized distributed lag interaction model of Demateis and colleagues (Environmetrics 2024). The second is reformulation of the estimand: the adaptive cumulative exposure DLNM (ACE-DLNM) of Wilson, Stringer and colleagues replaces the bivariate surface with a smooth function of a data-adaptively weighted cumulative exposure, precisely because the bivariate surface is hard to interpret; a unified multi-exposure ACE framework followed in 2026. The third is spatial and hierarchical pooling: the Spatial Bayesian DLNM of Quijal-Zamorano et al. (Int J Epidemiol 2024), the spatially varying heat-effect model of Chen, Blangiardo, Gascoigne and Konstantinoudis (JRSS-A 2025), and the mixture-of-DLNMs construction (Statistics in Medicine 2026). On the machine-learning side, the relevant lineage is Agarwal et al.'s Neural Additive Models (NeurIPS 2021), the Laplace-approximated NAM of Bouchiat et al. (ICML 2024), Laplace Redux (NeurIPS 2021), and deep ensembles; DLNAM is a faithful composition of these with the DLNM estimand.
+
+Against that landscape, the manuscript advances one thing that is genuinely unoccupied: a learned, additively separable exposure–lag component with usable pointwise intervals that scales to five concurrent surfaces without a cross-basis specification search. Everything else is recombination. The ACE-DLNM line is the most serious omission, because it addresses the same interpretability complaint from the opposite direction and would supply a strong non-spline, non-neural comparator; the spatial and hierarchical DLNM work is directly relevant to the authors' own Hierarchical DLNAM extension, which they list as future work while citing only Economou et al.'s arXiv preprint. The authors should also engage the ACE and mixture literature before repeating the claim that existing approaches leave smoothness, local adaptivity, and learned representation in tension.
+
+## 7. Suggested Reviewers
+
+For distributed lag methodology and cross-basis evaluation: **Daniel Mork** (Harvard T.H. Chan School of Public Health; first author of the treed DLNM used here as a comparator — note this is a comparator-authorship interest and he should be asked to declare it), **Alex Stringer** (Assistant Professor, University of Waterloo; ACE-DLNM), **Yin-Hsiu Chen** (distributed lag interaction models with two pollutants), and **Marcos Quijal-Zamorano** (postdoctoral researcher, ISGlobal Barcelona; SB-DLNM, Int J Epidemiol 2024).
+
+For neural additive models and interpretable architectures: **Kouroche Bouchiat** (ETH Zürich; LA-NAM, ICML 2024), **Christoph Kolb / Anton Thielmann** (NAMLSS, distributional neural additive models), and **Rishabh Agarwal** (original NAM construction; note industry affiliation).
+
+For approximate Bayesian inference and interval calibration: **Alexander Immer** (postdoctoral researcher, ETH Zürich; linearised Laplace and marginal-likelihood selection), **Agustinus Kristiadi** (Vector Institute; Laplace approximations in ReLU networks), and **Erik Daxberger** (Laplace Redux).
+
+For applied temperature–mortality epidemiology: **Ana M. Vicedo-Cabrera** (Assistant Professor, University of Bern), **Pierre Masselot** (Assistant Professor, LSHTM), and **Garyfallos Konstantinoudis** (Assistant Professor, Imperial College London).
+
+For climate and childhood malaria in sub-Saharan Africa: **Colin J. Carlson** (Assistant Professor, Yale School of Public Health) and **Adrian Tompkins** (ICTP; climate-driven malaria modelling).
+
+**Exclusions.** Antonio Gasparrini and co-authors (author of three comparator methods and the dlnm package, and cited eight times). Manuel Martellini O Nocentini and co-authors of the DHS/MIS malaria source study — he is acknowledged as having shaped the experimental design, comparator selection, and evaluation criteria of this manuscript, and is first author of reference [18], on which the malaria application depends. Any KTH, Karolinska Institutet, Uppsala, or Cambridge affiliate.
+
+---
+
+## Confidential Editorial Integrity Note (handling editor only)
+
+Four items warrant attention, none of which I judge to constitute misconduct.
+
+First, the acknowledged contributor Manuel Martellini O Nocentini is credited with shaping the experimental design, comparator selection, and evaluation criteria, and is first author of reference [18], the medRxiv preprint supplying the malaria data, the target-specific adjustment sets, and the empirical reference against which the DLNAM fit is judged. This is a substantive intellectual contribution to design and interpretation and sits close to the authorship threshold; at minimum the non-independence of the applied comparison should be declared, not left in Acknowledgments.
+
+Second, reference [18] is an unreviewed medRxiv preprint posted in June 2026. One of the manuscript's two applications rests entirely on it, including the adjustment sets and the "source analysis" agreement claim.
+
+Third, the manuscript is available on arXiv as 2609.07381, posted in early September 2026. The Prior dissemination statement discloses only the KTH master's thesis. Preprint posting is permitted, but the statement is incomplete as written.
+
+Fourth, the malaria data are restricted and "may be available upon request from the authors of that study," and the simulated data are reproducible only by rerunning the authors' code. The Chicago component is fully reproducible; the malaria component is not independently verifiable.
+
+Arithmetic and internal consistency were checked. The 81^5 ≈ 3.5 × 10^9 exhaustive-search figure, the 5 × 81 = 405 coordinate-wise count, and the 4.3 × 2 = 8.6 scaling extrapolation are all arithmetically correct as stated. The two presentational issues flagged in Section 3 (null-exposure leakage ordering; matched-budget comparison of the 8.6-fold figure) are framing problems, not errors.
+
+# Editorial Report — Manuscript 076860
+
+**Title:** Large language models exhibit unreliable clinical belief updating as patient evidence evolves
+**Handling assessment:** Nature Communications, Digital Health
+
+---
+
+## 1. Overall Assessment
+
+The manuscript claims that longitudinal belief updating is a reliability dimension distinct from static accuracy. In matched MIMIC-IV ICU cohorts, self-context worsens paired prediction error more often than it improves it, revision is asymmetric toward deterioration, a supplied prior causally shifts estimates with current evidence fixed, mitigation prompts fail, and a rule-based gate (EVLU) retains a smaller, more reliable subset of revisions.
+
+The architecture is better than most work here. My decision turns on the substrate. Independent AUROC is 0.545 and Brier is 0.281; no constant predictor exceeds 0.25 at any prevalence, so the model is worse calibrated than the base rate. The primary model is Qwen3-8B with chain-of-thought disabled, and no frontier model is evaluated.
+
+## 2. Strengths
+
+The prior-belief intervention isolates prior influence from evolving physiology, holding snapshot, prompt and assessment fields fixed while varying only the supplied prior from 10 to 90 percent. The dose-response is orderly at 3.05 points per increment, monotonic in 70.4 percent of snapshots.
+
+The counterfactual design carries controls this literature usually omits: across 4,545 transitions under eight conditions, redundant evidence produced 0.74 points of revision and no numerical change in 96.99 percent of cases.
+
+Replication is serious. An independent vasopressor cohort reproduces every effect, mean absolute error rose in all eight models from 4B to 32B, inference uses ICU-stay cluster bootstrap, and the matched-random retention test (P < 0.001) shows the EVLU-2 gain is not merely reduced coverage.
+
+## 3. Weaknesses
+
+The substrate is uninformative. AUROC 0.545, a Brier score above the constant-predictor ceiling, and mean absolute error of 0.326 describe an estimator that cannot discriminate the outcome, and no non-LLM baseline is reported although gradient-boosted models on comparable MIMIC-IV features exceed 0.80.
+
+Generality is unsupported. All models are open-weight and 32B or smaller; Qwen3-8B runs in non-thinking mode, suppressing the capability under study; every mechanistic, prompting and EVLU experiment uses that one model, with single-run deterministic decoding.
+
+The headline asymmetry rests on one stratum: 0.324 at 0 to 25 percent prior risk against 0.046, 0.036 and 0.067 above, with stratum sizes unreported. The outcome-misalignment result is arithmetically the dose-response restated, not corroboration.
+
+Clinical grounding is thin. MIMIC-IV only; matching distorts prevalence, so Brier and mean absolute error are not transportable; structured variables only; perturbations ignore physiological coupling; no subgroup analysis by age, sex or ethnicity; no clinician adjudication of whether revisions were appropriate.
+
+## 4. Editorial Decision
+
+**Reject**, with transfer to *Communications Medicine* or *npj Digital Medicine*. The central clinical claim rests on a model that cannot discriminate the outcome, in a non-reasoning configuration, on one dataset. If sent out, reviewers should adjudicate whether belief metrics are interpretable at AUROC 0.545, whether disabling thinking mode invalidates generalization, and whether the asymmetry is a low-prior-risk artifact.
+
+## 5. Suggested Reviewer Expertise
+
+Technical expertise should cover dynamic risk prediction from longitudinal structured EHR data, including landmarking and joint modelling on MIMIC-IV; evaluation methodology for open-weight LLMs, specifically calibration, proper scoring rules and multi-turn context effects; counterfactual and causal probing of language-model behaviour with clustered bootstrap inference; and probabilistic forecasting and calibration assessment in clinical prediction models, including the base-rate and constant-predictor benchmarks this manuscript omits. Clinical expertise should come from an intensivist with a research record in the timing of invasive mechanical ventilation and vasopressor initiation, and in the prospective evaluation of ICU risk scores.
+
+## 6. State-of-the-Art Literature Review (Past 3 Years)
+
+The relevant landscape has three strands. First, longitudinal clinical LLM benchmarking: MedAlign (Fleming et al., AAAI 2024), TIMER (Cui et al., npj Digital Medicine 8:577, 2025), Kruse et al. (EMNLP Findings 2025), and Rao et al. (JAMA Network Open 9:e264003, 2026) established that extended histories do not yield reliable temporal reasoning. Second, bias and context dependence: Hager et al. (Nature Medicine 30:2613, 2024), Mahajan et al. (npj Digital Medicine 8:428, 2025), Tan et al. (ACL 2024) on generated-context preference, and Sheppert et al. (International Journal of Medical Informatics 219:106550, 2026), which found LLMs more anchoring-prone than physicians. Third, self-correction limits: Kamoi et al. and Pan et al. (TACL 12, 2024).
+
+The manuscript engages all three strands competently but omits the two most directly competing recent works. CAREBench (arXiv:2510.14286) evaluates temporal stability of risk trajectories on MIMIC-IV and EHRShot, explicitly comparing zero-shot Qwen3-32B against XGBoost, random forests and deep sequence models, and reports the same instability with the trained baselines this manuscript lacks; it is the single most damaging omission, since it supplies the comparator that would determine whether the reported unreliability is LLM-specific. BayesBench (arXiv:2606.30850, preprint, not peer reviewed) evaluates belief trajectories against a rational Bayesian reference across seven open-weight models from 3B to 70B and reports that latent inference improves with scale while downstream prediction remains uncalibrated, which directly bears on the manuscript's scaling claim and provides the normative updating reference it never defines. Geng et al. (arXiv:2511.01805) on accumulating context and belief change is also relevant. Against this landscape, the controlled prior-injection experiment is the manuscript's real advance; the natural longitudinal degradation result largely replicates CAREBench and the anchoring literature in a new endpoint.
+
+## 7. Suggested Reviewers
+
+Longitudinal EHR modelling and dynamic risk prediction: Eleni-Rosalina Andrinopoulou (Erasmus MC; dynamic prediction with joint models, cited as reference 21), Shengpu Tang (Emory; clinical time-series ML), Shalmali Joshi (Columbia; temporal reliability of clinical ML).
+
+LLM evaluation, calibration and context effects: Paul Hager (TUM; Nature Medicine 2024, reference 8), Bryan Wilie (HKUST; belief revision in LLMs, reference 12), Hexiang Tan (CAS; generated-context conflicts, reference 16), Wai-Chung Kwan (MT-eval multi-turn benchmark, reference 17).
+
+Counterfactual probing and Bayesian belief evaluation: Ankur Samanta (BayesBench), Seewon Choi (CAREBench).
+
+Calibration and proper scoring in clinical prediction: Ben Van Calster (KU Leuven), Laure Wynants (Maastricht), Kim Luijken (UMC Utrecht).
+
+Critical care: Michael Sjoding (Michigan; ML and respiratory failure), Sarah Seelye (Michigan; respiratory failure prediction), Gary Weissman (Penn; ICU prediction model evaluation).
+
+Conflicts: exclude all University of Minnesota affiliates and prior co-authors of R. Zhang, including N. Ingraham and G. Melton. Note that reference 22 (Kamoi et al., TACL 2024) lists a different Rui Zhang, at Pennsylvania State University; this is a name collision, not a self-citation, and that group is not conflicted.
+
+# Editorial Report — Manuscript 077884
+
+**Title:** Identifier memorization masquerades as biological signal in metabolite–disease prediction
+**Handling section:** Nature Communications, Digital Health
+
+---
+
+## 1. Overall Assessment
+
+The manuscript argues that standard metabolite–disease evaluation measures curation artefacts, not biology: AUROC 0.967 retains 0.968 after label permutation, 0.958 with the disease block deleted. Correcting three confounds, the authors report 0.762 for unseen metabolites of a known disease and 0.501 for entirely unseen diseases, attributing this to identifier memorisation; MeSH hierarchy position lifts extrapolation to 0.584. No patient, endpoint, or deployment context appears anywhere — this is bipartite-graph benchmark methodology, not digital health — and the central diagnostic is uncited prior art (Aiyappa et al., ICML 2025).
+
+## 2. Strengths
+
+The control architecture is strong: full, permuted, and representation-blind arms per regime, pre-specified equivalence testing, and demonstrated rather than asserted seed sufficiency. Shuffling training labels returns every sub-chance arm to within 0.006 of 0.5, cleanly separating overfitting from pipeline fault. The constructive arm earns the central claim: hierarchy position lifts extrapolation while a matched Gaussian block does not, confirmed independently by graph convolution. Calibration reported separately from discrimination — extrapolation worse than base rate despite near-chance AUROC — is uncommon and consequential here.
+
+## 3. Weaknesses
+
+Scope is disqualifying: no human subjects, no clinical data, no deployment pathway. Novelty is overstated: Aiyappa et al. (ICML 2025) already shows a degree-only null approaches optimal performance under the conventional design, uncited. The extrapolation null is partly sampler-guaranteed, since within-disease degree matching also nulls disease-general chemistry that is genuine biology. Reported quantities fail to reconcile: 46,432 − 2,317 = 44,115, not the stated 44,093; pooled n = 16,627 at prevalence 0.2881 is incompatible with the 1:1 matched 9,582-pair design; the audit package's 26%/52% shares contradict Figure 6f's 33%/25% for the same corpus.
+
+## 4. Editorial Decision
+
+**Reject, with transfer recommended.** No clinical content, and the core correction is anticipated by uncited prior art. Transfer to **Communications Biology** or **npj Systems Biology and Applications**, conditional on reconciling the numerical inconsistencies and engaging the missing literature.
+
+**Counterargument.** The field publishes metabolite–disease models at AUROC >0.99 on this flawed protocol; a powered negative result with a released audit tool has field-level value disproportionate to its novelty. I do not adopt this view: the scope mismatch is not reparable by revision.
+
+---
+
+## 5. Suggested Reviewer Expertise
+
+Approximately 70% technical, 30% domain. (i) Positive-unlabelled learning and negative-sampling design for biomedical link prediction, specifically reliable-negative selection on sparse bipartite association graphs. (ii) Evaluation methodology for graph machine learning, covering degree-corrected benchmarks, entity-disjoint and cold-start splitting, and degree-only null models. (iii) Cheminformatics representation and split design — ECFP4 fingerprints, Tanimoto nearest-neighbour analogue bias, and the applicability limits of Bemis–Murcko scaffold splitting to acyclic metabolites. (iv) Biomedical ontology representation learning, particularly MeSH and Disease Ontology positional encodings and ontology-derived transfer to unseen entities. (v) Clinical and experimental metabolomics, covering HMDB curation practice, biospecimen reporting bias, and the downstream use of prioritised metabolite candidate lists.
+
+---
+
+## 6. State-of-the-Art Literature Review (Past Three Years)
+
+Three lines of work define the current landscape. The first is the continuing stream of metabolite–disease predictors reporting near-ceiling performance under exactly the protocol this manuscript attacks: GMAMDA (Hu et al., *J. Chem. Inf. Model.* 65, 5242–5254, 2025) reports AUC 0.9962 with an adaptive-hardness negative sampler; SMDPG (Huang et al., *IEEE/ACM TCBB* 22, 672–683, 2025) and WGCNCDLC (Liu et al., *TCBB* 22, 744–756, 2025) both target negative-sample reliability; DHG-LGB (*Metabolites* 16, 116, 2026) claims its model learns biological patterns rather than memorising, on the basis of dropout settings and a 96.7% literature-validation rate in case studies. The manuscript's critique lands squarely on these, yet it engages none of the 2025 negative-sampling papers, which is a significant omission given that its own headline correction is a negative sampler.
+
+The second line is benchmark-validity work outside metabolomics, where the manuscript's originality is most exposed. Aiyappa, Wang, Kim, Seckin, Ahn and Kojaku, "Implicit degree bias in the link prediction task" (*Proc. ICML* 267:874–908, 2025), shows that uniform negative-edge sampling biases evaluation toward degree, that a degree-only null approaches optimal performance, and proposes a degree-corrected benchmark — the same diagnostic and the same remedy, one year earlier and uncited. Timely-MDA (Zhou et al., *IEEE BIBM* 2024, doi:10.1109/BIBM62325.2024.10822171) built a generalisable-split benchmark for miRNA–disease association, the closest sibling task. Kapoor and Narayanan (*Patterns* 4, 100804, 2023) is cited and used appropriately. The third line is clinically anchored metabolomics prediction, for example MetaboLM (*Nat. Commun.* 2026, s41467-025-66163-3), a transformer pre-trained on UK Biobank plasma metabolomics for multi-disease early prediction; it illustrates the kind of patient-level work this section publishes and how far the present manuscript sits from it.
+
+Situating the manuscript: it advances the field by supplying a mechanistic account (identifier memorisation) and a falsifiable constructive test (ontology-position exchange with dimensionality and vocabulary controls) that the general degree-bias literature does not provide, and by transferring the diagnostic to an independent gene–disease corpus. It replicates, without attribution, the degree-corrected sampler and degree-only null of Aiyappa et al. and the interpolation/extrapolation distinction of Pahikkala et al. The authors should also apply their own logic to their repair: MeSH hierarchy position is itself a product of curation attention, no per-disease confidence structure or precision-at-depth is reported for the 0.584 arm, and 0.584 is not a usable operating point for discovery.
+
+---
+
+## 7. Suggested Reviewers
+
+**Negative sampling and PU learning for biomedical link prediction.** Wei Lan (Guangxi University; SMDPG, *TCBB* 2025, optimised negative sampling for metabolite–disease). Yiran Huang (Guangxi University; co-author, SMDPG). Chen Chen (Xinjiang University; GMAMDA, *JCIM* 2025, adaptive-hardness negative sampling). Qiao Ning (Dalian Maritime University; DCMDA, *TCBB* 2025).
+
+**Graph benchmark validity and degree bias.** Sadamori Kojaku (Assistant Professor, Binghamton University; Aiyappa et al., ICML 2025, degree-corrected link-prediction benchmark). Rachith Aiyappa (Indiana University Bloomington; first author, same). Tyler Derr (Assistant Professor, Vanderbilt University; Wang & Derr, ICDMW 2022, the manuscript's reference 13). Munjung Kim (Indiana University Bloomington; co-author, ICML 2025).
+
+**Cheminformatics evaluation and split design.** Tapio Pahikkala (University of Turku; reference 14, the interpolation/extrapolation framework this protocol reproduces). Antti Airola (University of Turku; co-author, same). José Jiménez-Luna (Imperial College London; molecular property benchmarking and split sensitivity). Andrea Volkamer (Saarland University; fingerprint similarity and benchmark design) as a senior fallback.
+
+**Ontology representation and transfer.** Maxat Kulmanov (KAUST; ontology embeddings, DeepGO and OPA2Vec line of work). Şenay Kafkas (KAUST; disease-ontology text and hierarchy representations). Robert Hoehndorf (Associate Professor, KAUST; DL2Vec, ontology-based disease representation) as a senior fallback.
+
+**Clinical and experimental metabolomics.** Jennifer Kirwan (Berlin Institute of Health; clinical metabolomics quality and reporting standards). Julijana Ivanisevic (University of Lausanne; clinical metabolomics and biomarker validation). Michael Witting (Helmholtz Munich; metabolite annotation confidence and database curation). David Wishart (University of Alberta) should be **excluded**: HMDB is the source resource under critique, a direct conflict.
+
+Exclude all authors affiliated with BRIC-NABI, Mohali, and any co-author of the submitting group within the past five years. Reviewer ranks and current affiliations should be confirmed by the editorial office before invitation.
+
+---
+
+*Verification performed for this report: arithmetic recomputation of cohort counts, pair counts, prevalence, network density, regime gaps and ablation deltas; independent search of 2024–2026 metabolite–disease and link-prediction benchmark literature; citation-content checks on references 6, 8, 13, 14, 22 and 29; preprint-overlap search on the manuscript title and author group, with no overlap found.*
