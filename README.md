@@ -764,3 +764,47 @@ Exclude all authors affiliated with BRIC-NABI, Mohali, and any co-author of the 
 ---
 
 *Verification performed for this report: arithmetic recomputation of cohort counts, pair counts, prevalence, network density, regime gaps and ablation deltas; independent search of 2024–2026 metabolite–disease and link-prediction benchmark literature; citation-content checks on references 6, 8, 13, 14, 22 and 29; preprint-overlap search on the manuscript title and author group, with no overlap found.*
+
+
+# NCOMMS-26-062269-T — Editorial Decision
+
+## Decision: Major Revision
+
+No reviewer recommends rejection; R1 explicitly recommends major revision, and R2 and R3 raise no fatal premise or integrity concern. Most criticisms are answerable by reanalysing data the authors already hold: patient-level splits, cluster-aware intervals, router ablations, per-centre reporting, reclassification of the Zhujiang cohorts, and ThyClinScore sensitivity analysis. The distinctive elements are real — 35-centre multi-device evaluation, and an inspectable, clinician-editable evidence store whose corrections propagate into the report.
+
+Three conditions must appear explicitly in the letter. If the router ablation shows no advantage over majority voting, probability averaging, rule-based routing or a non-LLM learned router, the central agentic claim fails and the paper will be rejected. The same follows if patient-level reanalysis, after the Zhujiang cohorts are correctly reclassified, collapses external validation. The LNM task must be properly powered and consistently labelled or removed, and clinical benefit claims must be recast as feasibility unless the reader study is rebuilt as a multi-reader multi-case design.
+
+**Counterargument for rejection.** The one novel element, agentic orchestration, is the one with no evidence; everything beneath it is established. External validation is compromised for two tasks, LNM rests on twenty validation cases, the report metric is author-built and LLM-judged, and the clinical evidence rests on two readers. Four headline claims are unsupported, so the revision is arguably a new study, and a router that adds nothing leaves an npj Digital Medicine paper. I rejected this because the work required is analytic rather than new data collection, and three reviewers with the full manuscript stopped short of rejection. The failure conditions preserve the exit.
+
+## Reviewer summaries
+
+**R1 (Zhen Li) — major revision.** Credits constraining the LLM to tool orchestration, which yields traceable editable evidence rather than end-to-end generation. Concerns: image-level results without patient-level deduplication or cluster-aware intervals; no ablation isolating the router from the expert ensemble and radiomics; unexamined centre heterogeneity with weak segmentation at some sites and no calibration or abstention policy; ZJH-8K serving as both external test set and development data for LNM and FTC/PTC; ThyClinScore validated chiefly against an LLM judge; and a two-physician, 145-case study showing feasibility, not patient benefit.
+
+**R2 (Dong Xu) — 23 points, no explicit recommendation.** The most forensic review. Shows "28,458 non-overlapping test cases" is 19,737 images plus 8,721 cases, mixing units — the arithmetic confirms it. Notes ZJH-8K and TN3K both come from Zhujiang Hospital, so ZJH-8K is not external. Identifies a target shift in the FTC/PTC task, where training used classic and follicular-variant PTC while testing used FTC and PTC. Flags LNM as underpowered with labels inconsistent across overall, lateral, central and CN0/CN1. Also: router reproducibility, undefined "mean" performance, missing ethics and consent detail, no ReAct failure-mode analysis, tool concurrency conflicts, unspecified post-processing thresholds, an unqualified "training-free" claim, and a repository without tests, release or licence.
+
+**R3 (Xiaofan Ding) — no explicit recommendation.** Overlaps on the ensemble-versus-agent question with the same baseline ladder. Adds the sharpest original point: the router consumes device and data-source metadata and may be learning centre identity rather than case-level evidence, so a metadata-ablated comparison is required. Also asks for patient-disjoint split confirmation and a flowchart, paired or mixed-effects statistics for the reader study, blinded multi-radiologist validation of ThyClinScore, and acknowledgement that the system loses on some semantic submetrics. Minor: multimodal LLM baselines read raw images while ThyroidXAgent receives structured tool outputs.
+
+## Before issuing the letter
+
+R1 calls the reader study a crossover; R2 states different readers per condition. These are incompatible and dictate different statistics — check the Methods. Eric Wang's note reports 36% "for physicians" and 27% "for doctors," the same word twice; fix before it reaches the authors. R1's recommendation sits in the code-availability field and the editor-only remarks merely duplicate the author comments, so you have one explicit vote and no confidential input. Consider adding a biostatistical referee at revision, since the two decisive issues are statistical and no current reviewer is a statistician.
+
+## Author to-do list
+
+1. Report everything at patient level with patient-level bootstrap intervals; state deduplication and confirm patient-disjoint splits.
+2. Correct the test-set accounting into separate image, examination, lesion and patient counts, with a data-flow diagram per component.
+3. Run the router ablation: single model, majority voting, probability averaging, rule-based routing, non-LLM learned router, LLM router, oracle bound.
+4. Add a metadata-ablated router variant.
+5. Reclassify ZJH-8K and TN3K as internal unless independence is demonstrated; re-report external validation.
+6. Resolve the FTC/PTC target shift or withdraw that result.
+7. Power and relabel LNM with one consistent nodal definition, or remove it.
+8. Report per-centre performance and calibration for all 35 sites; define abstention and mandatory-review rules and their effect on missed diagnoses, false positives and workload.
+9. Validate ThyClinScore against blinded multi-radiologist ratings with inter-rater agreement and λ/η sensitivity analysis.
+10. Rebuild the reader study as MRMC with varied seniority, randomized case order, per-reader results and paired or mixed-effects statistics — or downgrade all benefit claims to feasibility.
+11. Document router reproducibility: LLM version, prompts, decoding parameters, seeds, run-to-run stability, and ten representative traces including failures.
+12. Add agent failure-mode analysis: invalid or hallucinated tool calls, retries, rollbacks, nodal–nodule concurrency conflicts, and behaviour with multiple, absent or conflicting nodules.
+13. State whether baselines were retrained or used off the shelf; separate structured-input from raw-image comparisons.
+14. Complete ethics reporting: design and period, consent or waiver per institution, de-identification, governance, and formal approval for NHC-MISD-TUS rather than co-author authorization.
+15. Specify connected-component thresholds, minimum area, multi-nodule separation, sub-5 mm handling, the AutoGluon branch, BM25 corpus, slot-filling rules and the TI-RADS variant.
+16. Qualify "training-free"; add clinician-rated readability and usability beyond BLEU and ROUGE.
+17. Release the repository with a licence, tagged release and tests; add data availability statements for each private cohort.
+18. Supply a reconciliation table for all numbers across abstract, text, figures and supplement, and proofread.
